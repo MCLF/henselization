@@ -118,6 +118,38 @@ class CompleteRing_base(Ring):
 
         self._v = v
 
+    def characteristic(self):
+        r"""
+        Return the characteristic of this ring.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.characteristic()
+            0
+
+        """
+        return self.base().characteristic()
+
+    def is_finite(self):
+        r"""
+        Return whether this ring is finite.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.is_finite()
+            False
+
+        """
+        # since the underlying valuation is non-trivial, there must be
+        # infinitely many elements
+        return False
+
     def _coerce_map_from_(self, other):
         r"""
         Return a coercion from ``other`` to this ring if one exists.
