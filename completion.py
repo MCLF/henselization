@@ -19,11 +19,11 @@ AUTHORS:
 # Fix doctests so they work in standalone mode (when invoked with sage -t, they run within the completion/ directory)
 import sys, os
 if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
-    sys.path.append(os.getcwd())
     sys.path.append(os.path.dirname(os.getcwd()))
 
-from sage.rings.ring import IntegralDomain
+from sage.rings.ring import Ring, IntegralDomain, Field
 from sage.structure.factory import UniqueFactory
+from sage.misc.lazy_attribute import lazy_attribute
 
 class CompletionFactory(UniqueFactory):
     r"""
@@ -32,7 +32,7 @@ class CompletionFactory(UniqueFactory):
 
     EXAMPLES::
 
-        sage: from mac_lane import pAdicValuation # optional: standalone
+        sage: from completion import *
         sage: v = pAdicValuation(QQ, 5)
         sage: Completion(QQ, v)
         Completion of Rational Field with respect to 5-adic valuation
@@ -44,7 +44,7 @@ class CompletionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: from mac_lane import pAdicValuation # optional: standalone
+            sage: from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: Completion(QQ, v) is Completion(QQ, v) # indirect doctest
             True
@@ -67,7 +67,7 @@ class CompletionFactory(UniqueFactory):
 
         TESTS::
             
-            sage: from mac_lane import pAdicValuation # optional: standalone
+            sage: from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: Completion(QQ, v) # indirect doctest
             Completion of Rational Field with respect to 5-adic valuation
@@ -82,13 +82,13 @@ class CompletionFactory(UniqueFactory):
 
 Completion = CompletionFactory("Completion")
 
-class CompleteDomain(IntegralDomain):
+class CompleteRing_base(Ring):
     r"""
     Abstract base class for the completion of ``R`` with respect to ``v``.
 
     EXAMPLES::
 
-        sage: from mac_lane import pAdicValuation # optional: standalone
+        sage: from completion import *
         sage: v = pAdicValuation(ZZ, 2)
         sage: Completion(ZZ, v)
         Completion of Integer Ring with respect to 2-adic valuation
@@ -98,11 +98,11 @@ class CompleteDomain(IntegralDomain):
         r"""
         TESTS::
 
-            sage: from mac_lane import FunctionFieldValuation # optional: standalone
+            sage: from completion import *
             sage: K.<x> = FunctionField(QQ)
             sage: v = FunctionFieldValuation(K, x)
             sage: C = Completion(K, v)
-            sage: isinstance(C, CompleteDomain)
+            sage: isinstance(C, CompleteRing_base)
             True
             sage: TestSuite(C).run()
     
@@ -112,34 +112,130 @@ class CompleteDomain(IntegralDomain):
         # up correctly. First, precision_absolute() and precision_relative()
         # are implementation details. Then CDVFields() should have CDVRings()
         # as a super category.
-        category = category or R.category()
-        Ring.__init__(self, category)
+        from sage.categories.all import Fields, IntegralDomains
+        category = category or (Fields() if R in Fields() else IntegralDomains())
+        Ring.__init__(self, R, category=category)
 
-        self._R = R
         self._v = v
 
-    def __repr__(self):
+    def _an_element_(self):
+        r"""
+        Return an element of this ring.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.an_element()
+            0
+
+        """
+        return self(0)
+
+    def _element_constructor_(self, x):
+        r"""
+        Create an element in this parent from ``x``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: x = K(0) # indirect doctest
+            sage: x.parent() is K
+            True
+
+        """
+        return self._base_element_class(self, x)
+
+    @lazy_attribute
+    def _base_element_class(self):
+        r"""
+        The class for elements which are already elements of the base ring.
+
+        TESTS::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: x = K(0) # indirect doctest
+            sage: isinstance(x, K._base_element_class)
+            True
+
+        """
+        from base_element import BaseElement
+        return self.__make_element_class__(BaseElement)
+
+    def _repr_(self):
         r"""
         Return a printable representation of this ring.
 
         EXAMPLES::
 
-            sage: from mac_lane import pAdicValuation # optional: standalone
+            sage: from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: Completion(QQ, v)
             Completion of Rational Field with respect to 2-adic valuation
 
         """
-        return "Completion of %r with respect to %r"%(self._R, self._v)
+        return "Completion of %r with respect to %r"%(self.base_ring(), self._v)
 
-class CompleteField(CompleteDomain):
+    def some_elements(self):
+        r"""
+        Return some typical elements of this ring.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: len(K.some_elements())
+            100
+
+        """
+        return map(self, self.base_ring().some_elements())
+
+class CompleteDomain(CompleteRing_base, IntegralDomain):
+    r"""
+    Base class for the completion of the integral domain ``R`` with respect
+    to ``v``.
+
+    EXAMPLES::
+
+        sage: from completion import *
+        sage: R.<x> = QQ[]
+        sage: v = pAdicValuation(QQ, 2)
+        sage: w = GaussValuation(R, v)
+        sage: Completion(R, w)
+        Completion of Univariate Polynomial Ring in x over Rational Field with respect to Gauss valuation induced by 2-adic valuation
+
+    """
+    def __init__(self, R, v, category = None):
+        r"""
+        TESTS::
+
+            sage: from completion import *
+            sage: R.<x> = QQ[]
+            sage: v = pAdicValuation(QQ, 2)
+            sage: w = GaussValuation(R, v)
+            sage: C = Completion(R, w)
+            sage: isinstance(C, CompleteDomain)
+            True
+            sage: TestSuite(C).run()
+            
+        """
+        CompleteRing_base.__init__(self, R, v, category)
+        IntegralDomain.__init__(self, R, category=self.category())
+
+class CompleteField(CompleteRing_base, Field):
     r"""
     Abstract base class for the completion of the field ``K`` with respect to
     ``v``.
 
     EXAMPLES::
 
-        sage: from mac_lane import pAdicValuation # optional: standalone
+        sage: from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: Completion(QQ, v)
         Completion of Rational Field with respect to 2-adic valuation
@@ -149,7 +245,7 @@ class CompleteField(CompleteDomain):
         r"""
         TESTS::
 
-            sage: from mac_lane import pAdicValuation # optional: standalone
+            sage: from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: isinstance(K, CompleteField)
@@ -157,4 +253,5 @@ class CompleteField(CompleteDomain):
             sage: TestSuite(K).run()
 
         """
-        CompleteDomain.__init__(self, K, v, category)
+        CompleteRing_base.__init__(self, K, v, category)
+        Field.__init__(self, K, category=self.category())
