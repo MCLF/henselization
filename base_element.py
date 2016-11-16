@@ -168,3 +168,20 @@ class BaseElement(IntegralDomainElement):
 
         """
         return self.parent()._v(self._x)
+
+    def reduction(self):
+        r"""
+        Return the reduction of this element module the element of positive
+        :meth:`valuation`.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: x = K(4)
+            sage: x.reduction()
+            0
+
+        """
+        return self.parent()._v.reduce(self._x)

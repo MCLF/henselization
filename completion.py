@@ -27,8 +27,8 @@ from sage.misc.lazy_attribute import lazy_attribute
 
 class CompletionFactory(UniqueFactory):
     r"""
-    Return the completion of ``R`` with respect to ``v``, a discrete
-    non-trivial valuation on ``R``.
+    The completion of ``R`` with respect to ``v``, a discrete non-trivial
+    valuation on ``R``.
 
     EXAMPLES::
 
@@ -243,6 +243,22 @@ class CompleteRing_base(Ring):
 
         """
         return map(self, self.base_ring().some_elements())
+
+    def valuation(self):
+        r"""
+        Return the valuation on this complete ring.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.valuation()
+            2-adic valuation
+
+        """
+        from .valuation import Valuation
+        return Valuation(self)
 
 class CompleteDomain(CompleteRing_base, IntegralDomain):
     r"""
