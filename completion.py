@@ -118,6 +118,22 @@ class CompleteRing_base(Ring):
 
         self._v = v
 
+    def _coerce_map_from_(self, other):
+        r"""
+        Return a coercion from ``other`` to this ring if one exists.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.has_coerce_map_from(QQ) # indirect doctest
+            True
+
+        """
+        if self.base().has_coerce_map_from(other):
+            return True
+
     def _an_element_(self):
         r"""
         Return an element of this ring.
