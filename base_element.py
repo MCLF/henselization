@@ -152,3 +152,19 @@ class BaseElement(IntegralDomainElement):
         if isinstance(other, BaseElement):
             return cmp(self._x, other._x)
         raise NotImplementedError
+
+    def valuation(self):
+        r"""
+        Return the valuation of this element.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: x = K(1/4)
+            sage: x.valuation()
+            -2
+
+        """
+        return self.parent()._v(self._x)
