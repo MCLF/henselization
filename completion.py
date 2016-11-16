@@ -104,7 +104,7 @@ class CompleteRing_base(Ring):
             sage: C = Completion(K, v)
             sage: isinstance(C, CompleteRing_base)
             True
-            sage: TestSuite(C).run()
+            sage: TestSuite(C).run() # long time
     
         """
         # TODO: This should be R.category().Completion() rather, however, the
