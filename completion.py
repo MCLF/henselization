@@ -117,6 +117,8 @@ class CompleteRing_base(Ring):
         Ring.__init__(self, R, category=category)
 
         self._v = v
+        from sage.rings.all import PolynomialRing
+        self._polynomial_ring = PolynomialRing(self, 'x')
 
     def characteristic(self):
         r"""
@@ -195,7 +197,17 @@ class CompleteRing_base(Ring):
             True
 
         """
-        return self._base_element_class(self, x)
+        if x in self.base():
+            x = self.base()(x)
+            return self._base_element_class(self, x)
+        if isinstance(x, tuple):
+            if len(x) == 2:
+                v, i = x
+                from sage.rings.all import NN
+                from mac_lane.limit_valuation import MacLaneLimitValuation
+                if isinstance(v, MacLaneLimitValuation) and v.domain() is self._polynomial_ring and i in NN:
+                    return self._mac_lane_element_class(self, v, i)
+        raise ValueError("Can not convert %r to an element in %r"%(x, self))
 
     @lazy_attribute
     def _base_element_class(self):
@@ -214,6 +226,27 @@ class CompleteRing_base(Ring):
         """
         from base_element import BaseElement
         return self.__make_element_class__(BaseElement)
+
+    @lazy_attribute
+    def _mac_lane_element_class(self):
+        r"""
+        The class for elements which are given as coefficients of key
+        polynomial of limit valuations.
+
+        TESTS::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: f = x^2 + 1
+            sage: F = f.factor() # indirect doctest
+            sage: isinstance(F[0][0][0], K._mac_lane_element_class)
+            True
+
+        """
+        from mac_lane_element import MacLaneElement
+        return self.__make_element_class__(MacLaneElement)
 
     def _repr_(self):
         r"""
@@ -259,6 +292,81 @@ class CompleteRing_base(Ring):
         """
         from .valuation import Valuation
         return Valuation(self)
+
+    def _factor_univariate_polynomial(self, f):
+        r"""
+        Return the factorization of ``f`` over this ring.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: f = x + 1
+            sage: f.factor() # indirect doctest
+            x + 1
+            sage: f = x^2 + 1
+            sage: f.factor()
+            x^2 + 1
+
+        A non-trivial example::
+
+            sage: G = GaussianIntegers().fraction_field()
+            sage: v = pAdicValuation(G, 2)
+            sage: K = Completion(G, v)
+            sage: R.<x> = K[]
+            sage: f = x^2 + 1
+            sage: f.factor() # long time
+            (x + (-I - 8) + O(?)) * (x + (5*I - 4) + O(?))
+
+        Another non-trivial example::
+
+            sage: v = pAdicValuation(QQ, 5)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: f = x^2 + 1
+            sage: f.factor() # long time
+            (x + 57 + O(?)) * (x + 68 + O(?))
+
+        """
+        if f.is_constant():
+            raise NotImplementedError
+        if not f.is_monic():
+            raise NotImplementedError
+        if not f.is_squarefree():
+            # TODO: piece together the factorization of the factors of the squarefree decomposition
+            raise NotImplementedError
+
+        from sage.structure.factorization import Factorization
+        G = self._polynomial_ring(f)
+        approximants = self.valuation().mac_lane_approximants(G)
+        if len(approximants) == 1:
+            return Factorization([(G, 1)])
+        approximants = sum([approximant.mac_lane_step(G) for approximant in approximants], [])
+        factors = []
+        for approximant in approximants:
+            # we only need to perform a Mac Lane step when there is ramification
+            # introduced in the last step (to get the degrees right), anyway, it
+            # does not hurt to do another step
+            approximant = approximant.mac_lane_step(G)
+            assert len(approximant)==1
+            approximant = approximant[0]
+
+            from sage.rings.all import infinity
+            if approximant(approximant.phi()) == infinity:
+                factors.append(approximant.phi())
+                continue
+
+            degree = approximant.phi().degree()
+            from mac_lane.limit_valuation import LimitValuation
+            limit = LimitValuation(approximant, G)
+            coefficients = [self((limit, d)) for d in range(degree + 1)]
+            if f.is_monic():
+                coefficients[-1] = self(1)
+            factor = f.parent()(coefficients)
+            factors.append(factor)
+        return Factorization([(factor, 1) for factor in factors], unit=self.one(), sort=False)
 
 class CompleteDomain(CompleteRing_base, IntegralDomain):
     r"""

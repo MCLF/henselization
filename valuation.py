@@ -102,7 +102,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
             sage: v = K.valuation()
             sage: isinstance(v, CompletionValuation)
             True
-            sage: TestSuite(v).run()
+            sage: TestSuite(v).run() # long time
 
         """
         mac_lane.valuation.DiscreteValuation.__init__(self, parent)
