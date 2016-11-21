@@ -105,8 +105,9 @@ class MacLaneElement(IntegralDomainElement):
                 raise NotImplementedError("comparison to base elements")
             if isinstance(other, MacLaneElement):
                 if self._limit_valuation.parent() is other._limit_valuation.parent():
-                    return (self._limit_valuation <= other._limit_valuation
-                            and self._limit_valuation >= other._limit_valuation
+                    # we currently only handle the trivial case here, i.e., the
+                    # elements are indistinguishable
+                    return (self._limit_valuation == other._limit_valuation
                             and self._degree == other._degree)
                 raise NotImplementedError("comparison of Mac Lane elements that come from valuations on different rings")
         elif op == 3:
