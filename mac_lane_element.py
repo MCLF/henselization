@@ -82,17 +82,31 @@ class MacLaneElement(IntegralDomainElement):
             approximation = "(" + approximation + ")"
         return approximation + " + O(?)"
 
-    def _cmp_(self, other):
+    def _richcmp_(self, other, op):
         r"""
-        Compare ``self`` and ``other``.
+        Return whether this element relates to ``other`` with respect to
+        ``op``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: C = Completion(QQ, v)
+            sage: R.<x> = C[]
+            sage: a = (x^2 + 1).factor()[0][0][0]
+            sage: b = (x^2 + 1).factor()[0][0][0]
+            sage: a == b
+            True
 
         """
-        raise NotImplementedError
-
-    def _richcmp(self, other, op):
-        r"""
-        """
-        print self,other,op
+        if op == 2:
+            from base_element import BaseElement
+            if isinstance(other, BaseElement):
+                raise NotImplementedError("comparison to base elements")
+            if isinstance(other, MacLaneElement):
+                return self._limit_valuation == other._limit_valuation and self._degree == other._degree
+        elif op == 3:
+            return not (self == other)
         raise NotImplementedError
 
     def valuation(self):
