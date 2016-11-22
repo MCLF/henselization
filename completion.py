@@ -394,7 +394,7 @@ class CompleteDomain(CompleteRing_base, IntegralDomain):
             sage: C = Completion(R, w)
             sage: isinstance(C, CompleteDomain)
             True
-            sage: TestSuite(C).run()
+            sage: TestSuite(C).run() # long time
             
         """
         CompleteRing_base.__init__(self, R, v, category)
@@ -422,7 +422,7 @@ class CompleteField(CompleteRing_base, Field):
             sage: K = Completion(QQ, v)
             sage: isinstance(K, CompleteField)
             True
-            sage: TestSuite(K).run()
+            sage: TestSuite(K).run() # long time
 
         """
         CompleteRing_base.__init__(self, K, v, category)
