@@ -102,6 +102,28 @@ class MacLaneElement(IntegralDomainElement):
         if op == 2:
             from base_element import BaseElement
             if isinstance(other, BaseElement):
+                # Let G(x) be the factor that the key polynomials of
+                # self._limit_valuation approximate, and let alpha be a root of G.
+                # Write v_n=[v_1(x)=mu_1, ..., v_n(phi_n)=mu_n] for an
+                # approximant of self._limit_valuation.
+                # We can write G = phi_n + sum (a_i - b_i) phi_{n-1}^i in the
+                # phi_n-adic expansion with
+                # sum b_i phi_{n-1}^i, sum a_i phi_{n-1}^i the phi_{n-1}-adic
+                # expansions of phi_n and G respectively.
+                # Since G is a key polynomial for v_n, v_n(G) = mu_n
+                # = v_n(sum(a_i - b_i) phi_{n-1}^i)
+                # = min v_{n-1}(a_i - b_i) + i mu_{n-1}.
+                # Thus v_{n-1}(a_i - b_i) >= mu_n - i mu_{n-1}.
+
+                v_n = self._limit_valuation._approximation
+                if v_n._base_valuation.phi() == v_n.domain().gen():
+                    # When phi_{n-1}=x, this translates into a bound on the
+                    # a_i, namely, if other = a_i, then the above bound must hold.
+                    lower_bound = v_n._mu - self._degree * v_n._base_valuation(v_n._base_valuation.phi())
+                    if (other - self._limit_valuation._approximation.phi()[self._degree]).valuation() < lower_bound:
+                        return False
+                # It should be possible to generalize this to other cases, but
+                # it has not been done yet.
                 raise NotImplementedError("comparison to base elements")
             if isinstance(other, MacLaneElement):
                 if self._limit_valuation.parent() is other._limit_valuation.parent():
