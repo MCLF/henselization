@@ -104,7 +104,7 @@ class MacLaneElement(IntegralDomainElement):
             if isinstance(other, BaseElement):
                 if (other - self._limit_valuation._approximation.phi()[self._degree]).valuation() < self._precision():
                     return False
-                # we could try to push the approximation indefinitely
+                # we could try to push the approximation indefinitely (but this won't work if other is actually equal)
                 raise NotImplementedError("comparison to base elements")
             if isinstance(other, MacLaneElement):
                 if self._limit_valuation.parent() is other._limit_valuation.parent():
@@ -157,7 +157,7 @@ class MacLaneElement(IntegralDomainElement):
         ret = self._limit_valuation._approximation.phi()[self._degree].valuation()
         if self._precision() > ret:
             return ret
-        # we could try to push the approximation indefinitely
+        # we could try to push the approximation indefinitely (but this won't work if this element is actually zero)
         raise NotImplementedError
 
     def reduction(self):
@@ -178,5 +178,5 @@ class MacLaneElement(IntegralDomainElement):
         """
         if self._precision() > 0:
             return self._limit_valuation._approximation.phi()[self._degree].reduction()
-        # we could try to push the approximation indefinitely
+        # we could try to push the approximation indefinitely (and it would actually work)
         raise NotImplementedError
