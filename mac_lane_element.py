@@ -118,6 +118,21 @@ class MacLaneElement(IntegralDomainElement):
         raise NotImplementedError
 
     def _precision(self):
+        r"""
+        Return the precision (in terms of valuation) to which the element is
+        known.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: C = Completion(QQ, v)
+            sage: R.<x> = C[]
+            sage: a = (x^2 + 1).factor()[0][0][0]
+            sage: a._precision()
+            3
+
+        """
         # Let G(x) be the factor that the key polynomials of
         # self._limit_valuation approximate, and let alpha be a root of G.
         # Write v_n=[v_1(x)=mu_1, ..., v_n(phi_n)=mu_n] for an
