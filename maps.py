@@ -51,7 +51,7 @@ class ConvertMap_generic(Morphism):
             True
 
         """
-        Morphism.__init__(self, parent)
+        super(ConvertMap_generic, self).__init__(parent)
 
     def _call_(self, x):
         r"""

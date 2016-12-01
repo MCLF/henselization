@@ -106,7 +106,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
             sage: TestSuite(v).run() # long time
 
         """
-        mac_lane.valuation.DiscreteValuation.__init__(self, parent)
+        super(CompletionValuation, self).__init__(parent)
         self._base_valuation = self.domain()._base_valuation
 
     def _repr_(self):

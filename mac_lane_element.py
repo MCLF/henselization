@@ -59,7 +59,7 @@ class MacLaneElement(IntegralDomainElement):
             sage: TestSuite(a).run() # long time
 
         """
-        IntegralDomainElement.__init__(self, parent)
+        super(MacLaneElement, self).__init__(parent)
         self._limit_valuation = limit_valuation
         self._degree = degree
 
