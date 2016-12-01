@@ -25,15 +25,15 @@ from sage.structure.element import Element, FieldElement, IntegralDomainElement,
 
 class BaseElement_base(IntegralDomainElement):
     r"""
-    Abstract base class for elements of :class:`CompleteRing_base` which are in
-    its base ring.
+    Abstract base class for elements of :class:`Completion_base` which are in
+    the fraction field of its uncompleted :meth:`Completion_base.base`.
 
     EXAMPLES::
 
         sage: from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
-        sage: K(0)
+        sage: x = K(0); x
         0
 
     """
@@ -136,21 +136,25 @@ class BaseElement_base(IntegralDomainElement):
             return self.parent()(self._x / other._x)
         raise NotImplementedError
 
-    def _cmp_(self, other):
+    def _richcmp_(self, other, op):
         r"""
-        Compare ``self`` and ``other``.
+        Return the result of comparing this element to ``other`` with respect
+        to ``op``.
 
         EXAMPLES::
 
             sage: from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
-            sage: cmp(K(3), K(2)) # indirect doctest
-            1
+            sage: K(3) == K(2) # indirect doctest
+            False
 
         """
-        if isinstance(other, BaseElement_base):
-            return cmp(self._x, other._x)
+        if op == 2: # ==
+            if isinstance(other, BaseElement_base):
+                return  self._x == other._x
+        if op == 3: # !=
+            return not (self == other)
         raise NotImplementedError
 
     def valuation(self):
@@ -167,7 +171,7 @@ class BaseElement_base(IntegralDomainElement):
             -2
 
         """
-        return self.parent()._base_valuation(self._x)
+        return self.parent()._base_fraction_field_valuation(self._x)
 
     def reduction(self):
         r"""
@@ -184,12 +188,13 @@ class BaseElement_base(IntegralDomainElement):
             0
 
         """
-        return self.parent()._base_valuation.reduce(self._x)
+        return self.parent()._base_fraction_field_valuation.reduce(self._x)
 
-class BaseElementRing(BaseElement_base):
+
+class BaseElement_Ring(BaseElement_base):
     r"""
-    Abstract base class for elements of :class:`CompleteRingDomain` which are
-    in its base ring.
+    An element of :class:`Completion_Ring` which is in the field of fractions
+    of the uncompleted :meth:`Completion_Ring.base`.
 
     EXAMPLES::
 
@@ -201,7 +206,7 @@ class BaseElementRing(BaseElement_base):
 
     TESTS::
 
-        sage: isinstance(R(0), BaseElementRing)
+        sage: isinstance(R(0), BaseElement_Ring)
         True
 
     """
@@ -210,7 +215,7 @@ class BaseElementRing(BaseElement_base):
         Return the quotient of ``self`` and ``other``.
 
         We implement the variation (3) as given in
-        :meth:`pAdicGenericElement._mod_`.
+        :meth:`sage.rings.padics.pAdicGenericElement._mod_`.
 
         EXAMPLES::
 
@@ -221,19 +226,19 @@ class BaseElementRing(BaseElement_base):
             1
 
         """
-        if isinstance(other, BaseElementRing):
+        if isinstance(other, BaseElement_Ring):
             from sage.rings.all import ZZ
-            other_unit_part = self.parent()(self.parent()._original_valuation.shift(other._x, -other.valuation()))
-            ret = self.parent()._original_valuation.shift((self / other_unit_part)._x, - other.valuation())
+            other_unit_part = self.parent()(self.parent()._base_valuation.shift(other._x, -other.valuation()))
+            ret = self.parent()._base_valuation.shift((self / other_unit_part)._x, - other.valuation())
             return self.parent()(ret)
         raise NotImplementedError
 
     def _mod_(self, other):
         r"""
-        Return ``self`` modulus ``other``.
+        Return the remainder of division of this element by ``other``.
 
         We implement the variation (3) as given in
-        :meth:`pAdicGenericElement._mod_`.
+        :meth:`sage.rings.padics.pAdicGenericElement._mod_`.
 
         EXAMPLES::
 
@@ -246,10 +251,11 @@ class BaseElementRing(BaseElement_base):
         """
         return self - (self // other) * other
 
-class BaseElementField(BaseElement_base, FieldElement):
+
+class BaseElement_Field(BaseElement_base, FieldElement):
     r"""
-    Abstract base class for elements of :class:`CompleteRingField` which are
-    in its base ring.
+    An element of :class:`Completion_Field` which is in the uncompleted
+    :meth:`Completion_Field.base`.
 
     EXAMPLES::
 
@@ -267,7 +273,7 @@ class BaseElementField(BaseElement_base, FieldElement):
             sage: from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
-            sage: isinstance(K(0), BaseElementField)
+            sage: isinstance(K(0), BaseElement_Field)
             True
 
         """
