@@ -50,7 +50,7 @@ class BaseElement_base(IntegralDomainElement):
             sage: TestSuite(x).run()
 
         """
-        IntegralDomainElement.__init__(self, parent)
+        super(BaseElement_base, self).__init__(parent)
         self._x = x
         self._base = base
         self._valuation = valuation
@@ -285,5 +285,4 @@ class BaseElement_Field(BaseElement_base, FieldElement):
             True
 
         """
-        BaseElement_base.__init__(self, parent, base, valuation, x)
-        FieldElement.__init__(self, parent)
+        super(BaseElement_Field, self).__init__(parent, base, valuation, x)
