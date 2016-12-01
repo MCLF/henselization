@@ -26,7 +26,7 @@ from sage.structure.element import Element, FieldElement, IntegralDomainElement,
 class BaseElement_base(IntegralDomainElement):
     r"""
     Abstract base class for elements of :class:`Completion_base` which are in
-    the fraction field of its uncompleted :meth:`Completion_base.base`.
+    one of its uncompleted ``base`` fields.
 
     EXAMPLES::
 
@@ -37,7 +37,7 @@ class BaseElement_base(IntegralDomainElement):
         0
 
     """
-    def __init__(self, parent, x):
+    def __init__(self, parent, base, valuation, x):
         r"""
         TESTS::
 
@@ -52,6 +52,8 @@ class BaseElement_base(IntegralDomainElement):
         """
         IntegralDomainElement.__init__(self, parent)
         self._x = x
+        self._base = base
+        self._valuation = valuation
 
     def _repr_(self):
         r"""
@@ -82,7 +84,8 @@ class BaseElement_base(IntegralDomainElement):
 
         """
         if isinstance(other, BaseElement_base):
-            return self.parent()(self._x + other._x)
+            if self._base is other._base and self._valuation is other._valuation:
+                return self.parent()(self._x + other._x)
         raise NotImplementedError
 
     def _sub_(self, other):
@@ -99,7 +102,8 @@ class BaseElement_base(IntegralDomainElement):
 
         """
         if isinstance(other, BaseElement_base):
-            return self.parent()(self._x - other._x)
+            if self._base is other._base and self._valuation is other._valuation:
+                return self.parent()(self._x - other._x)
         raise NotImplementedError
 
     def _mul_(self, other):
@@ -116,7 +120,8 @@ class BaseElement_base(IntegralDomainElement):
 
         """
         if isinstance(other, BaseElement_base):
-            return self.parent()(self._x * other._x)
+            if self._base is other._base and self._valuation is other._valuation:
+                return self.parent()(self._x * other._x)
         raise NotImplementedError
 
     def _div_(self, other):
@@ -133,7 +138,8 @@ class BaseElement_base(IntegralDomainElement):
 
         """
         if isinstance(other, BaseElement_base):
-            return self.parent()(self._x / other._x)
+            if self._base is other._base and self._valuation is other._valuation:
+                return self.parent()(self._x / other._x)
         raise NotImplementedError
 
     def _richcmp_(self, other, op):
@@ -152,7 +158,8 @@ class BaseElement_base(IntegralDomainElement):
         """
         if op == 2: # ==
             if isinstance(other, BaseElement_base):
-                return  self._x == other._x
+                if self._base is other._base and self._valuation is other._valuation:
+                    return  self._x == other._x
         if op == 3: # !=
             return not (self == other)
         raise NotImplementedError
@@ -171,7 +178,7 @@ class BaseElement_base(IntegralDomainElement):
             -2
 
         """
-        return self.parent()._base_fraction_field_valuation(self._x)
+        return self._valuation(self._x)
 
     def reduction(self):
         r"""
@@ -188,13 +195,13 @@ class BaseElement_base(IntegralDomainElement):
             0
 
         """
-        return self.parent()._base_fraction_field_valuation.reduce(self._x)
+        return self._valuation.reduce(self._x)
 
 
 class BaseElement_Ring(BaseElement_base):
     r"""
-    An element of :class:`Completion_Ring` which is in the field of fractions
-    of the uncompleted :meth:`Completion_Ring.base`.
+    An element of :class:`Completion_Ring` which is in one of its uncompleted
+    ``base`` fields.
 
     EXAMPLES::
 
@@ -227,10 +234,11 @@ class BaseElement_Ring(BaseElement_base):
 
         """
         if isinstance(other, BaseElement_Ring):
-            from sage.rings.all import ZZ
-            other_unit_part = self.parent()(self.parent()._base_valuation.shift(other._x, -other.valuation()))
-            ret = self.parent()._base_valuation.shift((self / other_unit_part)._x, - other.valuation())
-            return self.parent()(ret)
+            if self._base is other._base and self._valuation is other._valuation:
+                from sage.rings.all import ZZ
+                other_unit_part = self.parent()(self.parent()._base_valuation.shift(other._x, -other.valuation()))
+                ret = self.parent()._base_valuation.shift((self / other_unit_part)._x, - other.valuation())
+                return self.parent()(ret)
         raise NotImplementedError
 
     def _mod_(self, other):
@@ -254,8 +262,8 @@ class BaseElement_Ring(BaseElement_base):
 
 class BaseElement_Field(BaseElement_base, FieldElement):
     r"""
-    An element of :class:`Completion_Field` which is in the uncompleted
-    :meth:`Completion_Field.base`.
+    An element of :class:`Completion_Field` which is in one of its uncompleted
+    ``base`` fields.
 
     EXAMPLES::
 
@@ -266,7 +274,7 @@ class BaseElement_Field(BaseElement_base, FieldElement):
         0
 
     """
-    def __init__(self, parent, x):
+    def __init__(self, parent, base, valuation, x):
         r"""
         TESTS::
 
@@ -277,5 +285,5 @@ class BaseElement_Field(BaseElement_base, FieldElement):
             True
 
         """
-        BaseElement_base.__init__(self, parent, x)
+        BaseElement_base.__init__(self, parent, base, valuation, x)
         FieldElement.__init__(self, parent)

@@ -361,13 +361,13 @@ class Completion_base(CommutativeRing):
 
         if x in self.base():
             x = self.base()(x)
-            return self._base_element_class(self, x)
+            return self._base_element_class(self, self._base_fraction_field, self._base_fraction_field_valuation, x)
 
         if x in self._base_fraction_field:
             x = self._base_fraction_field(x)
             from sage.categories.fields import Fields
             if self in Fields() or self._base_fraction_field_valuation(x) >= 0:
-                return self._base_element_class(self, x)
+                return self._base_element_class(self, self._base_fraction_field, self._base_fraction_field_valuation, x)
 
         if isinstance(x, tuple):
             if len(x) == 2:
