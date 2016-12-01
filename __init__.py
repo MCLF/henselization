@@ -15,13 +15,14 @@ if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__mai
 
 from mac_lane import *
 
-from completion import Completion, CompleteRing_base, CompleteDomain, CompleteField
-from base_element import BaseElement
+from completion import Completion, CompleteRing_base, CompleteDomain, CompleteField, CompleteExtension_base, CompleteExtensionField, CompleteExtensionDomain, Extension
+from base_element import BaseElementRing, BaseElementField, BaseElement_base
 from mac_lane_element import MacLaneElement
 import valuation
 from valuation import CompletionValuation
-
+from completions import CompleteDiscreteValuationRings, CompleteDiscreteValuationFields
 
 from sage.structure.factory import register_factory_unpickle
 register_factory_unpickle("Completion", Completion)
 register_factory_unpickle("valuation.Valuation", valuation.Valuation)
+register_factory_unpickle("Extension", Extension)

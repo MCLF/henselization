@@ -21,12 +21,12 @@ import sys, os
 if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
     sys.path.append(os.path.dirname(os.getcwd()))
 
-from sage.structure.element import IntegralDomainElement
+from sage.structure.element import Element, FieldElement, IntegralDomainElement, coerce_binop
 
-class BaseElement(IntegralDomainElement):
+class BaseElement_base(IntegralDomainElement):
     r"""
-    Element class for elements of :class:`CompleteRing_base` which are in its
-    base ring.
+    Abstract base class for elements of :class:`CompleteRing_base` which are in
+    its base ring.
 
     EXAMPLES::
 
@@ -45,7 +45,7 @@ class BaseElement(IntegralDomainElement):
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: x = K(0)
-            sage: isinstance(x, BaseElement)
+            sage: isinstance(x, BaseElement_base)
             True
             sage: TestSuite(x).run()
 
@@ -81,7 +81,7 @@ class BaseElement(IntegralDomainElement):
             3
 
         """
-        if isinstance(other, BaseElement):
+        if isinstance(other, BaseElement_base):
             return self.parent()(self._x + other._x)
         raise NotImplementedError
 
@@ -98,7 +98,7 @@ class BaseElement(IntegralDomainElement):
             -1
 
         """
-        if isinstance(other, BaseElement):
+        if isinstance(other, BaseElement_base):
             return self.parent()(self._x - other._x)
         raise NotImplementedError
 
@@ -115,7 +115,7 @@ class BaseElement(IntegralDomainElement):
             6
 
         """
-        if isinstance(other, BaseElement):
+        if isinstance(other, BaseElement_base):
             return self.parent()(self._x * other._x)
         raise NotImplementedError
 
@@ -126,13 +126,13 @@ class BaseElement(IntegralDomainElement):
         EXAMPLES::
 
             sage: from completion import *
-            sage: v = pAdicValuation(QQ, 2)
-            sage: K = Completion(QQ, v)
-            sage: K(3) / K(2) # indirect doctest
-            3/2
+            sage: v = pAdicValuation(ZZ, 2)
+            sage: K = Completion(ZZ, v)
+            sage: K(2) / K(3) # indirect doctest
+            2/3
 
         """
-        if isinstance(other, BaseElement):
+        if isinstance(other, BaseElement_base):
             return self.parent()(self._x / other._x)
         raise NotImplementedError
 
@@ -149,7 +149,7 @@ class BaseElement(IntegralDomainElement):
             1
 
         """
-        if isinstance(other, BaseElement):
+        if isinstance(other, BaseElement_base):
             return cmp(self._x, other._x)
         raise NotImplementedError
 
@@ -167,11 +167,11 @@ class BaseElement(IntegralDomainElement):
             -2
 
         """
-        return self.parent()._v(self._x)
+        return self.parent()._base_valuation(self._x)
 
     def reduction(self):
         r"""
-        Return the reduction of this element module the element of positive
+        Return the reduction of this element modulo the elements of positive
         :meth:`valuation`.
 
         EXAMPLES::
@@ -184,4 +184,92 @@ class BaseElement(IntegralDomainElement):
             0
 
         """
-        return self.parent()._v.reduce(self._x)
+        return self.parent()._base_valuation.reduce(self._x)
+
+class BaseElementRing(BaseElement_base):
+    r"""
+    Abstract base class for elements of :class:`CompleteRingDomain` which are
+    in its base ring.
+
+    EXAMPLES::
+
+        sage: from completion import *
+        sage: v = pAdicValuation(ZZ, 2)
+        sage: R = Completion(ZZ, v)
+        sage: x = R(0); x
+        0
+
+    TESTS::
+
+        sage: isinstance(R(0), BaseElementRing)
+        True
+
+    """
+    def _floordiv_(self, other):
+        r"""
+        Return the quotient of ``self`` and ``other``.
+
+        We implement the variation (3) as given in
+        :meth:`pAdicGenericElement._mod_`.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(ZZ, 2)
+            sage: R = Completion(ZZ, v)
+            sage: R(3) // R(2) # indirect doctest
+            1
+
+        """
+        if isinstance(other, BaseElementRing):
+            from sage.rings.all import ZZ
+            other_unit_part = self.parent()(self.parent()._original_valuation.shift(other._x, -other.valuation()))
+            ret = self.parent()._original_valuation.shift((self / other_unit_part)._x, - other.valuation())
+            return self.parent()(ret)
+        raise NotImplementedError
+
+    def _mod_(self, other):
+        r"""
+        Return ``self`` modulus ``other``.
+
+        We implement the variation (3) as given in
+        :meth:`pAdicGenericElement._mod_`.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(ZZ, 2)
+            sage: R = Completion(ZZ, v)
+            sage: R(3) % R(2) # indirect doctest
+            1
+
+        """
+        return self - (self // other) * other
+
+class BaseElementField(BaseElement_base, FieldElement):
+    r"""
+    Abstract base class for elements of :class:`CompleteRingField` which are
+    in its base ring.
+
+    EXAMPLES::
+
+        sage: from completion import *
+        sage: v = pAdicValuation(ZZ, 2)
+        sage: R = Completion(ZZ, v)
+        sage: R(0)
+        0
+
+    """
+    def __init__(self, parent, x):
+        r"""
+        TESTS::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: isinstance(K(0), BaseElementField)
+            True
+
+        """
+        BaseElement_base.__init__(self, parent, x)
+        FieldElement.__init__(self, parent)

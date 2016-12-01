@@ -100,8 +100,8 @@ class MacLaneElement(IntegralDomainElement):
 
         """
         if op == 2:
-            from base_element import BaseElement
-            if isinstance(other, BaseElement):
+            from base_element import BaseElement_base
+            if isinstance(other, BaseElement_base):
                 if (other - self._limit_valuation._approximation.phi()[self._degree]).valuation() < self._precision():
                     return False
                 # we could try to push the approximation indefinitely (but this won't work if other is actually equal)
