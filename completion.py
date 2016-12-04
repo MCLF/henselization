@@ -554,7 +554,7 @@ class Completion_base(CommutativeRing):
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor() # long time
-            (x + (-I - 8) + O(?)) * (x + (5*I - 4) + O(?))
+            (x + (3*I - 4) + O(?)) * (x + (5*I - 4) + O(?))
 
         Another non-trivial example::
 
