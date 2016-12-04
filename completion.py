@@ -506,7 +506,7 @@ class Completion_base(CommutativeRing):
         """
         return 1
 
-    def gen(self, i):
+    def gen(self, i=0):
         r"""
         Return the ``i``-th generator of this ring.
 
@@ -862,7 +862,7 @@ class CompletionExtension_base(Completion_base):
         """
         return 1
 
-    def gen(self, i):
+    def gen(self, i=0):
         r"""
         Return the ``i``-th generator of this ring.
 
