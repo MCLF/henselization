@@ -134,7 +134,7 @@ class MacLaneElement(IntegralDomainElement):
 
         """
         # Let G(x) be the factor that the key polynomials of
-        # self._limit_valuation approximate, and let alpha be a root of G.
+        # self._limit_valuation approximate.
         # Write v_n=[v_1(x)=mu_1, ..., v_n(phi_n)=mu_n] for an
         # approximant of self._limit_valuation.
         v_n = self._limit_valuation._approximation
@@ -147,8 +147,25 @@ class MacLaneElement(IntegralDomainElement):
         # = min v_{n-1}(a_i - b_i) + i mu_{n-1}.
         # Thus v_{n-1}(a_i - b_i) >= mu_n - i mu_{n-1}.
         if v_n._base_valuation.phi() == v_n.domain().gen():
-            # When phi_{n-1}=x, this translates into a bound on the a_i
+            # When phi_{n-1}=x, the bound on a_i-b_i is a bound on the coefficient of G in degree i
             return v_n._mu - self._degree * v_n._base_valuation(v_n._base_valuation.phi())
+        if v_n._base_valuation.phi().degree() == 1:
+            assert v_n._base_valuation.phi().is_monic()
+            # When phi_{n-1}=x+d, we can write
+            # G = sum b_i (x+d)^i = sum b_i sum bin(i,j) x^j d^(i-j)
+            #   = sum x^j sum bin(i,j) b_i d^(i-j)
+            # Since we know a lower bound on v(a_i-b_i), we get a lower bound
+            # on the error of the j-th coefficient we introduce if we replace
+            # b_i in a_i in the expansion of G (i.e., if we go from G to
+            # phi_n.)
+            from sage.rings.all import infinity
+            from sage.all import binomial
+            error = infinity
+            j = self._degree
+            for i in range(j, v_n.phi().degree() + 1):
+                error_ai_bi = v_n._mu - i * v_n._base_valuation(v_n._base_valuation.phi())
+                error = min(error, v_n._base_valuation(binomial(i,j)) + error_ai_bi + (i-j) * v_n._base_valuation(v_n._base_valuation.phi()[0]))
+            return error
             
         # It should be possible to generalize this to other cases, but
         # it has not been done yet.
