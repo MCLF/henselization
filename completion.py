@@ -107,7 +107,7 @@ class ExtensionFactory(UniqueFactory):
         Extension defined by x^2 - 5 of Completion of Rational Field with respect to 5-adic valuation
 
     """
-    def create_key(self, base, polynomial, name):
+    def create_key(self, base, polynomial, name, check=True):
         r"""
         Return a key that uniquely defines this extension.
 
@@ -128,7 +128,7 @@ class ExtensionFactory(UniqueFactory):
             raise ValueError("polynomial must be an element of a univariate polynomial ring over %r but %r is not"%(base, polynomial.parent()))
         if polynomial.is_constant():
             raise ValueError("polynomial must not be constant")
-        if not polynomial.is_irreducible():
+        if check and not polynomial.is_irreducible():
             raise ValueError("polynomial must be irreducible but %r is not"%(polynomial,))
 
         if any(c not in base.base() for c in polynomial.coefficients(sparse=False)):
