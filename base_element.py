@@ -197,6 +197,46 @@ class BaseElement_base(IntegralDomainElement):
         """
         return self._valuation.reduce(self._x)
 
+    def _vector_(self, base=None):
+        r"""
+        Return the coefficients of this element over the power basis this
+        elements parents over ``base``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K(1)._vector_()
+            (1,)
+
+        """
+        if base is None:
+            base = self.parent()
+        if base is self.parent():
+            return (self,)
+        else:
+            return sum((self.parent().base_ring()(c)._vector_(base) for c in list(self._x)), ())
+
+    def matrix(self, base=None):
+        r"""
+        Return the matrix of this element over ``base``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: L.gen().matrix(base=K)
+            [ 0  1]
+            [-1 -1]
+
+        """
+        V,f,g = self.parent().vector_space(base=base)
+        return V.hom([g(f(b)*self) for b in V.basis()]).matrix()
+        
 
 class BaseElement_Ring(BaseElement_base):
     r"""

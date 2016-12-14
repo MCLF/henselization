@@ -21,7 +21,7 @@ from mac_lane_element import MacLaneElement
 import valuation
 from valuation import CompletionValuation
 from completions import CompleteDiscreteValuationRings, CompleteDiscreteValuationFields
-from maps import ConvertMap_generic
+from maps import ConvertMap_generic, CompletionToVectorSpace, VectorSpaceToCompletion, VectorSpaceCompletionIsomorphism
 
 from sage.structure.factory import register_factory_unpickle
 register_factory_unpickle("Completion", Completion)

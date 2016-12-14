@@ -246,6 +246,72 @@ class Completion_base(CommutativeRing):
         """
         return self.base()
 
+    def vector_space(self, base=None):
+        r"""
+        Return a ``base``-vector space isomorphic to this field together with
+        isomorphisms to and from this vector space.
+
+        INPUT:
+
+        - ``base`` -- a field of which this field is a finite extension
+          (default: the field itself)
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: L.vector_space(base=L)
+            (Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+               To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation)
+            sage: L.vector_space(base=K)
+            (Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation
+               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+               To:   Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation)
+
+        """
+        if base is None:
+            base = self
+        basis = self._vector_space_basis(base=base)
+        V = base**len(basis)
+        from sage.all import Hom
+        to_self_parent = Hom(V, self)
+        from maps import VectorSpaceToCompletion, CompletionToVectorSpace
+        to_self = to_self_parent.__make_element_class__(VectorSpaceToCompletion)(to_self_parent, basis)
+        from_self_parent = Hom(self, V)
+        from_self = from_self_parent.__make_element_class__(CompletionToVectorSpace)(from_self_parent, base)
+        return (V, to_self, from_self)
+
+    def _vector_space_basis(self, base):
+        r"""
+        Return a basis of this field as a vector space over ``base``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K._vector_space_basis(K)
+            (1,)
+
+        """
+        if base is None:
+            base = self
+        if base is self:
+            return (self(1),)
+        raise NotImplementedError
+
     def characteristic(self):
         r"""
         Return the characteristic of this ring.
@@ -948,3 +1014,25 @@ class CompletionExtension_Field(CompletionExtension_base, Completion_Field):
 
         """
         super(CompletionExtension_Field, self).__init__(base_ring=base_ring, polynomial=polynomial, category=category)
+
+    def _vector_space_basis(self, base):
+        r"""
+        Return a basis of this field as a vector space over ``base``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: L._vector_space_basis(L)
+            (1,)
+            sage: L._vector_space_basis(K)
+            (1, x)
+
+        """
+        if base is self:
+            return (self.one(),)
+        basis = tuple(self.gen()**i for i in range(self.degree()))
+        return tuple(b*self(p) for b in basis for p in self.base_ring()._vector_space_basis(base))
