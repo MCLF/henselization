@@ -160,7 +160,7 @@ class BaseElement_base(IntegralDomainElement):
         if op == 2: # ==
             if isinstance(other, BaseElement_base):
                 if self._base is other._base and self._valuation is other._valuation:
-                    return  self._x == other._x
+                    return self._x == other._x
         if op == 3: # !=
             return not (self == other)
         raise NotImplementedError
