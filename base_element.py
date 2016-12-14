@@ -238,6 +238,24 @@ class BaseElement_base(IntegralDomainElement):
         """
         V,f,g = self.parent().vector_space(base=base)
         return V.hom([g(f(b)*self) for b in V.basis()]).matrix()
+
+    def approximation(self, precision=None):
+        r"""
+        Return an approximation to this element which is know to differ from
+        the actual element by at most ``precision``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: L.gen().approximation(123)
+            x
+
+        """
+        return self
         
 
 class BaseElement_Ring(BaseElement_base):

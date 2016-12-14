@@ -212,3 +212,25 @@ class MacLaneElement(IntegralDomainElement):
             return self._limit_valuation._approximation.phi()[self._degree].reduction()
         # we could try to push the approximation indefinitely (and it would actually work)
         raise NotImplementedError
+
+    def approximation(self, precision):
+        r"""
+        Return an approximation to this element which is known to differ from
+        the actual by at most ``precision``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: C = Completion(QQ, v)
+            sage: R.<x> = C[]
+            sage: a = (x^2 + 1).factor()[0][0][0]
+            sage: a
+            7 + O(?)
+            sage: a.approximation(precision=10)
+            6139557
+
+        """
+        while self._precision() < precision:
+            self._limit_valuation._improve_approximation()
+        return self.parent()(self._limit_valuation._approximation.phi()[self._degree])
