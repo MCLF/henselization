@@ -620,7 +620,7 @@ class Completion_base(CommutativeRing):
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor() # long time
-            (x + (3*I - 4) + O(?)) * (x + (5*I - 4) + O(?))
+            (x + (3*I + 2) + O(?)) * (x + 3*I + O(?))
 
         Another non-trivial example::
 
@@ -629,7 +629,7 @@ class Completion_base(CommutativeRing):
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor() # long time
-            (x + 57 + O(?)) * (x + 68 + O(?))
+            (x + 7 + O(?)) * (x + 18 + O(?))
 
         """
         if f.is_constant():
@@ -640,19 +640,12 @@ class Completion_base(CommutativeRing):
             raise NotImplementedError("recombining the factorization of the squarefree decomposition")
 
         from sage.structure.factorization import Factorization
-        approximants = self.valuation().mac_lane_approximants(f)
+        approximants = self.valuation().mac_lane_approximants(f, require_maximal_degree=True)
         if len(approximants) == 1:
             return Factorization([(f, 1)], sort=False)
         approximants = sum([approximant.mac_lane_step(f) for approximant in approximants], [])
         factors = []
         for approximant in approximants:
-            # we only need to perform a Mac Lane step when there is ramification
-            # introduced in the last step (to get the degrees right), anyway, it
-            # does not hurt to do another step
-            approximant = approximant.mac_lane_step(f)
-            assert len(approximant)==1
-            approximant = approximant[0]
-
             from sage.rings.all import infinity
             if approximant(approximant.phi()) == infinity:
                 factors.append(approximant.phi())
