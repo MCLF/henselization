@@ -159,8 +159,13 @@ class BaseElement_base(IntegralDomainElement):
         """
         if op == 2: # ==
             if isinstance(other, BaseElement_base):
-                if self._base is other._base and self._valuation is other._valuation:
-                    return self._x == other._x
+                from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
+                if (self._base is other._base or
+                    # polynomial quotient rings are not unique parents yet so
+                    # we need to work around the failing "is"
+                    (is_PolynomialQuotientRing(self._base) and is_PolynomialQuotientRing(other._base) and self._base == other._base)):
+                    if self._valuation is other._valuation:
+                        return self._x == other._x
         if op == 3: # !=
             return not (self == other)
         raise NotImplementedError
