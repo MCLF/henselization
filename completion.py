@@ -866,12 +866,41 @@ class CompletionExtension_base(Completion_base):
         self._polynomial = polynomial
         self._name = polynomial.variable_name()
 
-        coefficient_ring = base_ring._base_fraction_field
-        base_extension_polynomial = polynomial.change_ring(coefficient_ring)
-        base_extension = base_ring.base().extension(base_extension_polynomial, names=(self._name,))
+        coefficient_ring = base_ring._base
+        base_extension_polynomial = polynomial.map_coefficients(coefficient_ring, coefficient_ring)
+        from sage.rings.all import QQ
+        if base_ring.base() is QQ:
+            base_extension = base_ring.base().extension(base_extension_polynomial, names=(self._name,))
+        else:
+            base_extension = base_extension_polynomial.parent().quo(base_extension_polynomial)
+            from sage.categories.all import Fields
+            if base_extension in Fields():
+                # trigger refinement of category of base_extension
+                pass
         base_extension_valuation = base_ring._base_valuation.extension(base_extension)
 
         super(CompletionExtension_base, self).__init__(base=base_extension, base_valuation=base_extension_valuation, category=category or base_ring.category())
+
+    def degree(self):
+        r"""
+        Return the degree of this extension over its base.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: L.degree()
+            2
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 + y + L.gen())
+            sage: M.degree()
+            2
+
+        """
+        return self._polynomial.degree()
 
     def base_ring(self):
         r"""
