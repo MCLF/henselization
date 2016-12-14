@@ -980,7 +980,7 @@ class CompletionExtension_base(Completion_base):
 
         """
         if i == 0:
-            return self.base().gen(0)
+            return self(self.base().gen(0))
         raise ValueError("ring has only one generator")
         
 
