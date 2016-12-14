@@ -22,6 +22,7 @@ if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__mai
     sys.path.append(os.path.dirname(os.getcwd()))
 
 from sage.structure.element import Element, FieldElement, IntegralDomainElement, coerce_binop
+from sage.misc.cachefunc import cached_method
 
 class BaseElement_base(IntegralDomainElement):
     r"""
@@ -164,6 +165,7 @@ class BaseElement_base(IntegralDomainElement):
             return not (self == other)
         raise NotImplementedError
 
+    @cached_method
     def valuation(self):
         r"""
         Return the valuation of this element.
