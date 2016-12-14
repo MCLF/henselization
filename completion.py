@@ -199,6 +199,7 @@ class Completion_base(CommutativeRing):
         # fractions.
         self._base_fraction_field = self.base().fraction_field()
         from sage.rings.polynomial.polynomial_ring import is_PolynomialRing
+        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
         if is_PolynomialRing(base) and base.ngens() == 1:
             # For polynomial rings, the support for valuations on function
             # fields is better than the support for naive fraction fields of
@@ -206,6 +207,15 @@ class Completion_base(CommutativeRing):
             # function fields.
             from sage.rings.all import FunctionField
             self._base_fraction_field = FunctionField(base.base().fraction_field(), names=(base.variable_name(),))
+        elif is_PolynomialQuotientRing(base) and base.ngens() == 1:
+            # We could rewrite quotient rings to field extensions here.
+            # However, they often have sever performance penalties (e.g. in the
+            # case of number fields where the construction of a relative number
+            # field can take a long time because it falls back on the
+            # construction of the absolute number field.)
+            # We therefore only rewrite the base field but keep the quotient.
+            if base.base_ring().fraction_field() is not base.base_ring():
+                self._base_fraction_field = base.base().change_ring(base.base_ring().fraction_field()).quo(base.modulus())
         self._base_fraction_field_valuation = self._base_valuation.extension(self._base_fraction_field)
 
         # monkey patch the broken _gcd_univariate_polynomial from UniqueFactorizationDomains
