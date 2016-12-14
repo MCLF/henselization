@@ -41,7 +41,7 @@ class MacLaneElement(IntegralDomainElement):
     key polynomials::
 
         sage: F
-        (x + 7 + O(?)) * (x + 18 + O(?))
+        (x + 2 + O(?)) * (x + 3 + O(?))
 
     """
     def __init__(self, parent, limit_valuation, degree):
@@ -74,7 +74,7 @@ class MacLaneElement(IntegralDomainElement):
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: (x^2 + 1).factor() # indirect doctest
-            (x + 7 + O(?)) * (x + 18 + O(?))
+            (x + 2 + O(?)) * (x + 3 + O(?))
 
         """
         approximation = repr(self._limit_valuation._initial_approximation.phi()[self._degree])
@@ -130,7 +130,7 @@ class MacLaneElement(IntegralDomainElement):
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a._precision()
-            2
+            1
 
         """
         # Let G(x) be the factor that the key polynomials of
@@ -226,7 +226,7 @@ class MacLaneElement(IntegralDomainElement):
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a
-            7 + O(?)
+            2 + O(?)
             sage: a.approximation(precision=10)
             6139557
 

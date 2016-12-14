@@ -639,7 +639,7 @@ class Completion_base(CommutativeRing):
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor() # long time
-            (x + 7 + O(?)) * (x + 18 + O(?))
+            (x + 2 + O(?)) * (x + 3 + O(?))
 
         """
         if f.is_constant():
@@ -653,7 +653,6 @@ class Completion_base(CommutativeRing):
         approximants = self.valuation().mac_lane_approximants(f, require_maximal_degree=True)
         if len(approximants) == 1:
             return Factorization([(f, 1)], sort=False)
-        approximants = sum([approximant.mac_lane_step(f) for approximant in approximants], [])
         factors = []
         for approximant in approximants:
             from sage.rings.all import infinity
