@@ -155,7 +155,7 @@ class ExtensionFactory(UniqueFactory):
         base, polynomial = key
 
         from sage.categories.all import Fields, IntegralDomains
-        if base in Fields():
+        if base.valuation().value_semigroup().is_group():
             return CompletionExtension_Field(base, polynomial)
         else:
             return CompletionExtension_Ring(base, polynomial)
