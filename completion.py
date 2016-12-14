@@ -539,7 +539,7 @@ class Completion_base(CommutativeRing):
         """
         return self.valuation().residue_field()
 
-    def extension(self, f, names=None, name=None):
+    def extension(self, f, names=None, name=None, check=True):
         r"""
         Return the algebraic extension of this ring obtained by adjoining a
         root of the irreducible polynomial ``f``.
@@ -561,7 +561,7 @@ class Completion_base(CommutativeRing):
         if name is None:
             name = f.parent().variable_name()
 
-        return Extension(self, f, name)
+        return Extension(self, f, name, check=check)
 
     def ngens(self):
         r"""
