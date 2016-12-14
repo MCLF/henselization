@@ -278,8 +278,13 @@ class BaseElement_Ring(BaseElement_base):
         if isinstance(other, BaseElement_Ring):
             if self._base is other._base and self._valuation is other._valuation:
                 from sage.rings.all import ZZ
-                other_unit_part = self.parent()(self.parent()._base_valuation.shift(other._x, -other.valuation()))
-                ret = self.parent()._base_valuation.shift((self / other_unit_part)._x, - other.valuation())
+                other_unit_part = self.parent()(self.parent()._base_fraction_field_valuation.shift(other._x, -other.valuation()))
+                x = (self / other_unit_part)._x
+                if x in self.parent()._base_valuation.domain():
+                    x = self.parent()._base_valuation.domain()(x)
+                    ret = self.parent()._base_valuation.shift(x, -other.valuation())
+                else:
+                    raise NotImplementedError("shift of element with integral denominator")
                 return self.parent()(ret)
         raise NotImplementedError
 
