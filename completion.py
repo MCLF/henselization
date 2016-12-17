@@ -233,6 +233,28 @@ class Completion_base(CommutativeRing):
             homspace = self.Hom(self._base_fraction_field, category=SetsWithPartialMaps())
             self._base_fraction_field.register_conversion(homspace.__make_element_class__(ConvertMap_generic)(homspace))
 
+    def _gcd_univariate_polynomial(self, f, g):
+        r"""
+        Return the greatest common divisor of ``f`` and ``g``.
+
+        TESTS::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: (x^2 - 1).gcd(x - 1) # indirect doctest
+            x - 1
+
+        """
+        if all(c in self._base_fraction_field for c in f.coefficients(sparse=False)) and all(c in self._base_fraction_field for c in g.coefficients(sparse=False)):
+            # Since the gcd is independent of the base field, we can compute it
+            # over the base field which is usually much faster (using a
+            # multimodular algorithm for example) than the naive implementation
+            return f.change_ring(self._base_fraction_field).gcd(g.change_ring(self._base_fraction_field)).change_ring(self)
+        else:
+            raise NotImplementedError
+    
     def base_ring(self):
         r"""
         Return the base ring of this ring.
