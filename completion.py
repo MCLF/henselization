@@ -232,8 +232,8 @@ class Completion_base(CommutativeRing):
         from maps import ConvertMap_generic
         from sage.categories.all import SetsWithPartialMaps
         # TODO: use weak references
-        homspace = self.Hom(base, category=SetsWithPartialMaps())
-        base.register_conversion(homspace.__make_element_class__(ConvertMap_generic)(homspace))
+        homspace = self.Hom(self._base, category=SetsWithPartialMaps())
+        self._base.register_conversion(homspace.__make_element_class__(ConvertMap_generic)(homspace))
         if self._base is not self._base_fraction_field:
             homspace = self.Hom(self._base_fraction_field, category=SetsWithPartialMaps())
             self._base_fraction_field.register_conversion(homspace.__make_element_class__(ConvertMap_generic)(homspace))
