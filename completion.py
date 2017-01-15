@@ -689,16 +689,27 @@ class Completion_base(CommutativeRing):
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
-            sage: f.factor() # long time
+            sage: f.factor()
             (x + 2 + O(?)) * (x + 3 + O(?))
 
         """
+        from sage.misc.misc import verbose
+        verbose("Factoring %r over %r"%(f, self))
         if f.is_constant():
             raise NotImplementedError("factorization of constant polynomials")
         if not f.is_monic():
             raise NotImplementedError("factorization of non-monic polynomials")
         if not f.is_squarefree():
-            raise NotImplementedError("recombining the factorization of the squarefree decomposition")
+            F = f.squarefree_decomposition()
+            from sage.structure.factorization import Factorization
+            factors = []
+            unit = F.unit()
+            for squarefree_factor,e in F:
+                G = squarefree_factor.factor()
+                unit *= G.unit()**e
+                for factor, ee in G:
+                    factors.append((factor, ee*e))
+            return Factorization(factors, unit=unit)
 
         from sage.structure.factorization import Factorization
         approximants = self.valuation().mac_lane_approximants(f, require_maximal_degree=True)
