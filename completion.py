@@ -25,6 +25,9 @@ from sage.rings.ring import CommutativeRing, Field
 from sage.structure.factory import UniqueFactory
 from sage.misc.lazy_attribute import lazy_attribute
 
+from sage.categories.fields import Fields
+from sage.structure.element import is_Element
+
 class CompletionFactory(UniqueFactory):
     r"""
     Return the completion of ``R`` with respect to ``v``.
@@ -484,17 +487,12 @@ class Completion_base(CommutativeRing):
             True
 
         """
-        from base_element import BaseElement_base
-        if isinstance(x, BaseElement_base):
-            x = x._x
-
         if x in self.base():
             x = self._base_fraction_field(x)
             return self._base_element_class(self, self._base_fraction_field, self._base_fraction_field_valuation, x)
 
         if x in self._base_fraction_field:
             x = self._base_fraction_field(x)
-            from sage.categories.fields import Fields
             if self in Fields() or self._base_fraction_field_valuation(x) >= 0:
                 return self._base_element_class(self, self._base_fraction_field, self._base_fraction_field_valuation, x)
 
