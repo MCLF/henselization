@@ -651,8 +651,8 @@ class Completion_base(CommutativeRing):
             sage: K = Completion(G, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
-            sage: f.factor() # long time
-            (x + (3*I + 2) + O(?)) * (x + 3*I + O(?))
+            sage: f.factor()
+            (x + I) * (x + I + O(?))
 
         Another non-trivial example::
 
