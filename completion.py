@@ -128,13 +128,18 @@ class ExtensionFactory(UniqueFactory):
             raise ValueError("polynomial must be an element of a univariate polynomial ring over %r but %r is not"%(base, polynomial.parent()))
         if polynomial.is_constant():
             raise ValueError("polynomial must not be constant")
-        if check and not polynomial.is_irreducible():
-            raise ValueError("polynomial must be irreducible but %r is not"%(polynomial,))
-
         if any(c not in base.base() for c in polynomial.coefficients(sparse=False)):
             raise NotImplementedError("polynomial must have coefficients in %r"%(base.base(),))
 
         polynomial.change_variable_name(name)
+
+        if check and not polynomial.is_squarefree():
+            # We only check squarefreeness here. Irreducibility is checked
+            # automatically, when the extensions of the valuations on base to
+            # the ring are constructed. (If there is more than one extension,
+            # i.e., the polynomial is not irreducible, extension() is going to
+            # complain.)
+            raise ValueError("polynomial must be irreducible but %r is not"%(polynomial,))
 
         return base, polynomial
 
