@@ -254,6 +254,32 @@ class Completion_base(CommutativeRing):
             return f.change_ring(self._base_fraction_field).gcd(g.change_ring(self._base_fraction_field)).change_ring(self)
         else:
             raise NotImplementedError
+
+    def _xgcd_univariate_polynomial(self, f, g):
+        r"""
+        Return the xgcd of ``f`` and  ``g``.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: x.xgcd(x)
+            (x, 0, 1)
+
+        """
+        if all(c in self._base_fraction_field for c in f.coefficients(sparse=False)) and all(c in self._base_fraction_field for c in g.coefficients(sparse=False)):
+            # Since the gcd is independent of the base field, we can compute it
+            # over the base field which is usually much faster (using a
+            # multimodular algorithm for example) than the naive implementation
+            h,s,t = f.change_ring(self._base_fraction_field).xgcd(g.change_ring(self._base_fraction_field))
+            h = h.change_ring(self)
+            s = s.change_ring(self)
+            t = t.change_ring(self)
+            return h,s,t
+        else:
+            raise NotImplementedError
     
     def base_ring(self):
         r"""
