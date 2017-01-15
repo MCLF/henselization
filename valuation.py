@@ -245,3 +245,80 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
                 return [ring.valuation()]
         return super(Valuation, self).extensions(ring)
 
+    def _relative_size(self, x):
+        r"""
+        Return an estimate on the coefficient size of ``x``.
+
+        The number returned is an estimate on the factor between the number of
+        Bits used by ``x`` and the minimal number of bits used by an element
+        congruent to ``x``.
+
+        This is used by :meth:`simplify` to decide whether simplification of
+        coefficients is going to lead to a significant shrinking of the
+        coefficients of ``x``.
+
+        EXAMPLES:: 
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.valuation()._relative_size(1024)
+            11
+
+        """
+        return self.domain().coerce(x)._relative_size()
+
+    def simplify(self, x, error=None, force=False):
+        r"""
+        Return a simplified version of ``x``.
+
+        Produce an element which differs from ``x`` by an element of
+        valuation strictly greater than the valuation of ``x`` (or strictly
+        greater than ``error`` if set.)
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.valuation().simplify(1025, force=True)
+            1
+
+        """
+        return self.domain().coerce(x).simplify(error, force=force)
+
+    def upper_bound(self, x):
+        r"""
+        Return an upper bound of this valuation at ``x``.
+
+        Use this method to get an approximation of the valuation of ``x``
+        when speed is more important than accuracy.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.valuation().upper_bound(1025)
+            0
+
+        """
+        return self.domain().coerce(x)._upper_bound()
+
+    def lower_bound(self, x):
+        r"""
+        Return an lower bound of this valuation at ``x``.
+
+        Use this method to get an approximation of the valuation of ``x``
+        when speed is more important than accuracy.
+
+        EXAMPLES::
+
+            sage: from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.valuation().lower_bound(1025)
+            0
+
+        """
+        return self.domain().coerce(x)._lower_bound()
