@@ -273,7 +273,7 @@ class Completion_base(CommutativeRing):
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
-            sage: x.xgcd(x)
+            sage: x.xgcd(x) # indirect doctest
             (x, 0, 1)
 
         """
