@@ -681,7 +681,7 @@ class Completion_base(CommutativeRing):
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor()
-            (x + I) * (x + I + O(?))
+            (x + I + O(?)) * (x + I)
 
         Another non-trivial example::
 
