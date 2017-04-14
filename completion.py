@@ -762,7 +762,93 @@ class Completion_base(CommutativeRing):
                 g = g.gcd(h)
         gens = [g]
         return super(Completion_base, self).ideal(gens)
-        
+
+    def _krasner_bound(self, minpoly):
+        r"""
+        Return modulo which valuation ``minpoly`` defines a unique extension.
+
+        More specifically, return a bound for each coefficient such that adding
+        error terms of a *higher* valuation to ``minpoly`` does not change the
+        isomorphism class of the extension obtained by adjoining a root of
+        ``minpoly`` to this ring.
+
+        ALGORITHM:
+
+        Write `f` for the ``minpoly``, and let `\alpha` be a root of `f`.
+        Let `f(x)=\sum a_i x^i` and write `g(x)=\sum b_i x^i` for an
+        irreducible polynomial that is such that the coefficients `b_i` are
+        close to the `a_i`. Let `\beta` be a root of `g`.
+        By Krasner's Lemma `\beta` and `\alpha` generate isomorphic fields if
+        `v(\alpha-\beta) > \max v(\alpha-\alpha')` for `\alpha'\neq\alpha`
+        conjugates of `\alpha`.
+
+        Note that
+        `v(\beta - \alpha) + \sum v(\beta-\alpha')=v(f(\beta))=v(\sum (a_i-b_i)\beta^i)`.
+        The right hand side is bounded from below by the minimum of the
+        `v(a_i-b_i) + v(\beta^i)`.
+
+        Our aim is now to determine from the above term `v(\sum(a_i-b_i)\beta^i)`
+        whether the condition of the Krasner Lemma
+        `v(\alpha-\beta) > \max v(\alpha-\alpha')` holds.
+        It suffices that
+        `v(\alpha-\beta) + \sum v(\alpha'-\beta) > \max v(\alpha-\alpha') + \sum v(\alpha-\alpha')`.
+        because in the sum
+        `v(\alpha-\alpha')\ge \max\{v(\alpha-\beta),v(\beta-\alpha')\}`.
+
+        To compute the right hand side of the the above inequality, consider
+        the polynomial `f(x-\alpha)` which can be written in its Taylor
+        expansion as `f(x-\alpha)=\sum f^{(i)}(\alpha)\frac{x^i}{i!}`.  Note
+        that the slopes of the Newton polygon of `f(x-\alpha)` provide the
+        distances of `\alpha` from its conjugates, i.e., `v(\alpha-\alpha')`.
+
+        To sum this up: we need to choose all the bounds, i.e., the
+        `v(a_i-b_i)` such that the `v(a_i-b_i)+v(\beta^i)` exceed
+        `\max v(\alpha-\alpha') + \sum v(\alpha-\alpha')`.
+
+        INPUT:
+
+        - ``minpoly`` -- a monic irreducible separable polynomial defined over
+          this ring
+
+        """
+        if not minpoly.is_monic():
+            raise ValueError("minpoly must be monic")
+        if minpoly.is_constant():
+            raise ValueError("minpoly must not be constant")
+        if not minpoly.is_separable():
+            raise ValueError("Krasner's Lemma only applies to separable polynomials")
+        # for performance reasons we do not check irreducibility
+        # if not minpoly.is_irreducible():
+        #     raise ValueError("minpoly must be irreducible")
+
+        f = minpoly
+        # determine the coefficients of the Taylor expansion to compute the distances v(alpha-alpha')
+        derivatives = [f]
+        while derivatives[-1]:
+            derivatives.append(derivatives[-1].derivative())
+        # we compute valuations such as v(\alpha) in the formal ring R=K[x]/(f)
+        R_alpha = f.parent().quo(f)
+        R_valuation = self.valuation().extension(R_alpha, assume_irreducible=True)
+        taylor = [d(R_alpha.gen())/ZZ(i).factorial() for i,d in enumerate(derivatives)]
+        valuations = [R_valuation(c) for c in taylor]
+        # the distances v(\alpha-\alpha') are the slopes of the Newton polygon of the Taylor expansion
+        distances = NewtonPolygon(valuations).slopes()
+        assert len(distances) == f.degree()
+
+        # For Krasner's lemma to hold, another polynomial g with root beta must satisfy
+        # v(alpha-beta) + sum v(alpha'-beta) > max v(alpha-alpha') + sum v(alpha-alpha').
+        # The right hand side of this expression is:
+        krasner_bound = max(distances) + sum(distances)
+
+        # First, we need the bounds to be such that the roots of g have the
+        # same valuations as the roots of f, i.e., g needs to have the same
+        # Newton polygon (which must have only one segment)
+        newton_slope = f[0].valuation()/f.degree()
+        newton_bound = [(f.degree() - i)*newton_slope for i in range(f.degree()+1)]
+        # We also need v(a_i-b_i) + v(beta^i) > krasner_bound:
+        coefficient_bound = [krasner_bound - i*f[0].valuation() for i in range(f.degree()+1)]
+        return [max(*b) for b in zip(newton_bound, coefficient_bound)]
+
 
 class Completion_Ring(Completion_base):
     r"""
