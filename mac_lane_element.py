@@ -124,7 +124,17 @@ class MacLaneElement(IntegralDomainElement):
 
         ALGORITHM:
 
-        Lemma 4.5 in [GNP2012].
+        Suppose that `g` is an (exact) factor of the polynomial `G` and let
+        `\phi` be `v_n = [v_0,\dots,v_n(\phi_n)=\mu_n]` be an approximant of
+        the valuation corresponding to `g`. Suppose that `\theta` is a root of
+        `g` and write `\Delta = \phi-g`.
+        To measure the precision of the factors of `\phi`, we are
+        interested in `v_0(\Delta)` where `v_0` denotes the Gauss valuation.
+        We have `v_0(\Delta) > v(\Delta(\theta)) - v(g_{\deg\Delta}(\theta)) =
+        v(\phi(\theta)) - v(\prod \phi_i^{j_i})=\mu_n - \sum j_i \mu_i` where
+        `g_{\deg\Delta}` is the best approximation to `g` of degree
+        `\deg\Delta`, i.e., a monic polynomial with maximal valuation at
+        `\theta`. (cf. Lemma 4.5 in [GNP2012])
 
         REFERENCES:
 
