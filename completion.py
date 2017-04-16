@@ -703,7 +703,7 @@ class Completion_base(CommutativeRing):
                 unit *= G.unit()**e
                 for factor, ee in G:
                     factors.append((factor, ee*e))
-            return Factorization(factors, unit=unit)
+            return Factorization(factors, unit=unit, simplify=False, sort=False)
 
         from sage.structure.factorization import Factorization
         approximants = self.valuation().mac_lane_approximants(f, require_maximal_degree=True)
@@ -724,7 +724,7 @@ class Completion_base(CommutativeRing):
                 coefficients[-1] = self(1)
             factor = f.parent()(coefficients)
             factors.append(factor)
-        return Factorization([(factor, 1) for factor in factors], unit=self.one(), sort=False)
+        return Factorization([(factor, 1) for factor in factors], unit=self.one(), sort=False, simplify=False)
 
     def ideal(self, *args, **kwds):
         r"""
