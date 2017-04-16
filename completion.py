@@ -15,12 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-
-# Fix doctests so they work in standalone mode (when invoked with sage -t, they run within the completion/ directory)
-import sys, os
-if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
-    sys.path.append(os.path.dirname(os.getcwd()))
-
 from sage.rings.ring import CommutativeRing, Field
 from sage.structure.factory import UniqueFactory
 from sage.misc.lazy_attribute import lazy_attribute
@@ -42,7 +36,7 @@ class CompletionFactory(UniqueFactory):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 5)
         sage: Completion(QQ, v)
         Completion of Rational Field with respect to 5-adic valuation
@@ -54,7 +48,7 @@ class CompletionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: Completion(QQ, v) is Completion(QQ, v) # indirect doctest
             True
@@ -77,7 +71,7 @@ class CompletionFactory(UniqueFactory):
 
         TESTS::
             
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: Completion(QQ, v) # indirect doctest
             Completion of Rational Field with respect to 5-adic valuation
@@ -102,7 +96,7 @@ class ExtensionFactory(UniqueFactory):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 5)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
@@ -116,7 +110,7 @@ class ExtensionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -152,7 +146,7 @@ class ExtensionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -178,7 +172,7 @@ class Completion_base(CommutativeRing):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(ZZ, 2)
         sage: Completion(ZZ, v)
         Completion of Integer Ring with respect to 2-adic valuation
@@ -188,7 +182,7 @@ class Completion_base(CommutativeRing):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: K.<x> = FunctionField(QQ)
             sage: v = FunctionFieldValuation(K, x)
             sage: C = Completion(K, v)
@@ -247,7 +241,7 @@ class Completion_base(CommutativeRing):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -269,7 +263,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -303,7 +297,7 @@ class Completion_base(CommutativeRing):
         For completions that are not algebraical extensions of another
         completion, these two concepts coincide::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.base_ring() is K.base() is QQ
@@ -324,7 +318,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -365,7 +359,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K._vector_space_basis(K)
@@ -384,7 +378,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.characteristic()
@@ -399,7 +393,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.is_finite()
@@ -416,7 +410,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.uniformizer()
@@ -431,7 +425,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.has_coerce_map_from(QQ) # indirect doctest
@@ -464,7 +458,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.an_element()
@@ -479,7 +473,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: x = K(0) # indirect doctest
@@ -513,7 +507,7 @@ class Completion_base(CommutativeRing):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -532,7 +526,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: Completion(QQ, v)
             Completion of Rational Field with respect to 2-adic valuation
@@ -546,7 +540,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: len(K.some_elements())
@@ -564,7 +558,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.valuation()
@@ -581,7 +575,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.residue_field()
@@ -597,7 +591,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -622,7 +616,7 @@ class Completion_base(CommutativeRing):
 
         This ring is generated by its one element::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.ngens()
@@ -641,7 +635,7 @@ class Completion_base(CommutativeRing):
 
         This ring is generated by its one element::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.gen(0)
@@ -662,7 +656,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -741,7 +735,7 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: R = Completion(ZZ, v)
             sage: R.ideal(1, 1)
@@ -815,8 +809,9 @@ class Completion_base(CommutativeRing):
             raise ValueError("minpoly must be monic")
         if minpoly.is_constant():
             raise ValueError("minpoly must not be constant")
-        if not minpoly.is_separable():
-            raise ValueError("Krasner's Lemma only applies to separable polynomials")
+        if self.characteristic() != 0:
+            if minpoly.gcd(minpoly.derivative()):
+                raise ValueError("Krasner's Lemma only applies to separable polynomials")
         # for performance reasons we do not check irreducibility
         # if not minpoly.is_irreducible():
         #     raise ValueError("minpoly must be irreducible")
@@ -828,7 +823,7 @@ class Completion_base(CommutativeRing):
             derivatives.append(derivatives[-1].derivative())
         # we compute valuations such as v(\alpha) in the formal ring R=K[x]/(f)
         R_alpha = f.parent().quo(f)
-        R_valuation = self.valuation().extension(R_alpha, assume_irreducible=True)
+        R_valuation = self.valuation().extension(R_alpha)
         taylor = [d(R_alpha.gen())/ZZ(i).factorial() for i,d in enumerate(derivatives)]
         valuations = [R_valuation(c) for c in taylor]
         # the distances v(\alpha-\alpha') are the slopes of the Newton polygon of the Taylor expansion
@@ -856,7 +851,7 @@ class Completion_Ring(Completion_base):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(ZZ, 2)
         sage: Completion(ZZ, v)
         Completion of Integer Ring with respect to 2-adic valuation
@@ -866,7 +861,7 @@ class Completion_Ring(Completion_base):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: C = Completion(ZZ, v)
             sage: isinstance(C, Completion_Ring)
@@ -892,7 +887,7 @@ class Completion_Ring(Completion_base):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: R = Completion(ZZ, v)
             sage: x = R(0) # indirect doctest
@@ -909,7 +904,7 @@ class Completion_Ring(Completion_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: R = Completion(ZZ, v)
             sage: R.is_field()
@@ -924,7 +919,7 @@ class Completion_Ring(Completion_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: R = Completion(ZZ, v)
             sage: R.fraction_field()
@@ -940,7 +935,7 @@ class Completion_Field(Completion_base, Field):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: Completion(QQ, v)
         Completion of Rational Field with respect to 2-adic valuation
@@ -950,7 +945,7 @@ class Completion_Field(Completion_base, Field):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: isinstance(K, Completion_Field)
@@ -971,7 +966,7 @@ class Completion_Field(Completion_base, Field):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: x = K(0) # indirect doctest
@@ -990,7 +985,7 @@ class CompletionExtension_base(Completion_base):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
@@ -1002,7 +997,7 @@ class CompletionExtension_base(Completion_base):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -1037,7 +1032,7 @@ class CompletionExtension_base(Completion_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -1059,7 +1054,7 @@ class CompletionExtension_base(Completion_base):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -1076,7 +1071,7 @@ class CompletionExtension_base(Completion_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -1094,7 +1089,7 @@ class CompletionExtension_base(Completion_base):
 
         This extension is generated by a root of its defining polynomial::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<a> = K[]
@@ -1113,7 +1108,7 @@ class CompletionExtension_base(Completion_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<a> = K[]
@@ -1136,7 +1131,7 @@ class CompletionExtension_base(Completion_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<a> = K[]
@@ -1192,7 +1187,7 @@ class CompletionExtension_Ring(CompletionExtension_base, Completion_Ring):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(ZZ, 2)
         sage: S = Completion(ZZ, v)
         sage: R.<x> = S[]
@@ -1204,7 +1199,7 @@ class CompletionExtension_Ring(CompletionExtension_base, Completion_Ring):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: S = Completion(ZZ, v)
             sage: R.<x> = S[]
@@ -1224,7 +1219,7 @@ class CompletionExtension_Field(CompletionExtension_base, Completion_Field):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
@@ -1236,7 +1231,7 @@ class CompletionExtension_Field(CompletionExtension_base, Completion_Field):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -1254,7 +1249,7 @@ class CompletionExtension_Field(CompletionExtension_base, Completion_Field):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]

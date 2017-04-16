@@ -15,12 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-
-# Fix doctests so they work in standalone mode (when invoked with sage -t, they run within the completion/ directory)
-import sys, os
-if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
-    sys.path.append(os.path.dirname(os.getcwd()))
-
 from sage.structure.element import Element, FieldElement, IntegralDomainElement, coerce_binop
 from sage.misc.cachefunc import cached_method
 
@@ -31,7 +25,7 @@ class BaseElement_base(IntegralDomainElement):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: x = K(0); x
@@ -42,7 +36,7 @@ class BaseElement_base(IntegralDomainElement):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: x = K(0)
@@ -62,7 +56,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1) # indirect doctest
@@ -77,7 +71,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1) + K(2) # indirect doctest
@@ -95,7 +89,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1) - K(2) # indirect doctest
@@ -113,7 +107,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(3) * K(2) # indirect doctest
@@ -131,7 +125,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: K = Completion(ZZ, v)
             sage: K(2) / K(3) # indirect doctest
@@ -150,7 +144,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(3) == K(2) # indirect doctest
@@ -177,7 +171,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: x = K(1/4)
@@ -194,7 +188,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: x = K(4)
@@ -211,7 +205,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1)._vector_()
@@ -231,7 +225,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -251,7 +245,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -276,7 +270,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES:: 
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1024)._relative_size()
@@ -295,7 +289,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1025).simplify(force=True)
@@ -313,7 +307,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1025)._upper_bound()
@@ -331,7 +325,7 @@ class BaseElement_base(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K(1025)._lower_bound()
@@ -348,7 +342,7 @@ class BaseElement_Ring(BaseElement_base):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(ZZ, 2)
         sage: R = Completion(ZZ, v)
         sage: x = R(0); x
@@ -369,7 +363,7 @@ class BaseElement_Ring(BaseElement_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: R = Completion(ZZ, v)
             sage: R(3) // R(2) # indirect doctest
@@ -398,7 +392,7 @@ class BaseElement_Ring(BaseElement_base):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: R = Completion(ZZ, v)
             sage: R(3) % R(2) # indirect doctest
@@ -415,7 +409,7 @@ class BaseElement_Field(BaseElement_base, FieldElement):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(ZZ, 2)
         sage: R = Completion(ZZ, v)
         sage: R(0)
@@ -426,7 +420,7 @@ class BaseElement_Field(BaseElement_base, FieldElement):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: isinstance(K(0), BaseElement_Field)

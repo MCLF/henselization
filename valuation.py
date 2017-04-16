@@ -15,12 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-
-# Fix doctests so they work in standalone mode (when invoked with sage -t, they run within the completion/ directory)
-import sys, os
-if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
-    sys.path.append(os.path.dirname(os.getcwd()))
-
 from sage.structure.factory import UniqueFactory
 
 import mac_lane.valuation
@@ -34,7 +28,7 @@ class CompletionValuationFactory(UniqueFactory):
     Do not call this factory directly, but call the ``valuation`` method of a
     completion::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 5)
         sage: K = Completion(QQ, v)
         sage: K.valuation() # indirect doctest
@@ -47,7 +41,7 @@ class CompletionValuationFactory(UniqueFactory):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: K.valuation() is K.valuation() # indirect doctest
@@ -62,7 +56,7 @@ class CompletionValuationFactory(UniqueFactory):
 
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: K.valuation() # indirect doctest
@@ -86,7 +80,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 5)
         sage: K = Completion(QQ, v)
         sage: K.valuation()
@@ -97,7 +91,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: v = K.valuation()
@@ -115,7 +109,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: K.valuation() # indirect doctest
@@ -130,7 +124,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
@@ -146,7 +140,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
@@ -162,7 +156,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
@@ -179,7 +173,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
@@ -196,7 +190,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
@@ -213,7 +207,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 5)
             sage: R = Completion(ZZ, v)
             sage: w = R.valuation()
@@ -229,7 +223,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
@@ -243,7 +237,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
             from completion import Completion_base
             if isinstance(ring, Completion_base):
                 return [ring.valuation()]
-        return super(Valuation, self).extensions(ring)
+        return super(CompletionValuation, self).extensions(ring)
 
     def _relative_size(self, x):
         r"""
@@ -259,7 +253,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES:: 
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.valuation()._relative_size(1024)
@@ -278,7 +272,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.valuation().simplify(1025, force=True)
@@ -296,7 +290,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.valuation().upper_bound(1025)
@@ -314,7 +308,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: K.valuation().lower_bound(1025)

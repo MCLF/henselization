@@ -15,12 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-
-# Fix doctests so they work in standalone mode (when invoked with sage -t, they run within the completion/ directory)
-import sys, os
-if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
-    sys.path.append(os.path.dirname(os.getcwd()))
-
 from sage.categories.morphism import Morphism
 from sage.structure.unique_representation import UniqueRepresentation
 
@@ -31,7 +25,7 @@ class ConvertMap_generic(Morphism):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 5)
         sage: K = Completion(QQ, v)
         sage: QQ.convert_map_from(K)
@@ -44,7 +38,7 @@ class ConvertMap_generic(Morphism):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: f = QQ.convert_map_from(K)
@@ -60,7 +54,7 @@ class ConvertMap_generic(Morphism):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: K = Completion(QQ, v)
             sage: f = QQ.convert_map_from(K)
@@ -79,7 +73,7 @@ class ExtensionCoercion_generic(ConvertMap_generic):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
@@ -96,7 +90,7 @@ class ExtensionCoercion_generic(ConvertMap_generic):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(ZZ, 2)
             sage: S = Completion(ZZ, v)
             sage: R.<x> = S[]
@@ -113,7 +107,7 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
     TESTS::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
@@ -129,7 +123,7 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -148,7 +142,7 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -166,7 +160,7 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -184,7 +178,7 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -203,7 +197,7 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
@@ -230,7 +224,7 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -251,7 +245,7 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -270,7 +264,7 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
@@ -297,7 +291,7 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
@@ -318,7 +312,7 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]

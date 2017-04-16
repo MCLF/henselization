@@ -19,12 +19,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-
-# Fix doctests so they work in standalone mode (when invoked with sage -t, they run within the completion/ directory)
-import sys, os
-if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
-    sys.path.append(os.path.dirname(os.getcwd()))
-
 from sage.misc.abstract_method import abstract_method
 from sage.categories.category_singleton import Category_singleton
 from sage.categories.category_with_axiom import CategoryWithAxiom, all_axioms
@@ -41,7 +35,7 @@ def is_squarefree(self):
     parent has no repeated factors. For field elements, this is therefore
     trivial since there are no prime elements::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: x = K(4)

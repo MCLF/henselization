@@ -15,12 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-
-# Fix doctests so they work in standalone mode (when invoked with sage -t, they run within the completion/ directory)
-import sys, os
-if hasattr(sys.modules['__main__'], 'DC') and 'standalone' in sys.modules['__main__'].DC.options.optional:
-    sys.path.append(os.path.dirname(os.getcwd()))
-
 from sage.structure.element import IntegralDomainElement
 
 class MacLaneElement(IntegralDomainElement):
@@ -31,7 +25,7 @@ class MacLaneElement(IntegralDomainElement):
 
     EXAMPLES::
 
-        sage: from completion import *
+        sage: sys.path.append(os.getcwd()); from completion import *
         sage: v = pAdicValuation(QQ, 5)
         sage: C = Completion(QQ, v)
         sage: R.<x> = C[]
@@ -48,7 +42,7 @@ class MacLaneElement(IntegralDomainElement):
         r"""
         TESTS::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
@@ -69,7 +63,7 @@ class MacLaneElement(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
@@ -89,7 +83,7 @@ class MacLaneElement(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
@@ -144,7 +138,7 @@ class MacLaneElement(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
@@ -173,7 +167,7 @@ class MacLaneElement(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
@@ -195,7 +189,7 @@ class MacLaneElement(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
@@ -216,7 +210,7 @@ class MacLaneElement(IntegralDomainElement):
 
         EXAMPLES::
 
-            sage: from completion import *
+            sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
