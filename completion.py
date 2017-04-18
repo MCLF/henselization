@@ -128,7 +128,7 @@ class ExtensionFactory(UniqueFactory):
         if any(c not in base.base() for c in polynomial.coefficients(sparse=False)):
             raise NotImplementedError("polynomial must have coefficients in %r"%(base.base(),))
 
-        polynomial.change_variable_name(name)
+        polynomial = polynomial.change_variable_name(name)
 
         if check and not polynomial.is_squarefree():
             # We only check squarefreeness here. Irreducibility is checked
@@ -1003,8 +1003,12 @@ class CompletionExtension_base(Completion_base):
         sage: v = pAdicValuation(QQ, 2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
-        sage: K.extension(x^2 + x + 1)
-        Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+        sage: L.<a> = K.extension(x^2 + x + 1); L
+        Extension defined by a^2 + a + 1 of Completion of Rational Field with respect to 2-adic valuation
+
+        sage: R.<x> = L[]
+        sage: M.<b> = L.extension(x^12 - 4*x^11 + 2*x^10 + 13*x^8 - 16*x^7 - 36*x^6 + 168*x^5 - 209*x^4 + 52*x^3 + 26*x^2 + 8*x - 13); M
+        Extension defined by b^12 - 4*b^11 + 2*b^10 + 13*b^8 - 16*b^7 - 36*b^6 + 168*b^5 - 209*b^4 + 52*b^3 + 26*b^2 + 8*b - 13 of Extension defined by a^2 + a + 1 of Completion of Rational Field with respect to 2-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, category=None):
@@ -1024,6 +1028,7 @@ class CompletionExtension_base(Completion_base):
         self._base_ring = base_ring
         self._polynomial = polynomial
         self._name = polynomial.variable_name()
+        self._assign_names((self._name,))
 
         coefficient_ring = base_ring._base
         base_extension_polynomial = polynomial.map_coefficients(coefficient_ring, coefficient_ring)
