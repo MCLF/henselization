@@ -1166,11 +1166,6 @@ class CompletionExtension_base(Completion_base):
             return self._base, self._base_valuation
         else:
             return self._eisenstein_model(base=base)
-        if self.base_ring().base() is self.base_ring().base_ring():
-            return self._base, self._base_valuation
-        else:
-
-            return self._simple_eisenstein_model()
 
     def _eisenstein_model(self, base=None):
         r"""
