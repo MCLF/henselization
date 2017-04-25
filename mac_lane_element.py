@@ -81,15 +81,34 @@ class MacLaneElement(IntegralDomainElement):
         Return whether this element relates to ``other`` with respect to
         ``op``.
 
-        EXAMPLES::
+        EXAMPLES:
+
+        We can sometimes compare elements that came from the same factorization::
 
             sage: sys.path.append(os.getcwd()); from completion import *
             sage: v = pAdicValuation(QQ, 5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
-            sage: a = (x^2 + 1).factor()[0][0][0]
-            sage: b = (x^2 + 1).factor()[0][0][0]
-            sage: a == b
+            sage: F = (x^2 + 1).factor()
+            sage: f = F[0][0] # x + 2 + …
+            sage: g = F[1][0] # x - 2 - …
+            sage: f[0] == g[0]
+            False
+            sage: f[0] == f[0]
+            True
+
+        In some cases, we can also compare to exact elements::
+
+            sage: G = GaussianIntegers().fraction_field()
+            sage: v = pAdicValuation(G, 2)
+            sage: K = Completion(G, v)
+            sage: R.<x> = K[]
+            sage: F = (x^2 + 1).factor()
+            sage: f = F[0][0] # x + I
+            sage: g = F[1][0] # x - I
+            sage: f[0] == g[0]
+            False
+            sage: f[0] == f[0]
             True
 
         """
@@ -98,14 +117,35 @@ class MacLaneElement(IntegralDomainElement):
             if isinstance(other, BaseElement_base):
                 if (other - self._limit_valuation._approximation.phi()[self._degree]).valuation() < self._precision():
                     return False
+                if self._degree == 0:
+                    phi = self._limit_valuation._approximation.phi()
+                    if phi.degree() == 1:
+                        # other is the constant of the defining polynomial of this
+                        # element if x + other has infinite valuation
+                        x = phi.parent().gen()
+                        from sage.rings.all import infinity
+                        return self._limit_valuation(x + other) is infinity
                 # we could try to push the approximation indefinitely (but this won't work if other is actually equal)
                 raise NotImplementedError("comparison to base elements")
             if isinstance(other, MacLaneElement):
                 if self._limit_valuation.parent() is other._limit_valuation.parent():
-                    # we currently only handle the trivial case here, i.e., the
-                    # elements are indistinguishable
-                    return (self._limit_valuation == other._limit_valuation
-                            and self._degree == other._degree)
+                    if self._limit_valuation._G == other._limit_valuation._G:
+                        if self._limit_valuation == other._limit_valuation:
+                            if self._degree == other._degree:
+                                # the same coefficient of the same factor
+                                return True
+                            else:
+                                raise NotImplementedError("comparison of coefficients of an approximate factor")
+                        else:
+                            if self._degree == other._degree and self._limit_valuation._approximation.phi().degree() == other._limit_valuation._approximation.phi().degree() == 1:
+                                # the constant coefficients of two linear
+                                # factors of the same polynomial can not be
+                                # identical if their factors are different
+                                return False
+                            else:
+                                raise NotImplementedError("comparison of coefficients of different factors")
+                    else:
+                        raise NotImplementedError("comparison of Mac Lane elements that come from different factorizations")
                 raise NotImplementedError("comparison of Mac Lane elements that come from valuations on different rings")
         elif op == 3:
             return not (self == other)

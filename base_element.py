@@ -152,6 +152,9 @@ class BaseElement_base(IntegralDomainElement):
 
         """
         if op == 2: # ==
+            from mac_lane_element import MacLaneElement
+            if isinstance(other, MacLaneElement):
+                return other._richcmp_(self, op)
             if isinstance(other, BaseElement_base):
                 from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
                 if (self._base is other._base or

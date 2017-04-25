@@ -670,12 +670,17 @@ class Completion_base(CommutativeRing):
         A non-trivial example::
 
             sage: G = GaussianIntegers().fraction_field()
+            sage: I = G.gen()
             sage: v = pAdicValuation(G, 2)
             sage: K = Completion(G, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
-            sage: f.factor()
-            (x + I + O(?)) * (x + I)
+            sage: F = f.factor(); F # random output
+            (x + 3*I + O(?)) * (x + I)
+            sage: (x + I, 1) in F
+            True
+            sage: (x - I, 1) in F
+            True
 
         Another non-trivial example::
 
@@ -706,7 +711,9 @@ class Completion_base(CommutativeRing):
             return Factorization(factors, unit=unit, simplify=False, sort=False)
 
         from sage.structure.factorization import Factorization
-        approximants = self.valuation().mac_lane_approximants(f, require_maximal_degree=True)
+        # We have to require_incomparability so we can unique improve the
+        # resulting approximations to factors
+        approximants = self.valuation().mac_lane_approximants(f, require_incomparability=True)
         if len(approximants) == 1:
             return Factorization([(f, 1)], sort=False)
         factors = []
