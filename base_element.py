@@ -8,7 +8,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2016 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2016-2017 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
@@ -203,8 +203,8 @@ class BaseElement_base(IntegralDomainElement):
 
     def _vector_(self, base=None):
         r"""
-        Return the coefficients of this element over the power basis this
-        elements parents over ``base``.
+        Return the coefficients of this element when written as a linear
+        combination over a basis of its parent over ``base``.
 
         EXAMPLES::
 
@@ -214,13 +214,30 @@ class BaseElement_base(IntegralDomainElement):
             sage: K(1)._vector_()
             (1,)
 
+        In a simple extension, the coefficients are taken with respect to the
+        internal number field representation of the elements::
+
+            sage: R.<x> = K[]
+            sage: L.<x> = K.extension(x^2 - 2)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 - x)
+            sage: y = M(M.base().gen())
+            sage: y._vector_(K)
+            (0, 1, 0, 0)
+            sage: (y^4)._vector_(K)
+            (-62, 0, 0, 0)
+
         """
         if base is None:
             base = self.parent()
         if base is self.parent():
             return (self,)
-        else:
+        elif self.parent().base().base_ring() is base.base():
+            return tuple(self._x)
+        elif self.parent().base_ring().base() is self.parent().base().base_ring():
             return sum((self.parent().base_ring()(c)._vector_(base) for c in list(self._x)), ())
+        else:
+            raise NotImplementedError("Vector space representation of an element of %s over %s"%(self.parent(), base))
 
     def matrix(self, base=None):
         r"""
