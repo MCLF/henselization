@@ -879,7 +879,7 @@ class Completion_base(CommutativeRing):
         from sage.structure.factorization import Factorization
         # We have to require_incomparability so we can unique improve the
         # resulting approximations to factors
-        approximants = self.valuation().mac_lane_approximants(f, require_incomparability=True)
+        approximants = self.valuation().mac_lane_approximants(f, require_incomparability=True, require_maximal_degree=True)
         if len(approximants) == 1:
             return Factorization([(f, 1)], sort=False)
         factors = []
