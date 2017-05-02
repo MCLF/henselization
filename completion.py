@@ -377,6 +377,27 @@ class Completion_base(CommutativeRing):
             homspace = self.Hom(self._base_fraction_field, category=SetsWithPartialMaps())
             self._base_fraction_field.register_conversion(homspace.__make_element_class__(ConvertMap_generic)(homspace))
 
+    def _is_squarefree_univariate_polynomial(self, f):
+        r"""
+        Return whether ``f`` is squarefree.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: F = (x^2 + 4).is_squarefree()
+            sage: F[0][0].is_squarefree() # indirect doctest
+            True
+            sage: F[1][0].is_squarefree()
+            True
+
+        """
+        if self._is_monic_mac_lane_polynomial(f):
+            return True
+        return f._is_squarefree_generic()
+
     def _gcd_univariate_polynomial(self, f, g):
         r"""
         Return the greatest common divisor of ``f`` and ``g``.
