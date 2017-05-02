@@ -1032,6 +1032,36 @@ class Completion_base(CommutativeRing):
         coefficient_bound = [krasner_bound - i*f[0].valuation()/f.degree() for i in range(f.degree()+1)]
         return [max(*b) for b in zip(newton_bound, coefficient_bound)]
 
+    def _is_monic_mac_lane_polynomial(self, polynomial):
+        r"""
+        Return whether ``polynomial`` comes from an approximate factorization
+        of a monic polynomial over this ring.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: F = (x^2 + 4).factor()
+            sage: K._is_monic_mac_lane_polynomial(F[0][0])
+            True
+            sage: K._is_monic_mac_lane_polynomial(x)
+            False
+
+        """
+        if polynomial.base_ring() is not self:
+            return False
+        if polynomial.degree() < 1:
+            return False
+        if not polynomial.is_monic():
+            return False
+        from mac_lane_element import MacLaneElement
+        return polynomial.is_monic() and all([isinstance(c, MacLaneElement)
+                                              and c._degree == d
+                                              and c._limit_valuation == polynomial[0]._limit_valuation
+                                              for (d,c) in enumerate(polynomial.coefficients(sparse=False)[:-1])])
+
 
 class Completion_Ring(Completion_base):
     r"""
