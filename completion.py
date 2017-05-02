@@ -8,7 +8,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2016 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2016-2017 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
@@ -125,8 +125,6 @@ class ExtensionFactory(UniqueFactory):
             raise ValueError("polynomial must be an element of a univariate polynomial ring over %r but %r is not"%(base, polynomial.parent()))
         if polynomial.is_constant():
             raise ValueError("polynomial must not be constant")
-        if any(c not in base.base() for c in polynomial.coefficients(sparse=False)):
-            raise NotImplementedError("polynomial must have coefficients in %r"%(base.base(),))
 
         polynomial = polynomial.change_variable_name(name)
 
@@ -155,6 +153,56 @@ class ExtensionFactory(UniqueFactory):
 
         """
         base, polynomial = key
+
+    def _create_extension(self, base, polynomial, model = None, model_valuation = None):
+        r"""
+        Return the extension of ``base`` by adjoining a root of ``polynomial``.
+
+        TESTS:
+
+        A ``model`` and a ``model_valuation`` can be specified to specify which
+        number field should back the implementation of the completion; if the
+        ``model_valuation`` is omitted it is determined automatically::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = QQ[]
+            sage: M.<x> = QQ.extension(x^2 + x + 3)
+            sage: R.<x> = K[]
+            sage: L = Extension._create_extension(K, x^2 + x + 1, model = M)
+            sage: L
+            Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            sage: L.base()
+            Number Field in x with defining polynomial x^2 + x + 3
+
+        If no ``model`` is specified, then an iterated extension is backed by a
+        quotient that just divides out ``polynomial``::
+
+            sage: R.<y> = L[]
+            sage: M = Extension._create_extension(L, y^2 - 2)
+            sage: M.base()
+            Univariate Quotient Polynomial Ring in ybar over Number Field in x with defining polynomial x^2 + x + 3 with modulus y^2 - 2
+
+        """
+        if model is None:
+            from base_element import BaseElement_base
+            if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients()]):
+                model_polynomial = polynomial.map_coefficients(base._base, base._base)
+            else:
+                raise NotImplementedError("Can not extend %s by adjoining a root of %s"%(base, polynomial))
+
+            from sage.rings.all import QQ
+            if base.base() is QQ:
+                model = base.base().extension(model_polynomial, names=(model_polynomial.variable_name(),))
+            else:
+                model = model_polynomial.parent().quo(model_polynomial)
+                from sage.categories.all import Fields
+                if model in Fields():
+                    # trigger refinement of category of model
+                    pass
+        if model_valuation is None:
+            model_valuation = base._base_valuation.extension(model)
 
         from sage.categories.all import Fields, IntegralDomains
         if base.valuation().value_semigroup().is_group():
