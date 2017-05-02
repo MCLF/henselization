@@ -154,6 +154,18 @@ class ExtensionFactory(UniqueFactory):
         """
         base, polynomial = key
 
+        if isinstance(base, CompletionExtension_base):
+            if polynomial.base_ring()._is_monic_mac_lane_polynomial(polynomial) and polynomial.base_ring() is base:
+                approximate_polynomial = self._get_isomorphic_approximation(polynomial)
+                approximate_polynomial = approximate_polynomial.change_ring(base)
+                iterated_extension = self._create_extension(base, approximate_polynomial)
+            else:
+                iterated_extension = self._create_extension(base, polynomial)
+            model, model_valuation = iterated_extension._simple_model()
+            return self._create_extension(base, polynomial, model, model_valuation)
+        else:
+            return self._create_extension(base, polynomial)
+
     def _create_extension(self, base, polynomial, model = None, model_valuation = None):
         r"""
         Return the extension of ``base`` by adjoining a root of ``polynomial``.
@@ -206,9 +218,9 @@ class ExtensionFactory(UniqueFactory):
 
         from sage.categories.all import Fields, IntegralDomains
         if base.valuation().value_semigroup().is_group():
-            return CompletionExtension_Field(base, polynomial)
+            return CompletionExtension_Field(base, polynomial, model, model_valuation)
         else:
-            return CompletionExtension_Ring(base, polynomial)
+            return CompletionExtension_Ring(base, polynomial, model, model_valuation)
 
     def _get_isomorphic_approximation(self, polynomial):
         r"""
@@ -331,7 +343,7 @@ class Completion_base(CommutativeRing):
             sage: isinstance(C, Completion_base)
             True
             sage: TestSuite(C).run() # long time
-    
+
         """
         super(Completion_base, self).__init__(base_ring=base, category=category)
 
@@ -1215,7 +1227,7 @@ class CompletionExtension_base(Completion_base):
         Extension defined by b^12 - 4*b^11 + 2*b^10 + 13*b^8 - 16*b^7 - 36*b^6 + 168*b^5 - 209*b^4 + 52*b^3 + 26*b^2 + 8*b - 13 of Extension defined by a^2 + a + 1 of Completion of Rational Field with respect to 2-adic valuation
 
     """
-    def __init__(self, base_ring, polynomial, category=None):
+    def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
@@ -1228,26 +1240,31 @@ class CompletionExtension_base(Completion_base):
             True
             sage: TestSuite(L).run() # long time
 
+        We can handle defining polynomials whose coefficients are Mac Lane
+        elements::
+
+            sage: R.<T> = K[]
+            sage: f = T^12 - 4*T^11 + 2*T^10 + 13*T^8 - 16*T^7 - 36*T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 13
+            sage: L.<a12> = K.extension(f)
+            sage: F = f.change_ring(L).factor()
+            sage: g = [g for (g,e) in F if g.degree() == 2][0]
+            sage: M.<a24> = L.extension(g); M
+            Extension defined by a24^2 + (5*a12^11 + 15/2*a12^10 + 7*a12^9 + 27/4*a12^8 + 6*a12^7 + 7/2*a12^4 + 5*a12^3 + 13/2*a12^2 + 3*a12 + 19/4 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)))*a24 + 15/2*a12^11 + 1/2*a12^10 + 11/4*a12^9 + 2*a12^8 + 6*a12^7 + 2*a12^6 + 15/2*a12^5 + 2*a12^4 + 1/2*a12^3 + 1/2*a12^2 + 19/4*a12 + 2 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)) of Extension defined by a12^12 - 4*a12^11 + 2*a12^10 + 13*a12^8 - 16*a12^7 - 36*a12^6 + 168*a12^5 - 209*a12^4 + 52*a12^3 + 26*a12^2 + 8*a12 - 13 of Completion of Rational Field with respect to 2-adic valuation
+    
         """
         self._base_ring = base_ring
         self._polynomial = polynomial
+        self._model = model
         self._name = polynomial.variable_name()
         self._assign_names((self._name,))
 
-        coefficient_ring = base_ring._base
-        base_extension_polynomial = polynomial.map_coefficients(coefficient_ring, coefficient_ring)
-        from sage.rings.all import QQ
-        if base_ring.base() is QQ:
-            base_extension = base_ring.base().extension(base_extension_polynomial, names=(self._name,))
-        else:
-            base_extension = base_extension_polynomial.parent().quo(base_extension_polynomial)
-            from sage.categories.all import Fields
-            if base_extension in Fields():
-                # trigger refinement of category of base_extension
-                pass
-        base_extension_valuation = base_ring._base_valuation.extension(base_extension)
+        super(CompletionExtension_base, self).__init__(base=model, base_valuation=model_valuation, category=category or base_ring.category())
 
-        super(CompletionExtension_base, self).__init__(base=base_extension, base_valuation=base_extension_valuation, category=category or base_ring.category())
+        if isinstance(base_ring, CompletionExtension_base):
+            from sage.categories.all import SetsWithPartialMaps
+            homspace = base_ring.Hom(self, category=SetsWithPartialMaps())
+            from maps import RelativeExtensionCoercion_generic
+            self.register_coercion(homspace.__make_element_class__(RelativeExtensionCoercion_generic)(homspace))
 
     def degree(self):
         r"""
@@ -1440,7 +1457,7 @@ class CompletionExtension_Ring(CompletionExtension_base, Completion_Ring):
         Extension defined by x^2 + x + 1 of Completion of Integer Ring with respect to 2-adic valuation
 
     """
-    def __init__(self, base_ring, polynomial, category=None):
+    def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
@@ -1454,7 +1471,7 @@ class CompletionExtension_Ring(CompletionExtension_base, Completion_Ring):
             sage: TestSuite(T).run() # long time
 
         """
-        super(CompletionExtension_Ring, self).__init__(base_ring=base_ring, polynomial=polynomial, category=category)
+        super(CompletionExtension_Ring, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
 
 class CompletionExtension_Field(CompletionExtension_base, Completion_Field):
@@ -1472,7 +1489,7 @@ class CompletionExtension_Field(CompletionExtension_base, Completion_Field):
         Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
 
     """
-    def __init__(self, base_ring, polynomial, category=None):
+    def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
@@ -1486,7 +1503,7 @@ class CompletionExtension_Field(CompletionExtension_base, Completion_Field):
             sage: TestSuite(L).run() # long time
 
         """
-        super(CompletionExtension_Field, self).__init__(base_ring=base_ring, polynomial=polynomial, category=category)
+        super(CompletionExtension_Field, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
     def _vector_space_basis(self, base):
         r"""
