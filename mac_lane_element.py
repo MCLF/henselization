@@ -35,7 +35,7 @@ class MacLaneElement(IntegralDomainElement):
     key polynomials::
 
         sage: F
-        (x + 2 + O(?)) * (x + 3 + O(?))
+        (x + 2 + O(5)) * (x + 3 + O(5))
 
     """
     def __init__(self, parent, limit_valuation, degree):
@@ -68,13 +68,27 @@ class MacLaneElement(IntegralDomainElement):
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: (x^2 + 1).factor() # indirect doctest
-            (x + 2 + O(?)) * (x + 3 + O(?))
+            (x + 2 + O(5)) * (x + 3 + O(5))
 
         """
-        approximation = repr(self._limit_valuation._initial_approximation.phi()[self._degree])
-        if ' ' in approximation:
-            approximation = "(" + approximation + ")"
-        return approximation + " + O(?)"
+        approximation = self._limit_valuation._initial_approximation.phi()[self._degree]
+        if approximation:
+            approximation = repr(approximation)
+        precision = self._precision()
+        uniformizer = self._limit_valuation.uniformizer()
+        error = repr(uniformizer)
+        if precision != 1:
+            if any([op in error for op in '+-*/']):
+                error = "(%s)"%(error,)
+            power = repr(precision)
+            if any([op in power for op in '+-*/']):
+                power = "(%s)"%(power,)
+            error = "%s^%s"%(error, power)
+        error = "O(%s)"%(error,)
+        if approximation:
+            return "%s + %s"%(approximation, error)
+        else:
+            return error
 
     def _richcmp_(self, other, op):
         r"""
@@ -256,7 +270,7 @@ class MacLaneElement(IntegralDomainElement):
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a
-            2 + O(?)
+            2 + O(5)
             sage: a.approximation(precision=10)
             6139557
 

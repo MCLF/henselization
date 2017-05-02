@@ -853,7 +853,7 @@ class Completion_base(CommutativeRing):
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor()
-            (x + 2 + O(?)) * (x + 3 + O(?))
+            (x + 2 + O(5)) * (x + 3 + O(5))
 
         """
         from sage.misc.misc import verbose
