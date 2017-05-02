@@ -856,8 +856,6 @@ class Completion_base(CommutativeRing):
             (x + 2 + O(5)) * (x + 3 + O(5))
 
         """
-        from sage.misc.misc import verbose
-        verbose("Factoring %r over %r"%(f, self))
         if f.is_constant():
             raise NotImplementedError("factorization of constant polynomials")
         if not f.is_monic():
