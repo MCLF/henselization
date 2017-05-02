@@ -210,6 +210,100 @@ class ExtensionFactory(UniqueFactory):
         else:
             return CompletionExtension_Ring(base, polynomial)
 
+    def _get_isomorphic_approximation(self, polynomial):
+        r"""
+        Return an exact approximation of the ``polynomial`` over ``base`` which
+        has the same splitting field.
+
+        EXAMPLES:
+
+        A trivial case, a factor of degree one::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: F = (x^2 + 1).factor()
+            sage: F = sorted(F, key=str) # remove randomness in the output
+            sage: F[0][0], F[1][0]
+            (x + 2 + O(5), x + 3 + O(5))
+            sage: Extension._get_isomorphic_approximation(F[0][0])
+            x + 2
+
+        Non-trivial factors::
+
+            sage: F = (x^6 + 3).factor()
+            sage: F = sorted(F, key=str) # remove randomness in the output
+            sage: F[0][0], F[1][0], F[2][0]
+            (x^2 + (1 + O(5))*x + 2 + O(5),
+             x^2 + (4 + O(5))*x + 2 + O(5),
+             x^2 + O(5)*x + 2 + O(5))
+            sage: Extension._get_isomorphic_approximation(F[0][0])
+            x^2 + x + 2
+            sage: Extension._get_isomorphic_approximation(F[1][0])
+            x^2 + 4*x + 2
+            sage: Extension._get_isomorphic_approximation(F[2][0])
+            x^2 + 2
+
+        A complex case where the initial approximation is not sufficient::
+
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: f = x^12 - 4*x^11 + 2*x^10 + 13*x^8 - 16*x^7 - 36*x^6 + 168*x^5 - 209*x^4 + 52*x^3 + 26*x^2 + 8*x - 13
+            sage: L = K.extension(f.change_variable_name('a'))
+            sage: F = f.change_ring(L).factor()
+            sage: F = sorted(F, key=str) # remove randomness in the output
+            sage: g = F[3][0] # a factor of degree 8
+
+        The initial approximation of the factor is not sufficient to single out
+        the right splitting field (we only show the constant coefficient here)::
+
+            sage: F[3][0][0]
+            57/2*a^11 + 30*a^10 - 3/2*a^9 + 35/2*a^8 + 17*a^7 + 13*a^6 + a^5 + 19*a^4 + 33/2*a^3 + 9*a^2 + 37/2*a - 5/6 + O(...)
+            sage: Extension._get_isomorphic_approximation(F[3][0])[0]
+            33/2*a^11 + 28*a^10 + 57/2*a^9 + 11/2*a^8 + 3*a^7 + 23*a^6 + 23*a^5 + 9*a^4 - 3/2*a^3 + 29*a^2 + 37/2*a + 45/2
+
+        """
+        coefficient_ring = polynomial.base_ring()._base
+
+        if polynomial.degree() < 1:
+            raise ValueError("constants have no splitting field")
+
+        limit = polynomial[0]._limit_valuation
+        G = limit._G.change_ring(coefficient_ring)
+        # We extend coefficient_ring by a sufficiently precise
+        # approximation of the polynomial that limit approaches.
+        # We need a root of g = limit._approximation.phi() to be closer to
+        # a root of G than to any other root of g (Krasner's Lemma.)
+        while True:
+            g = limit._approximation.phi().change_ring(coefficient_ring).change_variable_name(polynomial.variable_name())
+            if g.degree() == 1:
+                return g
+
+            # Let z be a root of g and consider the Newton polygons of
+            # G(T+z) and g(T+z)/T in the quotient
+            I = g.parent().ideal(g)
+            if hasattr(I.gen().is_irreducible, 'set_cache'):
+                I.gen().is_irreducible.set_cache(True)
+            L = g.parent().quo(I)
+            z = L.gen()
+            R = L['T']; T = R.gen()
+
+            w = polynomial.base_ring()._base_valuation.extension(L)
+            from mac_lane.gauss_valuation import GaussValuation
+            w = GaussValuation(R, w)
+            GNP = w.newton_polygon(G(T + z))
+            gNP = w.newton_polygon(g(T + z).shift(-1))
+            # If the first slope of GNP is more negative than the first
+            # slope of gNP, then z is closer to a root of G than it is to
+            # another root of g.
+            if (GNP.slopes()[0] < gNP.slopes()[0]
+               # or z is an actual root of G
+               or GNP.vertices()[0][0] > 1):
+                return g
+            limit._improve_approximation()
+
 Extension = ExtensionFactory("Extension")
 
 
