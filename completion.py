@@ -1004,13 +1004,14 @@ class Completion_base(CommutativeRing):
         derivatives = [f]
         while derivatives[-1]:
             derivatives.append(derivatives[-1].derivative())
-        derivatives.pop()
         # we compute valuations such as v(\alpha) in the formal ring R=K[x]/(f)
-        ext = self.extension(f)
-        ext_valuation = self.valuation().extension(ext)
+        ext = self.base()[f.variable_name()].quo(f.change_ring(self.base()))
+        ext_valuation = self._base_valuation.extension(ext)
+
         from sage.all import ZZ
-        taylor = [d(ext.gen())/ZZ(i).factorial() for i,d in enumerate(derivatives)]
-        valuations = [ext_valuation(c) for c in taylor]
+        taylor = [(ext(d),ZZ(i).factorial()) for i,d in enumerate(derivatives) if i != 0]
+
+        valuations = [ext_valuation(n)-self._base_valuation(d) for n,d in taylor]
         # the distances v(\alpha-\alpha') are the slopes of the Newton polygon of the Taylor expansion
         from sage.geometry.newton_polygon import NewtonPolygon
         distances = NewtonPolygon(enumerate(valuations)).principal_part().slopes()
