@@ -600,8 +600,9 @@ class Completion_base(CommutativeRing):
         
         from maps import ExtensionCoercion_generic
         if self.base_ring().has_coerce_map_from(other):
-            homspace = other.Hom(self)
-            return homspace.__make_element_class__(ExtensionCoercion_generic)(homspace)
+            if isinstance(other, CompletionExtension_base):
+                homspace = other.Hom(self)
+                return homspace.__make_element_class__(ExtensionCoercion_generic)(homspace)
 
         if isinstance(other, Completion_base):
             if other.base().is_subring(self.base()):
