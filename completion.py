@@ -860,6 +860,8 @@ class Completion_base(CommutativeRing):
             raise NotImplementedError("factorization of constant polynomials")
         if not f.is_monic():
             raise NotImplementedError("factorization of non-monic polynomials")
+        if any([c.valuation() < 0 for c in f.coefficients()]):
+            raise NotImplementedError("factorization of non-integral polynomials")
         if not f.is_squarefree():
             F = f.squarefree_decomposition()
             from sage.structure.factorization import Factorization
