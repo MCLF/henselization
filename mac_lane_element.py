@@ -124,11 +124,16 @@ class MacLaneElement(IntegralDomainElement):
             False
             sage: f[0] == f[0]
             True
+            sage: f[0] == 0
+            False
 
         """
         if op == 2:
             from base_element import BaseElement_base
             if isinstance(other, BaseElement_base):
+                if other == 0 and self._degree == 0:
+                    # if the constant coefficient were zero, the polynomial would be reducible
+                    return False
                 if (other - self._limit_valuation._approximation.phi()[self._degree]).valuation() < self._precision():
                     return False
                 if self._degree == 0:
