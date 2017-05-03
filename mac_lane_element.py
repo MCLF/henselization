@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Elements in a completion which are described by a limit valuation.
+Elements in a completion which are described by a limit valuation
 
 AUTHORS:
 
