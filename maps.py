@@ -34,20 +34,6 @@ class ConvertMap_generic(Morphism):
             To:   Rational Field
 
     """
-    def __init__(self, parent):
-        r"""
-        TESTS::
-
-            sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
-            sage: K = Completion(QQ, v)
-            sage: f = QQ.convert_map_from(K)
-            sage: isinstance(f, ConvertMap_generic)
-            True
-
-        """
-        super(ConvertMap_generic, self).__init__(parent)
-
     def _call_(self, x):
         r"""
         Evaluate this map at ``x``.

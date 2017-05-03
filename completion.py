@@ -18,6 +18,7 @@ AUTHORS:
 from sage.rings.ring import CommutativeRing, Field
 from sage.structure.factory import UniqueFactory
 from sage.misc.lazy_attribute import lazy_attribute
+from sage.misc.cachefunc import cached_method
 
 from sage.categories.fields import Fields
 from sage.structure.element import is_Element
@@ -1342,6 +1343,7 @@ class CompletionExtension_base(Completion_base):
         """
         return 1
 
+    @cached_method
     def gen(self, i=0):
         r"""
         Return the ``i``-th generator of this ring.
@@ -1361,9 +1363,17 @@ class CompletionExtension_base(Completion_base):
             ValueError: ring has only one generator
 
         """
-        if i == 0:
-            return self(self.base().gen(0))
-        raise ValueError("ring has only one generator")
+        if i != 0:
+            raise ValueError("ring has only one generator")
+        from base_element import BaseElement_base
+        if all([isinstance(c, BaseElement_base) for c in self._polynomial]):
+            if all([c._x in self._model.base_ring() for c in self._polynomial()]):
+                base_polynomial = self._polynomial.map_coefficients(lambda c: c._x, self._model.base_ring())
+                if base_polynomial(self._model.gen()) == 0:
+                    return self(self._model.gen())
+
+        from generator_element import GeneratorElement
+        return GeneratorElement(self)
 
     def _simple_model(self):
         r"""
