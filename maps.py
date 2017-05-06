@@ -51,7 +51,8 @@ class ConvertMap_generic(Morphism):
         from base_element import BaseElement_base
         if isinstance(x, BaseElement_base):
             return self.codomain()(x._x)
-        raise NotImplementedError
+        raise NotImplementedError("Conversion of %s into %s"%(x, self.codomain()))
+
 
 class ExtensionCoercion_generic(ConvertMap_generic):
     r"""
@@ -86,6 +87,7 @@ class ExtensionCoercion_generic(ConvertMap_generic):
 
         """
         return True
+
 
 class VectorSpaceCompletionIsomorphism(Morphism):
     r"""
@@ -309,3 +311,110 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
 
         """
         return self.codomain()(x._vector_(base=self._base))
+
+
+class RelativeExtensionCoercion_generic(Morphism):
+    r"""
+    A coercion between extensions of complete rings which extend each other.
+
+    EXAMPLES::
+
+        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: v = pAdicValuation(QQ, 2)
+        sage: K = Completion(QQ, v)
+        sage: R.<x> = K[]
+        sage: L = K.extension(x^2 + x + 1)
+        sage: R.<y> = L[]
+        sage: M = L.extension(y^2 + 2)
+        sage: f = M.coerce_map_from(L); f
+        Generic morphism:
+          From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+          To:   Extension defined by y^2 + 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+
+    TESTS::
+
+        sage: isinstance(f, RelativeExtensionCoercion_generic)
+        True
+        sage: TestSuite(f).run()
+
+    """
+    def is_injective(self):
+        r"""
+        Return whether this coercion is injective, which is the case since it
+        is the embedding of a ring extension.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 + 2)
+            sage: M.coerce_map_from(L).is_injective()
+            True
+
+        """
+        return True
+
+    def is_surjective(self):
+        r"""
+        Return whether this coercion is surjective, which is only the case for
+        trivial extensions::
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 + 2)
+            sage: M.coerce_map_from(L).is_surjective()
+            False
+
+            sage: R.<z> = M[]
+            sage: N = M.extension(z - 1)
+            sage: N.coerce_map_from(M).is_surjective()
+            True
+
+        ^"""
+        if self.domain() is self.codomain().base_ring():
+            return self.codomain().degree() == 1
+        raise NotImplementedError("surjectivity only for simple extensions")
+
+    def _call_(self, x):
+        r"""
+        Evaluate this map at ``x``.
+
+        EXAMPLES:
+
+        This is currently not implemented for non-trivial cases (to implement
+        this, we would need to make sure that we are choosing
+        the roots of the defining polynomial consistenly.)::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L.<x> = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 + 2)
+            sage: M.coerce(x)
+            Traceback (most recent call last):
+            ...
+            NotImplementedError: Selection of approximate root of x^2 + x + 1 in Extension defined by y^2 + 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+
+        """
+        from base_element import BaseElement_base
+        if isinstance(x, BaseElement_base):
+            if self.domain()._base.is_subring(self.codomain()._base):
+                return self.codomain()(x._x)
+            minpoly = x._x.minpoly()
+            if self.codomain().has_coerce_map_from(minpoly.base_ring()):
+                if minpoly.degree() == 1:
+                    return self.codomain()(-minpoly[0])
+                raise NotImplementedError("Selection of approximate root of %s in %s"%(minpoly, self.codomain()))
+        raise NotImplementedError("Coercion of %s into %s"%(x, self.codomain()))

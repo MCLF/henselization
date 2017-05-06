@@ -9,13 +9,15 @@
 #*****************************************************************************
 from mac_lane import *
 
-from completion import Completion, Completion_base, Completion_Ring, Completion_Field, CompletionExtension_base, CompletionExtension_Field, CompletionExtension_Ring, Extension
+from completion import Completion, Completion_base, Completion_Ring, Completion_Field, CompletionExtension, CompletionExtension_Field, CompletionExtension_Ring, CompletionExtensionAbsolute, CompletionExtensionAbsolute_Field, CompletionExtensionIteratedAbsolute, CompletionExtensionIteratedAbsolute_Field, CompletionExtensionIteratedAbsolute_Ring, CompletionExtensionIteratedQuotient, CompletionExtensionIteratedQuotient_Field, CompletionExtensionIteratedQuotient_Ring, CompletionExtensionSimple, CompletionExtensionSimple_Field, CompletionExtensionSimple_Ring, Extension
+from completion_element import CompletionElement_base, CompletionElement_Field, CompletionElement_Ring
 from base_element import BaseElement_Ring, BaseElement_Field, BaseElement_base
-from mac_lane_element import MacLaneElement
+from mac_lane_element import MacLaneElement_base, MacLaneElement_Field, MacLaneElement_Ring
 import valuation
 from valuation import CompletionValuation
 from completions import CompleteDiscreteValuationRings, CompleteDiscreteValuationFields
-from maps import ConvertMap_generic, CompletionToVectorSpace, VectorSpaceToCompletion, VectorSpaceCompletionIsomorphism
+from maps import ConvertMap_generic, CompletionToVectorSpace, VectorSpaceToCompletion, VectorSpaceCompletionIsomorphism, RelativeExtensionCoercion_generic
+from generator_element import GeneratorElement
 
 from sage.structure.factory import register_factory_unpickle
 register_factory_unpickle("Completion", Completion)

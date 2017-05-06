@@ -16,8 +16,9 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 from sage.structure.element import IntegralDomainElement
+from completion_element import CompletionElement_base, CompletionElement_Ring, CompletionElement_Field
 
-class MacLaneElement(IntegralDomainElement):
+class MacLaneElement_base(CompletionElement_base):
     r"""
     Element class for elements of :class:`CompleteRing_base` which are given by
     the limit of the coefficients in a specific degree of the key polynomials
@@ -48,12 +49,12 @@ class MacLaneElement(IntegralDomainElement):
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
             sage: a = F[0][0][0]
-            sage: isinstance(a, MacLaneElement)
+            sage: isinstance(a, MacLaneElement_base)
             True
             sage: TestSuite(a).run() # long time
 
         """
-        super(MacLaneElement, self).__init__(parent)
+        super(MacLaneElement_base, self).__init__(parent)
         self._limit_valuation = limit_valuation
         self._degree = degree
 
@@ -144,9 +145,10 @@ class MacLaneElement(IntegralDomainElement):
                         x = phi.parent().gen()
                         from sage.rings.all import infinity
                         return self._limit_valuation(x + other) is infinity
-                # we could try to push the approximation indefinitely (but this won't work if other is actually equal)
-                raise NotImplementedError("comparison to base elements")
-            if isinstance(other, MacLaneElement):
+
+                # We could try to push the approximation indefinitely (but this won't work if other is actually equal)
+                raise NotImplementedError("comparison of %s which is the coefficient in degree %s of %s to base element %s"%(self, self._degree, self._limit_valuation, other))
+            if isinstance(other, MacLaneElement_base):
                 if self._limit_valuation.parent() is other._limit_valuation.parent():
                     if self._limit_valuation._G == other._limit_valuation._G:
                         if self._limit_valuation == other._limit_valuation:
@@ -283,3 +285,47 @@ class MacLaneElement(IntegralDomainElement):
         while self._precision() < precision:
             self._limit_valuation._improve_approximation()
         return self.parent()(self._limit_valuation._approximation.phi()[self._degree])
+
+class MacLaneElement_Ring(MacLaneElement_base, CompletionElement_Ring):
+    r"""
+    A :class:`MacLaneElement_base` that lives in a ring that is not a field.
+
+    EXAMPLES::
+
+        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: v = pAdicValuation(ZZ, 5)
+        sage: C = Completion(ZZ, v)
+        sage: R.<x> = C[]
+        sage: F = (x^2 + 1).factor()
+        sage: a = F[0][0][0]; a
+        2 + O(5)
+
+    TESTS::
+
+        sage: isinstance(a, MacLaneElement_Ring)
+        True
+        sage: TestSuite(a).run() # long time
+
+    """
+
+class MacLaneElement_Field(MacLaneElement_base, CompletionElement_Field):
+    r"""
+    A :class:`MacLaneElement_base` that lives in a field.
+
+    EXAMPLES::
+
+        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: v = pAdicValuation(QQ, 5)
+        sage: C = Completion(QQ, v)
+        sage: R.<x> = C[]
+        sage: F = (x^2 + 1).factor()
+        sage: a = F[0][0][0]; a
+        2 + O(5^10)
+
+    TESTS::
+
+        sage: isinstance(a, MacLaneElement_Field)
+        True
+        sage: TestSuite(a).run() # long time
+
+    """

@@ -15,10 +15,11 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from sage.structure.element import Element, FieldElement, IntegralDomainElement, coerce_binop
+from sage.structure.element import Element, IntegralDomainElement, coerce_binop
 from sage.misc.cachefunc import cached_method
+from completion_element import CompletionElement_Field, CompletionElement_Ring, CompletionElement_base
 
-class BaseElement_base(IntegralDomainElement):
+class BaseElement_base(CompletionElement_base):
     r"""
     Abstract base class for elements of :class:`Completion_base` which are in
     one of its uncompleted ``base`` fields.
@@ -152,10 +153,10 @@ class BaseElement_base(IntegralDomainElement):
 
         """
         if op == 2: # ==
-            from mac_lane_element import MacLaneElement
-            if isinstance(other, MacLaneElement):
+            from mac_lane_element import MacLaneElement_base
+            if isinstance(other, MacLaneElement_base):
                 return other._richcmp_(self, op)
-            if isinstance(other, BaseElement_base):
+            elif isinstance(other, BaseElement_base):
                 from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
                 if (self._base is other._base or
                     # polynomial quotient rings are not unique parents yet so
@@ -163,6 +164,8 @@ class BaseElement_base(IntegralDomainElement):
                     (is_PolynomialQuotientRing(self._base) and is_PolynomialQuotientRing(other._base) and self._base == other._base)):
                     if self._valuation is other._valuation:
                         return self._x == other._x
+            elif other in self.parent().base():
+                return self._x == other
         if op == 3: # !=
             return not (self == other)
         raise NotImplementedError
@@ -355,7 +358,7 @@ class BaseElement_base(IntegralDomainElement):
         return self._valuation.lower_bound(self._x)
         
 
-class BaseElement_Ring(BaseElement_base):
+class BaseElement_Ring(BaseElement_base, CompletionElement_Ring):
     r"""
     An element of :class:`Completion_Ring` which is in one of its uncompleted
     ``base`` fields.
@@ -422,7 +425,7 @@ class BaseElement_Ring(BaseElement_base):
         return self - (self // other) * other
 
 
-class BaseElement_Field(BaseElement_base, FieldElement):
+class BaseElement_Field(BaseElement_base, CompletionElement_Field):
     r"""
     An element of :class:`Completion_Field` which is in one of its uncompleted
     ``base`` fields.
