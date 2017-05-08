@@ -243,7 +243,7 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
             2*x + 1
 
         """
-        return sum(self.codomain()(x)*b for x,b in zip(v,self._basis))
+        return sum(self.codomain()(x)*b for x,b in zip(v,self._basis) if x != 0)
 
 
 class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresentation):
