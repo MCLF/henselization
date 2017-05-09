@@ -572,14 +572,9 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
 
         if isinstance(other, Completion_base):
             if other.base().is_subring(self.base()):
-                try:
-                    extension = other._base_valuation.extension(self.base())
-                except NotImplementedError:
-                    pass
-                else:
-                    if self._base_valuation == extension:
-                        homspace = other.Hom(self)
-                        return homspace.__make_element_class__(ExtensionCoercion_generic)(homspace)
+                if self._base_valuation.restriction(other.base()) == other._base_valuation:
+                    homspace = other.Hom(self)
+                    return homspace.__make_element_class__(ExtensionCoercion_generic)(homspace)
         return super(Completion_base, self)._coerce_map_from_(other)
 
     def _an_element_(self):
