@@ -236,9 +236,9 @@ class BaseElement_base(CompletionElement_base):
         if base is self.parent():
             return (self,)
         elif self.parent().base().base_ring() is base.base():
-            return tuple(self._x)
+            return tuple(self._x.list())
         elif self.parent().base_ring().base() is self.parent().base().base_ring():
-            return sum((self.parent().base_ring()(c)._vector_(base) for c in list(self._x)), ())
+            return sum((self.parent().base_ring()(c)._vector_(base) for c in self._x.list()), ())
         else:
             raise NotImplementedError("Vector space representation of an element of %s over %s"%(self.parent(), base))
 
