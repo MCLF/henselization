@@ -91,6 +91,35 @@ class MacLaneElement_base(CompletionElement_base):
         else:
             return error
 
+    def _cache_key(self):
+        r"""
+        Return a key which identifies this element for caching.
+
+        EXAMPLES:
+
+        Mac Lane elements are not hashable as it seems too hard to implement a
+        hash function that is fast and consistent with equality::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 5)
+            sage: C = Completion(QQ, v)
+            sage: R.<x> = C[]
+            sage: F = (x^2 + 1).factor()
+            sage: a = F[0][0][0]
+            sage: hash(a)
+            Traceback (most recent call last):
+            ...
+            TypeError: <class 'completion.mac_lane_element.MacLaneElement_Field_with_category'> is not hashable
+
+        Therefore, they implement :meth:`_cache_key`, so that they can be used
+        in caches::
+
+            sage: a._cache_key()
+            ([ Gauss valuation induced by 5-adic valuation, v(x + 2) = 1 , … ], 0)
+            
+        """
+        return self._limit_valuation, self._degree
+
     def _richcmp_(self, other, op):
         r"""
         Return whether this element relates to ``other`` with respect to

@@ -51,6 +51,21 @@ class BaseElement_base(CompletionElement_base):
         self._base = base
         self._valuation = valuation
 
+    def __hash__(self):
+        r"""
+        Return a hash value for this element.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: hash(K(1)) # indirect doctest
+            1
+
+        """
+        return hash(self._x)
+
     def _repr_(self):
         r"""
         Return a printable representation of this element.
