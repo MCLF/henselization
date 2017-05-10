@@ -9,7 +9,7 @@ This package implements an exact alternative where p-adic rings are backed by ab
 Splitting Fields
 ================
 
-One can of course not expect arithmetic to be as fast as in the inexact p-adic rings but the approach seems to have its merits. With a few tweaks in Sage, this implementation can compute the degree 384 splitting field (unramified of degree 2) of a degree 12 polynomial over Q2 in a little more than three minutes (having `PYTHONOPTIMIZE=yes` set):
+One can of course not expect arithmetic to be as fast as in the inexact p-adic rings but the approach seems to have its merits. With a few tweaks in Sage, this implementation can compute the degree 384 splitting field (unramified of degree 2) of a degree 12 polynomial over Q2 in less than three minutes (having `PYTHONOPTIMIZE=yes` set):
 
 ```
 import sys, os

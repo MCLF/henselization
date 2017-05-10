@@ -309,7 +309,7 @@ class ExtensionFactory(UniqueFactory):
                 return g
 
             # Let z be a root of g and consider the Newton polygons of
-            # G(T+z) and g(T+z)/T in the quotient
+            # G(T+z) and g(T+z)/T in the quotient L = g.parent() mod (g)
             I = g.parent().ideal(g)
             if hasattr(I.gen().is_irreducible, 'set_cache'):
                 I.gen().is_irreducible.set_cache(True)
@@ -317,18 +317,54 @@ class ExtensionFactory(UniqueFactory):
             z = L.gen()
             R = L['T']; T = R.gen()
 
-            w = polynomial.base_ring()._base_valuation.extension(L)
+            # We could now determine the valuation on L by running
+            # v = polynomial.base_ring()._base_valuation.extension(L)
+            # However, this is not necessary. We already know what this
+            # valuation is going to look like, namely it is the approximation
+            # of limit with the last step set to v(g)=infinity.
+            v = polynomial.base_ring()._base_valuation
             from mac_lane.gauss_valuation import GaussValuation
-            w = GaussValuation(R, w)
-            GNP = w.newton_polygon(G(T + z))
-            gNP = w.newton_polygon(g(T + z).shift(-1))
+            v = GaussValuation(g.parent(), v)
+            for augmentation in limit._approximation.augmentation_chain()[1:-1][::-1]:
+                v = v.augmentation(augmentation.phi().change_ring(coefficient_ring).change_variable_name(polynomial.variable_name()), augmentation._mu, check=False)
+
+            g_shift = g(T + z)
+            G_shift = G(T + z)
+            # Consider the following Newton polygons:
+            # v = polynomial.base_ring()._base_valuation.extension(L)
+            # w = GaussValuation(R, v)
+            # GNP = w.newton_polygon(G_shift)
+            # gNP = w.newton_polygon(g_shift.shift(-1))
+            #
             # If the first slope of GNP is more negative than the first
             # slope of gNP, then z is closer to a root of G than it is to
             # another root of g.
-            if (GNP.slopes()[0] < gNP.slopes()[0]
-               # or z is an actual root of G
-               or GNP.vertices()[0][0] > 1):
+            # if (GNP.slopes()[0] < gNP.slopes()[0]
+            #   # or z is an actual root of G
+            #   or GNP.vertices()[0][0] > 1):
+            #     return g
+
+            # The above idea can be implemented more efficiently:
+            # Let ζ be the root of G closest to z, the root of g.
+            # Since g is an approximate factor of G, z approaches ζ as we
+            # perform limit._improve_approximation(), i.e., as we improve the
+            # quality of the approximate factor g. In other words, the absolute
+            # value of the first slope of the Newton polygon of  G(T + z) goes
+            # to infinity (but the other slopes don't).
+            # Therefore, the difference in valuation of the constant
+            # coefficient and the linear coefficient of G(T + z) eventually is
+            # the first slope of the Newton polygon of G(T + z)
+            # If it is not the first slope, it can only be smaller in absolute
+            # value, so we have a bound that becomes eventually an equality:
+            # GNP.slopes()[0] ≤ w(G(T + z)[1]) - w(G(T + z)[0])
+
+            R = L.base()['T']
+            w = GaussValuation(R, v)
+
+            gNP = w.newton_polygon(g_shift.shift(-1).map_coefficients(lambda c:c.lift(), L.base()))
+            if v(G_shift[1].lift()) - v(G_shift[0].lift()) < gNP.slopes()[0]:
                 return g
+
             limit._improve_approximation()
 
 Extension = ExtensionFactory("Extension")
@@ -954,7 +990,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         valuations = [ext_valuation(n)-self._base_valuation(d) for n,d in taylor]
         # the distances v(\alpha-\alpha') are the slopes of the Newton polygon of the Taylor expansion
         from sage.geometry.newton_polygon import NewtonPolygon
-        distances = NewtonPolygon(enumerate(valuations)).principal_part().slopes()
+        distances = NewtonPolygon(list(enumerate(valuations))).principal_part().slopes()
         distances = [-d for d in distances]
 
         # For Krasner's lemma to hold, another polynomial g with root beta must satisfy
