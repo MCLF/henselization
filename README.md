@@ -54,7 +54,7 @@ def splitting_field(polynomial, ramified_variable_name = 'a', unramified_variabl
                 if f.degree() == 1:
                     continue
                 print("Found totally ramified part of degree %s"%f.degree())
-                ret = ret.extension(f, ramified_variable_name + str(ramified_degree + f.degree()))
+                ret = ret.extension(f, ramified_variable_name + str(ramified_degree * f.degree()))
                 break
             else:
                 break
