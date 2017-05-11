@@ -316,3 +316,20 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
 
         """
         return self.domain().coerce(x)._lower_bound()
+
+    def restriction(self, ring):
+        r"""
+        Return the restriction of this valuation to ``ring``.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = pAdicValuation(QQ, 2)
+            sage: K = Completion(QQ, v)
+            sage: K.valuation().restriction(ZZ)
+            2-adic valuation
+        
+        """
+        if ring.is_subring(self.domain()._base):
+            return self.domain()._base_valuation.restriction(ring)
+        return super(CompletionValuation, self).restriction(ring)
