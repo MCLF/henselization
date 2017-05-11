@@ -158,9 +158,7 @@ class ExtensionFactory(UniqueFactory):
 
         if isinstance(base, CompletionExtension):
             if polynomial.base_ring()._is_monic_mac_lane_polynomial(polynomial) and polynomial.base_ring() is base:
-                approximate_polynomial = self._get_isomorphic_approximation(polynomial)
-                approximate_polynomial = approximate_polynomial.change_ring(base)
-                iterated_extension = self._create_extension(base, approximate_polynomial)
+                iterated_extension = self._get_isomorphic_approximation(polynomial)
             else:
                 iterated_extension = self._create_extension(base, polynomial)
             model, model_valuation = iterated_extension._eisenstein_model(iterated_extension._absolute_base_ring())
@@ -239,8 +237,8 @@ class ExtensionFactory(UniqueFactory):
 
     def _get_isomorphic_approximation(self, polynomial):
         r"""
-        Return an exact approximation of the ``polynomial`` over ``base`` which
-        has the same splitting field.
+        Return a completion backed by quotient by a polynomial that has the
+        same splitting field as the approximate ``polynomial`` over ``base``.
 
         EXAMPLES:
 
@@ -254,8 +252,8 @@ class ExtensionFactory(UniqueFactory):
             sage: F = sorted(F, key=str) # remove randomness in the output
             sage: F[0][0], F[1][0]
             (x + 2 + O(5), x + 3 + O(5))
-            sage: Extension._get_isomorphic_approximation(F[0][0])
-            x + 2
+            sage: Extension._get_isomorphic_approximation(F[0][0])._base
+            Univariate Quotient Polynomial Ring in xbar over Rational Field with modulus x + 2
 
         Non-trivial factors::
 
@@ -265,12 +263,12 @@ class ExtensionFactory(UniqueFactory):
             (x^2 + (1 + O(5))*x + 2 + O(5),
              x^2 + (4 + O(5))*x + 2 + O(5),
              x^2 + O(5)*x + 2 + O(5))
-            sage: Extension._get_isomorphic_approximation(F[0][0])
-            x^2 + x + 2
-            sage: Extension._get_isomorphic_approximation(F[1][0])
-            x^2 + 4*x + 2
-            sage: Extension._get_isomorphic_approximation(F[2][0])
-            x^2 + 2
+            sage: Extension._get_isomorphic_approximation(F[0][0])._base
+            Univariate Quotient Polynomial Ring in xbar over Rational Field with modulus x^2 + x + 2
+            sage: Extension._get_isomorphic_approximation(F[1][0])._base
+            Univariate Quotient Polynomial Ring in xbar over Rational Field with modulus x^2 + 4*x + 2
+            sage: Extension._get_isomorphic_approximation(F[2][0])._base
+            Univariate Quotient Polynomial Ring in xbar over Rational Field with modulus x^2 + 2
 
         A complex case where the initial approximation is not sufficient::
 
@@ -283,13 +281,13 @@ class ExtensionFactory(UniqueFactory):
             sage: F = sorted(F, key=str) # remove randomness in the output
             sage: g = F[3][0] # a factor of degree 8
 
-        The initial approximation of the factor is not sufficient to single out
-        the right splitting field (we only show the constant coefficient here)::
+        Here, the initial approximation of the factor is not sufficient to
+        single out the right splitting field::
 
             sage: F[3][0][0]
             57/2*a^11 + 30*a^10 - 3/2*a^9 + 35/2*a^8 + 17*a^7 + 13*a^6 + a^5 + 19*a^4 + 33/2*a^3 + 9*a^2 + 37/2*a - 5/6 + O(...)
-            sage: Extension._get_isomorphic_approximation(F[3][0])[0]
-            33/2*a^11 + 28*a^10 + 57/2*a^9 + 11/2*a^8 + 3*a^7 + 23*a^6 + 23*a^5 + 9*a^4 - 3/2*a^3 + 29*a^2 + 37/2*a + 45/2
+            sage: Extension._get_isomorphic_approximation(F[3][0])._base
+            Univariate Quotient Polynomial Ring in xbar over Number Field in a with defining polynomial a^12 - 4*a^11 + 2*a^10 + 13*a^8 - 16*a^7 - 36*a^6 + 168*a^5 - 209*a^4 + 52*a^3 + 26*a^2 + 8*a - 13 with modulus x^8 + (5/6*a^11 + 9/2*a^10 + 3/2*a^9 + 1/10*a^8 + 5*a^7 + 5*a^6 + 9*a^5 + 7*a^4 + 19/2*a^3 + 17/2*a^2 + 15/2*a + 1/2)*x^7 + (53/2*a^11 - 1/6*a^10 + 19/2*a^9 + 15*a^7 + 8*a^6 + 17*a^5 + 5*a^4 + 9/2*a^3 + 35/2*a^2 + 47/2*a + 9)*x^6 + (15*a^11 + 29*a^10 + 26*a^9 + 11*a^8 + 28*a^7 + 22*a^6 + 10*a^5 + 28*a^4 + 9*a^3 + 21*a^2 + 12*a + 21)*x^5 + (31/2*a^11 + 5*a^10 + 55/2*a^9 + 15/2*a^8 + 13*a^7 + a^6 + 29*a^5 + 31*a^4 - 1/10*a^3 + 26*a^2 - 1/10*a - 1/2)*x^4 + (29/2*a^11 + 7/2*a^10 + 49/2*a^9 + 7/2*a^8 + 17*a^7 + 25*a^6 + 17*a^5 + 31*a^4 + 37/2*a^3 + 11/2*a^2 + 17/2*a + 7/2)*x^3 + (27/2*a^11 + 3/2*a^10 - 3/10*a^9 + 23*a^8 + 25*a^7 + 22*a^6 + 11*a^5 + 13*a^4 + 55/2*a^3 - 5/6*a^2 - 3/2*a + 22)*x^2 + (12*a^11 + 11*a^9 + 16*a^8 + 4*a^7 + 10*a^6 + 14*a^5 + 8*a^4 + 20*a^3 + 22*a^2 + 15*a + 12)*x + 33/2*a^11 + 28*a^10 + 57/2*a^9 + 11/2*a^8 + 3*a^7 + 23*a^6 + 23*a^5 + 9*a^4 - 3/2*a^3 + 29*a^2 + 37/2*a + 45/2
 
         """
         coefficient_ring = polynomial.base_ring()._base
@@ -304,35 +302,34 @@ class ExtensionFactory(UniqueFactory):
         # We need a root of g = limit._approximation.phi() to be closer to
         # a root of G than to any other root of g (Krasner's Lemma.)
         while True:
-            g = limit._approximation.phi().change_ring(coefficient_ring).change_variable_name(polynomial.variable_name())
-            if g.degree() == 1:
-                return g
+            g = limit._approximation.phi().change_ring(coefficient_ring)
 
             # Let z be a root of g and consider the Newton polygons of
-            # G(T+z) and g(T+z)/T in the quotient L = g.parent() mod (g)
+            # G(T+z) and g(T+z)/T in the quotient model = g.parent() mod (g)
             I = g.parent().ideal(g)
             if hasattr(I.gen().is_irreducible, 'set_cache'):
                 I.gen().is_irreducible.set_cache(True)
-            L = g.parent().quo(I)
-            z = L.gen()
-            R = L['T']; T = R.gen()
+            model = g.parent().quo(I)
+            z = model.gen()
+            R = model['T']; T = R.gen()
 
-            # We could now determine the valuation on L by running
-            # v = polynomial.base_ring()._base_valuation.extension(L)
+            # We could now determine the valuation on model by running
+            # model_valuation = polynomial.base_ring().extension(model)
             # However, this is not necessary. We already know what this
-            # valuation is going to look like, namely it is the approximation
-            # of limit with the last step set to v(g)=infinity.
-            v = polynomial.base_ring()._base_valuation
+            # valuation is going to look like, namely it is
+            # limit._approximation with the last step set to v(g)=infinity.
+            from sage.all import infinity
+            model_valuation = limit._approximation._base_valuation.change_domain(g.parent()).augmentation(g, infinity, check=False).change_domain(model)
+
             from mac_lane.gauss_valuation import GaussValuation
-            v = GaussValuation(g.parent(), v)
-            for augmentation in limit._approximation.augmentation_chain()[1:-1][::-1]:
-                v = v.augmentation(augmentation.phi().change_ring(coefficient_ring).change_variable_name(polynomial.variable_name()), augmentation._mu, check=False)
+            w = GaussValuation(R, model_valuation)
+
+            if g.degree() == 1:
+                break
 
             g_shift = g(T + z)
             G_shift = G(T + z)
             # Consider the following Newton polygons:
-            # v = polynomial.base_ring()._base_valuation.extension(L)
-            # w = GaussValuation(R, v)
             # GNP = w.newton_polygon(G_shift)
             # gNP = w.newton_polygon(g_shift.shift(-1))
             #
@@ -357,15 +354,13 @@ class ExtensionFactory(UniqueFactory):
             # If it is not the first slope, it can only be smaller in absolute
             # value, so we have a bound that becomes eventually an equality:
             # GNP.slopes()[0] ≤ w(G(T + z)[1]) - w(G(T + z)[0])
-
-            R = L.base()['T']
-            w = GaussValuation(R, v)
-
-            gNP = w.newton_polygon(g_shift.shift(-1).map_coefficients(lambda c:c.lift(), L.base()))
-            if v(G_shift[1].lift()) - v(G_shift[0].lift()) < gNP.slopes()[0]:
-                return g
+            gNP = w.newton_polygon(g_shift.shift(-1))
+            if model_valuation(G_shift[1]) - model_valuation(G_shift[0]) < gNP.slopes()[0]:
+                break
 
             limit._improve_approximation()
+
+        return self._create_extension(polynomial.base_ring(), polynomial, model=model, model_valuation=model_valuation)
 
 Extension = ExtensionFactory("Extension")
 
