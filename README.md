@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/saraedum/completion/tree/master.svg?style=svg)](https://circleci.com/gh/saraedum/completion/tree/master)
+
 *This project is far from stable. If you want to use it, please contact the author. I would be very happy to assist you at trying this out.*
 
 *This requires some changes to the Sage library to work. The necessary changes are tracked here: https://trac.sagemath.org/ticket/22956*
