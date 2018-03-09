@@ -24,7 +24,7 @@ class CompletionElement_base(IntegralDomainElement):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: x = K(0); x
         0
@@ -44,7 +44,7 @@ class CompletionElement_Field(CompletionElement_base):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: x = K(0); x
         0
@@ -64,7 +64,7 @@ class CompletionElement_Ring(CompletionElement_base):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: S = Completion(ZZ, v)
         sage: x = S(0); x
         0
@@ -83,7 +83,7 @@ class CompletionElement_Ring(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 3)
+            sage: v = ZZ.valuation(3)
             sage: S = Completion(ZZ, v)
             sage: R.<x> = S[]
             sage: T.<y> = S.extension(x^2 + 3)

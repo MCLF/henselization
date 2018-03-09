@@ -8,7 +8,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2016-2017 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2016-2018 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
@@ -19,7 +19,6 @@ from sage.rings.ring import CommutativeRing, Field
 from sage.structure.factory import UniqueFactory
 from sage.misc.lazy_attribute import lazy_attribute
 from sage.misc.cachefunc import cached_method
-from sage.structure.unique_representation import UniqueRepresentation
 
 from sage.categories.fields import Fields
 from sage.structure.element import is_Element
@@ -39,7 +38,7 @@ class CompletionFactory(UniqueFactory):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 5)
+        sage: v = QQ.valuation(5)
         sage: Completion(QQ, v)
         Completion of Rational Field with respect to 5-adic valuation
 
@@ -51,7 +50,7 @@ class CompletionFactory(UniqueFactory):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: Completion(QQ, v) is Completion(QQ, v) # indirect doctest
             True
 
@@ -59,7 +58,7 @@ class CompletionFactory(UniqueFactory):
         from sage.categories.all import IntegralDomains
         if R not in IntegralDomains():
             raise ValueError("R must be an integral domain")
-        from mac_lane import DiscretePseudoValuationSpace
+        from sage.rings.valuation.valuation_space import DiscretePseudoValuationSpace
         if v not in DiscretePseudoValuationSpace(R) or not v.is_discrete_valuation():
             raise ValueError("v must be a discrete valuation on R")
         if v.is_trivial():
@@ -74,7 +73,7 @@ class CompletionFactory(UniqueFactory):
         TESTS::
             
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: Completion(QQ, v) # indirect doctest
             Completion of Rational Field with respect to 5-adic valuation
 
@@ -99,7 +98,7 @@ class ExtensionFactory(UniqueFactory):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 5)
+        sage: v = QQ.valuation(5)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: K.extension(x^2 - 5) # indirect doctest
@@ -113,7 +112,7 @@ class ExtensionFactory(UniqueFactory):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 - 5) is K.extension(x^2 - 5) # indirect doctest
@@ -147,7 +146,7 @@ class ExtensionFactory(UniqueFactory):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 - 5) # indirect doctest
@@ -160,80 +159,11 @@ class ExtensionFactory(UniqueFactory):
             if polynomial.base_ring()._is_monic_mac_lane_polynomial(polynomial) and polynomial.base_ring() is base:
                 iterated_extension = self._get_isomorphic_approximation(polynomial)
             else:
-                iterated_extension = self._create_extension(base, polynomial)
+                iterated_extension = Extension._create_extension(base, polynomial)
             model, model_valuation = iterated_extension._eisenstein_model(iterated_extension._absolute_base_ring())
-            return self._create_extension(base, polynomial, model, model_valuation)
+            return Extension._create_extension(base, polynomial, model, model_valuation)
         else:
-            return self._create_extension(base, polynomial)
-
-    def _create_extension(self, base, polynomial, model = None, model_valuation = None):
-        r"""
-        Return the extension of ``base`` by adjoining a root of ``polynomial``.
-
-        TESTS:
-
-        A ``model`` and a ``model_valuation`` can be specified to specify which
-        number field should back the implementation of the completion; if the
-        ``model_valuation`` is omitted it is determined automatically::
-
-            sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
-            sage: K = Completion(QQ, v)
-            sage: R.<x> = QQ[]
-            sage: M.<x> = QQ.extension(x^2 + x + 3)
-            sage: R.<x> = K[]
-            sage: L = Extension._create_extension(K, x^2 + x + 1, model = M)
-            sage: L
-            Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-            sage: L.base()
-            Number Field in x with defining polynomial x^2 + x + 3
-
-        If no ``model`` is specified, then an iterated extension is backed by a
-        quotient that just divides out ``polynomial``::
-
-            sage: R.<y> = L[]
-            sage: M = Extension._create_extension(L, y^2 - 2)
-            sage: M.base()
-            Univariate Quotient Polynomial Ring in ybar over Number Field in x with defining polynomial x^2 + x + 3 with modulus y^2 - 2
-
-        """
-        if model is None:
-            from base_element import BaseElement_base
-            if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients()]):
-                model_polynomial = polynomial.map_coefficients(base._base, base._base)
-            else:
-                raise NotImplementedError("Can not extend %s by adjoining a root of %s"%(base, polynomial))
-
-            if isinstance(base, CompletionExtension):
-                model = model_polynomial.parent().quo(model_polynomial)
-            else:
-                model = base.base().extension(model_polynomial, names=(model_polynomial.variable_name(),))
-        if model_valuation is None:
-            model_valuation = base._base_valuation.extension(model)
-
-        from sage.categories.all import Fields
-        if model in Fields():
-            # triggers refinement of category of model
-            pass
-
-        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
-        if not isinstance(base, CompletionExtension):
-            if base in Fields():
-                clazz = CompletionExtensionSimple_Field
-            else:
-                clazz = CompletionExtensionSimple_Ring
-        elif is_PolynomialQuotientRing(model):
-            if base in Fields():
-                clazz = CompletionExtensionIteratedQuotient_Field
-            else:
-                clazz = CompletionExtensionIteratedQuotient_Ring
-        else:
-            if base in Fields():
-                clazz = CompletionExtensionIteratedAbsolute_Field
-            else:
-                clazz = CompletionExtensionIteratedAbsolute_Ring
-
-        return clazz(base, polynomial, model, model_valuation)
+            return Extension._create_extension(base, polynomial)
 
     def _get_isomorphic_approximation(self, polynomial):
         r"""
@@ -245,7 +175,7 @@ class ExtensionFactory(UniqueFactory):
         A trivial case, a factor of degree one::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
@@ -272,7 +202,7 @@ class ExtensionFactory(UniqueFactory):
 
         A complex case where the initial approximation is not sufficient::
 
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: f = x^12 - 4*x^11 + 2*x^10 + 13*x^8 - 16*x^7 - 36*x^6 + 168*x^5 - 209*x^4 + 52*x^3 + 26*x^2 + 8*x - 13
@@ -321,7 +251,7 @@ class ExtensionFactory(UniqueFactory):
             from sage.all import infinity
             model_valuation = limit._approximation._base_valuation.change_domain(g.parent()).augmentation(g, infinity, check=False).change_domain(model)
 
-            from mac_lane.gauss_valuation import GaussValuation
+            from sage.rings.valuation.all import GaussValuation
             w = GaussValuation(R, model_valuation)
 
             if g.degree() == 1:
@@ -360,27 +290,138 @@ class ExtensionFactory(UniqueFactory):
 
             limit._improve_approximation()
 
-        return self._create_extension(polynomial.base_ring(), polynomial, model=model, model_valuation=model_valuation)
+        return Extension._create_extension(polynomial.base_ring(), polynomial, model=model, model_valuation=model_valuation)
+
+
+    def _create_extension(self, base, polynomial, model = None, model_valuation = None):
+        r"""
+        Return the extension of ``base`` by adjoining a root of ``polynomial``.
+    
+        TESTS:
+    
+        A ``model`` and a ``model_valuation`` can be specified to specify which
+        number field should back the implementation of the completion; if the
+        ``model_valuation`` is omitted it is determined automatically::
+    
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = QQ.valuation(2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = QQ[]
+            sage: M.<x> = QQ.extension(x^2 + x + 3)
+            sage: R.<x> = K[]
+            sage: L = Extension._create_extension(K, x^2 + x + 1, model = M)
+            sage: L
+            Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            sage: L.base()
+            Number Field in x with defining polynomial x^2 + x + 3
+    
+        If no ``model`` is specified, then an iterated extension is backed by a
+        quotient that just divides out ``polynomial``::
+    
+            sage: R.<y> = L[]
+            sage: M = Extension._create_extension(L, y^2 - 2)
+            sage: M.base()
+            Univariate Quotient Polynomial Ring in ybar over Number Field in x with defining polynomial x^2 + x + 3 with modulus y^2 - 2
+    
+        """
+        return Quotient(base, polynomial, model, model_valuation)
+        if model is None:
+            from base_element import BaseElement_base
+            if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients()]):
+                model_polynomial = polynomial.map_coefficients(base._base, base._base)
+            else:
+                raise NotImplementedError("Can not extend %s by adjoining a root of %s"%(base, polynomial))
+
+            if isinstance(base, CompletionExtension):
+                model = model_polynomial.parent().quo(model_polynomial)
+            else:
+                model = base.base().extension(model_polynomial, names=(model_polynomial.variable_name(),))
+        if model_valuation is None:
+            model_valuation = base._base_valuation.extension(model)
+
+
+        from sage.categories.all import Fields
+        if model in Fields():
+            # triggers refinement of category of model
+            pass
+    
+        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
+        if not isinstance(base, CompletionExtension):
+            if base in Fields():
+                clazz = CompletionExtensionSimple_Field
+            else:
+                clazz = CompletionExtensionSimple_Ring
+        elif is_PolynomialQuotientRing(model):
+            if base in Fields():
+                clazz = CompletionExtensionIteratedQuotient_Field
+            else:
+                clazz = CompletionExtensionIteratedQuotient_Ring
+        else:
+            if base in Fields():
+                clazz = CompletionExtensionIteratedAbsolute_Field
+            else:
+                clazz = CompletionExtensionIteratedAbsolute_Ring
+        
+        return clazz(base, polynomial, model, model_valuation)
+
+class QuotientFactory(UniqueFactory):
+    def create_key(self, base, polynomial, model = None, model_valuation = None):
+        if model is None:
+            from base_element import BaseElement_base
+            if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients()]):
+                model_polynomial = polynomial.map_coefficients(base._base, base._base)
+            else:
+                raise NotImplementedError("Can not extend %s by adjoining a root of %s"%(base, polynomial))
+
+            if isinstance(base, CompletionExtension):
+                model = model_polynomial.parent().quo(model_polynomial)
+            else:
+                model = base.base().extension(model_polynomial, names=(model_polynomial.variable_name(),))
+        if model_valuation is None:
+            model_valuation = base._base_valuation.extension(model)
+
+        return base, polynomial, model, model_valuation
+
+    def create_object(self, version, key):
+        base, polynomial, model, model_valuation = key
+
+        from sage.categories.all import Fields
+        if model in Fields():
+            # triggers refinement of category of model
+            pass
+    
+        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
+        if not isinstance(base, CompletionExtension):
+            if base in Fields():
+                clazz = CompletionExtensionSimple_Field
+            else:
+                clazz = CompletionExtensionSimple_Ring
+        elif is_PolynomialQuotientRing(model):
+            if base in Fields():
+                clazz = CompletionExtensionIteratedQuotient_Field
+            else:
+                clazz = CompletionExtensionIteratedQuotient_Ring
+        else:
+            if base in Fields():
+                clazz = CompletionExtensionIteratedAbsolute_Field
+            else:
+                clazz = CompletionExtensionIteratedAbsolute_Ring
+        
+        return clazz(base, polynomial, model, model_valuation)
 
 Extension = ExtensionFactory("Extension")
+Quotient = QuotientFactory("Quotient")
 
 
-class Completion_base(CommutativeRing, UniqueRepresentation):
+class Completion_base(CommutativeRing):
     r"""
     Abstract base class for the completion of ``base`` with respect to
     ``base_valuation``.
 
-    .. NOTE::
-
-        This class (and thus all completions) inherits from
-        :class:`UniqueRepresentation`. This is necessary for the few subclasses
-        that are not hidden behind a factory (namely the iterated quotients) to
-        get pickling right for them.
-
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: Completion(ZZ, v)
         Completion of Integer Ring with respect to 2-adic valuation
 
@@ -391,7 +432,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
 
             sage: sys.path.append(os.getcwd()); from completion import *
             sage: K.<x> = FunctionField(QQ)
-            sage: v = FunctionFieldValuation(K, x)
+            sage: v = K.valuation(x)
             sage: C = Completion(K, v)
             sage: isinstance(C, Completion_base)
             True
@@ -449,7 +490,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 4).factor()
@@ -470,7 +511,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: (x^2 - 1).gcd(x - 1) # indirect doctest
@@ -489,7 +530,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: x.xgcd(x) # indirect doctest
@@ -523,7 +564,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         completion, these two concepts coincide::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.base_ring() is K.base() is QQ
             True
@@ -538,7 +579,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.characteristic()
             0
@@ -553,7 +594,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.is_finite()
             False
@@ -570,7 +611,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.uniformizer()
             2
@@ -585,7 +626,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.has_coerce_map_from(QQ) # indirect doctest
             True
@@ -615,7 +656,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.an_element()
             2
@@ -630,7 +671,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: x = K(0) # indirect doctest
             sage: x.parent() is K
@@ -650,9 +691,10 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
             if len(x) == 2:
                 v, i = x
                 from sage.rings.all import NN
-                from mac_lane.limit_valuation import MacLaneLimitValuation
+                from sage.rings.valuation.limit_valuation import MacLaneLimitValuation
                 if isinstance(v, MacLaneLimitValuation) and v.domain().base() is self and i in NN:
                     return self._mac_lane_element_class(self, v, i)
+
         raise ValueError("Can not convert %r to an element in %r"%(x, self))
 
     def _repr_(self):
@@ -662,7 +704,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: Completion(QQ, v)
             Completion of Rational Field with respect to 2-adic valuation
 
@@ -676,7 +718,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: len(K.some_elements())
             100
@@ -694,7 +736,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.valuation()
             2-adic valuation
@@ -711,7 +753,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.residue_field()
             Finite Field of size 2
@@ -727,7 +769,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 + x + 1)
@@ -752,7 +794,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         This ring is generated by its one element::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.ngens()
             1
@@ -771,7 +813,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         This ring is generated by its one element::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.gen(0)
             1
@@ -792,7 +834,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: f = x + 1
@@ -806,7 +848,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
 
             sage: G = GaussianIntegers().fraction_field()
             sage: I = G.gen()
-            sage: v = pAdicValuation(G, 2)
+            sage: v = G.valuation(2)
             sage: K = Completion(G, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
@@ -819,7 +861,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
 
         Another non-trivial example::
 
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
@@ -861,7 +903,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
                 continue
 
             degree = approximant.phi().degree()
-            from mac_lane.limit_valuation import LimitValuation
+            from sage.rings.valuation.limit_valuation import LimitValuation
             limit = LimitValuation(approximant, f)
             coefficients = [self((limit, d)) for d in range(degree + 1)]
             if f.is_monic():
@@ -880,7 +922,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 2)
+            sage: v = ZZ.valuation(2)
             sage: R = Completion(ZZ, v)
             sage: R.ideal(1, 1)
             Principal ideal (1) of Completion of Integer Ring with respect to 2-adic valuation
@@ -951,7 +993,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: C._krasner_bound(x^2 + x + 1)
@@ -985,7 +1027,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         valuations = [ext_valuation(n)-self._base_valuation(d) for n,d in taylor]
         # the distances v(\alpha-\alpha') are the slopes of the Newton polygon of the Taylor expansion
         from sage.geometry.newton_polygon import NewtonPolygon
-        distances = NewtonPolygon(list(enumerate(valuations))).principal_part().slopes()
+        distances = NewtonPolygon(list(enumerate(valuations))).slopes()
         distances = [-d for d in distances]
 
         # For Krasner's lemma to hold, another polynomial g with root beta must satisfy
@@ -1011,7 +1053,7 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 4).factor()
@@ -1033,6 +1075,90 @@ class Completion_base(CommutativeRing, UniqueRepresentation):
                                               and c._limit_valuation == polynomial[0]._limit_valuation
                                               for (d,c) in enumerate(polynomial.coefficients(sparse=False)[:-1])])
 
+    def module(self, base=None):
+        r"""
+        Return a free ``base``-module isomorphic to this ring together with
+        isomorphisms to and from this module.
+
+        INPUT:
+
+        - ``base`` -- a ring of which this ring is a finite extension
+          (default: the ring itself)
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = QQ.valuation(2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: L.module(base=L)
+            (Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+               To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation)
+            sage: L.module(base=K)
+            (Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation
+               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+             Isomorphism morphism:
+               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+               To:   Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation)
+
+        """
+        if base is None:
+            base = self
+        basis = self._module_basis(base=base)
+        V = base**len(basis)
+        from sage.all import Hom
+        to_self_parent = Hom(V, self)
+        from maps import VectorSpaceToCompletion, CompletionToVectorSpace
+        to_self = to_self_parent.__make_element_class__(VectorSpaceToCompletion)(to_self_parent, basis)
+        from_self_parent = Hom(self, V)
+        from_self = from_self_parent.__make_element_class__(CompletionToVectorSpace)(from_self_parent, base)
+        return (V, to_self, from_self)
+
+    def _module_basis(self, base):
+        r"""
+        Return a basis of this ring as a free module over ``base``.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = QQ.valuation(2)
+            sage: K = Completion(QQ, v)
+            sage: K._module_basis(K)
+            (1,)
+
+        """
+        if base is None:
+            base = self
+        if base is self:
+            return (self(1),)
+        raise NotImplementedError("Basis with respect to %s"%base)
+
+    def _test_module_basis(self, **options):
+        r"""
+        Test that :meth:`_module_basis` works correctly.
+
+        TESTS::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = QQ.valuation(2)
+            sage: K = Completion(QQ, v)
+            sage: K._test_module_basis()
+
+        """
+        tester = self._tester(**options)
+
+        basis = self._module_basis(self)
+        tester.assertTrue(all(c.parent() is self for c in basis))
+        tester.assertEqual(len(basis), 1)
+
 
 class Completion_Ring(Completion_base):
     r"""
@@ -1041,7 +1167,7 @@ class Completion_Ring(Completion_base):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: Completion(ZZ, v)
         Completion of Integer Ring with respect to 2-adic valuation
 
@@ -1051,7 +1177,7 @@ class Completion_Ring(Completion_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 2)
+            sage: v = ZZ.valuation(2)
             sage: C = Completion(ZZ, v)
             sage: isinstance(C, Completion_Ring)
             True
@@ -1077,7 +1203,7 @@ class Completion_Ring(Completion_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 2)
+            sage: v = ZZ.valuation(2)
             sage: R = Completion(ZZ, v)
             sage: x = R(0) # indirect doctest
             sage: isinstance(x, R._base_element_class)
@@ -1096,7 +1222,7 @@ class Completion_Ring(Completion_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 5)
+            sage: v = ZZ.valuation(5)
             sage: S = Completion(ZZ, v)
             sage: R.<x> = S[]
             sage: f = x^2 + 1
@@ -1115,7 +1241,7 @@ class Completion_Ring(Completion_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 2)
+            sage: v = ZZ.valuation(2)
             sage: R = Completion(ZZ, v)
             sage: R.is_field()
             False
@@ -1130,7 +1256,7 @@ class Completion_Ring(Completion_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 2)
+            sage: v = ZZ.valuation(2)
             sage: R = Completion(ZZ, v)
             sage: R.fraction_field()
             Completion of Rational Field with respect to 2-adic valuation
@@ -1146,7 +1272,7 @@ class Completion_Field(Completion_base, Field):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: Completion(QQ, v)
         Completion of Rational Field with respect to 2-adic valuation
 
@@ -1156,7 +1282,7 @@ class Completion_Field(Completion_base, Field):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: isinstance(K, Completion_Field)
             True
@@ -1177,7 +1303,7 @@ class Completion_Field(Completion_base, Field):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: x = K(0) # indirect doctest
             sage: isinstance(x, K._base_element_class)
@@ -1196,7 +1322,7 @@ class Completion_Field(Completion_base, Field):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
@@ -1208,90 +1334,6 @@ class Completion_Field(Completion_base, Field):
         from mac_lane_element import MacLaneElement_Field
         return self.__make_element_class__(MacLaneElement_Field)
 
-    def vector_space(self, base=None):
-        r"""
-        Return a ``base``-vector space isomorphic to this field together with
-        isomorphisms to and from this vector space.
-
-        INPUT:
-
-        - ``base`` -- a field of which this field is a finite extension
-          (default: the field itself)
-
-        EXAMPLES::
-
-            sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
-            sage: K = Completion(QQ, v)
-            sage: R.<x> = K[]
-            sage: L = K.extension(x^2 + x + 1)
-            sage: L.vector_space(base=L)
-            (Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
-             Isomorphism morphism:
-               From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
-             Isomorphism morphism:
-               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-               To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation)
-            sage: L.vector_space(base=K)
-            (Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation,
-             Isomorphism morphism:
-               From: Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation
-               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
-             Isomorphism morphism:
-               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-               To:   Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation)
-
-        """
-        if base is None:
-            base = self
-        basis = self._vector_space_basis(base=base)
-        V = base**len(basis)
-        from sage.all import Hom
-        to_self_parent = Hom(V, self)
-        from maps import VectorSpaceToCompletion, CompletionToVectorSpace
-        to_self = to_self_parent.__make_element_class__(VectorSpaceToCompletion)(to_self_parent, basis)
-        from_self_parent = Hom(self, V)
-        from_self = from_self_parent.__make_element_class__(CompletionToVectorSpace)(from_self_parent, base)
-        return (V, to_self, from_self)
-
-    def _vector_space_basis(self, base):
-        r"""
-        Return a basis of this field as a vector space over ``base``.
-
-        EXAMPLES::
-
-            sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
-            sage: K = Completion(QQ, v)
-            sage: K._vector_space_basis(K)
-            (1,)
-
-        """
-        if base is None:
-            base = self
-        if base is self:
-            return (self(1),)
-        raise NotImplementedError("Basis with respect to %s"%base)
-
-    def _test_vector_space_basis(self, **options):
-        r"""
-        Test that :meth:`_vector_space_basis` works correctly.
-
-        TESTS::
-
-            sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
-            sage: K = Completion(QQ, v)
-            sage: K._test_vector_space_basis()
-
-        """
-        tester = self._tester(**options)
-
-        basis = self._vector_space_basis(self)
-        tester.assertTrue(all(c.parent() is self for c in basis))
-        tester.assertEqual(len(basis), 1)
-
 
 class CompletionExtension(Completion_base):
     r"""
@@ -1301,7 +1343,7 @@ class CompletionExtension(Completion_base):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L.<a> = K.extension(x^2 + x + 1); L
@@ -1317,7 +1359,7 @@ class CompletionExtension(Completion_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -1364,7 +1406,7 @@ class CompletionExtension(Completion_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -1386,7 +1428,7 @@ class CompletionExtension(Completion_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -1404,7 +1446,7 @@ class CompletionExtension(Completion_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -1427,7 +1469,7 @@ class CompletionExtension(Completion_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -1452,7 +1494,7 @@ class CompletionExtension(Completion_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 + x + 1) # indirect doctest
@@ -1470,7 +1512,7 @@ class CompletionExtension(Completion_base):
         This extension is generated by a root of its defining polynomial::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
@@ -1492,7 +1534,7 @@ class CompletionExtension(Completion_base):
         A totally ramified extension::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: C = Completion(QQ, v)
             sage: R.<t> = C[]
             sage: f = t^12 - 4*t^11 + 2*t^10 + 13*t^8 - 16*t^7 - 36*t^6 + 168*t^5 - 209*t^4 + 52*t^3 + 26*t^2 + 8*t - 13
@@ -1551,7 +1593,7 @@ class CompletionExtension_Field(CompletionExtension, Completion_Field):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 3)
+        sage: v = QQ.valuation(3)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: K.extension(x^2 + 3)
@@ -1563,7 +1605,7 @@ class CompletionExtension_Field(CompletionExtension, Completion_Field):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 3)
+            sage: v = QQ.valuation(3)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + 3)
@@ -1576,23 +1618,23 @@ class CompletionExtension_Field(CompletionExtension, Completion_Field):
             raise TypeError("model must be a field")
         super(CompletionExtension_Field, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
-    def _test_extension_vector_space_basis(self, **options):
+    def _test_extension_module_basis(self, **options):
         r"""
-        Test that :meth:`_vector_space_basis` works correctly.
+        Test that :meth:`_module_basis` works correctly.
 
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + 2)
-            sage: L._test_extension_vector_space_basis()
+            sage: L._test_extension_module_basis()
 
         """
         tester = self._tester(**options)
 
-        basis = self._vector_space_basis(self._absolute_base_ring())
+        basis = self._module_basis(self._absolute_base_ring())
         tester.assertTrue(all(c.parent() is self for c in basis))
         tester.assertEqual(len(basis), self._absolute_degree())
 
@@ -1604,7 +1646,7 @@ class CompletionExtension_Ring(CompletionExtension, Completion_Ring):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 3)
+        sage: v = ZZ.valuation(3)
         sage: S = Completion(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + 3); T
@@ -1624,7 +1666,7 @@ class CompletionExtension_Ring(CompletionExtension, Completion_Ring):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 3)
+            sage: v = ZZ.valuation(3)
             sage: S = Completion(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + 3)
@@ -1644,7 +1686,7 @@ class CompletionExtensionAbsolute(CompletionExtension):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: L.<x> = K[]
         sage: K.extension(x^2 + x + 1)
@@ -1656,7 +1698,7 @@ class CompletionExtensionAbsolute(CompletionExtension):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: L.<x> = K[]
             sage: M = K.extension(x^2 + x + 1)
@@ -1670,6 +1712,27 @@ class CompletionExtensionAbsolute(CompletionExtension):
         if not model.base_ring() is self._absolute_base_ring().base():
             raise ValueError("model must be an absolute extension of the base of absolute base_ring")
 
+    def _module_basis(self, base):
+        r"""
+        Return a basis of this ring as a free module over ``base``.
+ 
+        EXAMPLES::
+
+           sage: sys.path.append(os.getcwd()); from completion import *
+           sage: v = QQ.valuation(2)
+           sage: K = Completion(QQ, v)
+           sage: R.<x> = K[]
+           sage: L = K.extension(x^2 + x + 1)
+           sage: L._module_basis(base = K)
+           (1, x)
+
+        """
+        if base is self._absolute_base_ring():
+            gen = self._base(self._base.fraction_field().gen())
+            return tuple(self(gen)**i for i in range(self._absolute_degree()))
+        return super(CompletionExtensionAbsolute, self)._module_basis(base = base)
+
+
 class CompletionExtensionAbsolute_Field(CompletionExtensionAbsolute, CompletionExtension_Field):
     r"""
     Extension of a field :class:`Completion` whose model is an absolute
@@ -1678,7 +1741,7 @@ class CompletionExtensionAbsolute_Field(CompletionExtensionAbsolute, CompletionE
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: L.<x> = K[]
         sage: L = K.extension(x^2 + 2); L
@@ -1691,24 +1754,7 @@ class CompletionExtensionAbsolute_Field(CompletionExtensionAbsolute, CompletionE
         sage: TestSuite(L).run() # long time
 
     """
-    def _vector_space_basis(self, base):
-        r"""
-        Return a basis of this field as a vector space over ``base``.
- 
-        EXAMPLES::
-
-           sage: sys.path.append(os.getcwd()); from completion import *
-           sage: v = pAdicValuation(QQ, 2)
-           sage: K = Completion(QQ, v)
-           sage: R.<x> = K[]
-           sage: L = K.extension(x^2 + x + 1)
-           sage: L._vector_space_basis(base = K)
-           (1, x)
-
-        """
-        if base is self._absolute_base_ring():
-            return tuple(self(self._base.gen())**i for i in range(self._absolute_degree()))
-        return super(CompletionExtensionAbsolute_Field, self)._vector_space_basis(base = base)
+    pass
 
 
 class CompletionExtensionSimple(CompletionExtensionAbsolute):
@@ -1718,7 +1764,7 @@ class CompletionExtensionSimple(CompletionExtensionAbsolute):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: S = Completion(ZZ, v)
         sage: R.<x> = S[]
         sage: S.extension(x^2 + x + 1)
@@ -1730,7 +1776,7 @@ class CompletionExtensionSimple(CompletionExtensionAbsolute):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 2)
+            sage: v = ZZ.valuation(2)
             sage: S = Completion(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
@@ -1750,7 +1796,7 @@ class CompletionExtensionSimple(CompletionExtensionAbsolute):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
@@ -1774,7 +1820,7 @@ class CompletionExtensionSimple_Field(CompletionExtensionSimple, CompletionExten
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1); L
@@ -1796,7 +1842,7 @@ class CompletionExtensionSimple_Ring(CompletionExtensionSimple, CompletionExtens
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: S = Completion(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1); T
@@ -1822,7 +1868,7 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
     exist internally when building iterated extensions::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
@@ -1836,7 +1882,7 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -1865,7 +1911,7 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -1883,6 +1929,42 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
             raise ValueError("ring has only one generator")
         return self(self._base_fraction_field.gen())
 
+    @cached_method
+    def _module_basis(self, base):
+        r"""
+        Return a basis of this ring as a free module over ``base``.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = QQ.valuation(2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = Extension._create_extension(L, y^4 - 2)
+            sage: M._module_basis(L)
+            (1, ybar, ybar^2, ybar^3)
+            sage: M._module_basis(K)
+            (1, x, ybar, x*ybar, ybar^2, x*ybar^2, ybar^3, x*ybar^3)
+
+        """
+        if base is self.base_ring():
+            return tuple(self(self.base().gen()**i) for i in range(self.base().degree())) 
+        if base is self._absolute_base_ring():
+            return tuple(b*self(p) for b in self._module_basis(self.base_ring()) for p in self.base_ring()._module_basis(base))
+        return super(CompletionExtensionIteratedQuotient, self)._module_basis(base = base)
+
+    def _coerce_map_from_(self, other):
+        if isinstance(other, CompletionExtensionIteratedQuotient):
+            if self.base_ring().has_coerce_map_from(other.base_ring()):
+                if other._polynomial.change_ring(self.base_ring()) == self._polynomial:
+                    homspace = other.Hom(self)
+                    from maps import QuotientConversion_generic
+                    return homspace.__make_element_class__(QuotientConversion_generic)(homspace)
+                    
+        return super(CompletionExtensionIteratedQuotient, self)._coerce_map_from_(other)
+
 
 class CompletionExtensionIteratedQuotient_Field(CompletionExtensionIteratedQuotient, CompletionExtension_Field):
     r"""
@@ -1895,7 +1977,7 @@ class CompletionExtensionIteratedQuotient_Field(CompletionExtensionIteratedQuoti
     exist internally when building iterated extensions::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
@@ -1910,31 +1992,8 @@ class CompletionExtensionIteratedQuotient_Field(CompletionExtensionIteratedQuoti
         sage: TestSuite(M).run() # long time
 
     """
-    @cached_method
-    def _vector_space_basis(self, base):
-        r"""
-        Return a basis of this field as a vector space over ``base``.
-
-        EXAMPLES::
-
-            sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
-            sage: K = Completion(QQ, v)
-            sage: R.<x> = K[]
-            sage: L = K.extension(x^2 + x + 1)
-            sage: R.<y> = L[]
-            sage: M = Extension._create_extension(L, y^4 - 2)
-            sage: M._vector_space_basis(L)
-            (1, ybar, ybar^2, ybar^3)
-            sage: M._vector_space_basis(K)
-            (1, x, ybar, x*ybar, ybar^2, x*ybar^2, ybar^3, x*ybar^3)
-
-        """
-        if base is self.base_ring():
-            return tuple(self(self.base().gen()**i) for i in range(self.base().degree())) 
-        if base is self._absolute_base_ring():
-            return tuple(b*self(p) for b in self._vector_space_basis(self.base_ring()) for p in self.base_ring()._vector_space_basis(base))
-        return super(CompletionExtensionIteratedQuotient_Field, self)._vector_space_basis(base = base)
+    def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
+        super(CompletionExtensionIteratedQuotient_Field, self).__init__(base_ring, polynomial, model,model_valuation,category)
 
 
 class CompletionExtensionIteratedQuotient_Ring(CompletionExtensionIteratedQuotient, CompletionExtension_Ring):
@@ -1948,23 +2007,52 @@ class CompletionExtensionIteratedQuotient_Ring(CompletionExtensionIteratedQuotie
     exist internally when building iterated extensions::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: S = Completion(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1)
         sage: R.<y> = T[]
         sage: U = Extension._create_extension(T, y^4 - 2); U
-        Traceback (most recent call last):
-        ...
-        NotImplementedError: extending 2-adic valuation from Order in Number Field in x with defining polynomial x^2 + x + 1 to Univariate Quotient Polynomial Ring in ybar over Order in Number Field in x with defining polynomial x^2 + x + 1 with modulus y^4 - 2 not implemented
-
-    TESTS::
-
-        sage: isinstance(U, CompletionExtensionIteratedQuotient_Ring) # not tested
-        True
-        sage: TestSuite(U).run() # long time # not tested
+        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Integer Ring with respect to 2-adic valuation
 
     """
+    def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
+        r"""
+        TESTS::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = ZZ.valuation(2)
+            sage: S = Completion(ZZ, v)
+            sage: R.<x> = S[]
+            sage: T = S.extension(x^2 + x + 1)
+            sage: R.<y> = T[]
+            sage: U = Extension._create_extension(T, y^4 - 2)
+            sage: isinstance(U, CompletionExtensionIteratedQuotient_Ring)
+            True
+            sage: TestSuite(U).run() # long time
+
+        """
+        super(CompletionExtensionIteratedQuotient_Ring, self).__init__(base_ring, polynomial, model,model_valuation,category)
+
+    def fraction_field(self):
+        r"""
+        Return the fraction field of this ring.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = ZZ.valuation(2)
+            sage: S = Completion(ZZ, v)
+            sage: R.<x> = S[]
+            sage: T = S.extension(x^2 + x + 1)
+            sage: R.<y> = T[]
+            sage: U = Extension._create_extension(T, y^4 - 2)
+            sage: U.fraction_field()
+            Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+
+        """
+        K = self.base_ring().fraction_field()
+        return Extension._create_extension(K, self._polynomial.change_ring(K))
 
 
 class CompletionExtensionIteratedAbsolute(CompletionExtensionAbsolute):
@@ -1975,7 +2063,7 @@ class CompletionExtensionIteratedAbsolute(CompletionExtensionAbsolute):
     EXAMPLES:
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
@@ -1989,7 +2077,7 @@ class CompletionExtensionIteratedAbsolute(CompletionExtensionAbsolute):
         TESTS::
     
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -2012,7 +2100,7 @@ class CompletionExtensionIteratedAbsolute(CompletionExtensionAbsolute):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
@@ -2039,7 +2127,7 @@ class CompletionExtensionIteratedAbsolute_Field(CompletionExtensionIteratedAbsol
     EXAMPLES:
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
@@ -2064,20 +2152,18 @@ class CompletionExtensionIteratedAbsolute_Ring(CompletionExtensionIteratedAbsolu
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: S = Completion(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1)
         sage: R.<y> = T[]
         sage: U = T.extension(y^4 - 2); U
-        Traceback (most recent call last):
-        ...
-        NotImplementedError: extending 2-adic valuation from Order in Number Field in x with defining polynomial x^2 + x + 1 to Univariate Quotient Polynomial Ring in ybar over Order in Number Field in x with defining polynomial x^2 + x + 1 with modulus y^4 - 2 not implemented
+        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Integer Ring with respect to 2-adic valuation
 
     TESTS::
 
-        sage: isinstance(U, CompletionExtensionIteratedAbsolute_Ring) # not tested
+        sage: isinstance(U, CompletionExtensionIteratedAbsolute_Ring)
         True
-        sage: TestSuite(U).run() # long time # not tested
+        sage: TestSuite(U).run() # long time
 
     """

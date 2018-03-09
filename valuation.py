@@ -17,7 +17,7 @@ AUTHORS:
 #*****************************************************************************
 from sage.structure.factory import UniqueFactory
 
-import mac_lane.valuation
+from sage.rings.valuation.valuation import DiscreteValuation
 
 class CompletionValuationFactory(UniqueFactory):
     r"""
@@ -29,7 +29,7 @@ class CompletionValuationFactory(UniqueFactory):
     completion::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 5)
+        sage: v = QQ.valuation(5)
         sage: K = Completion(QQ, v)
         sage: K.valuation() # indirect doctest
         5-adic valuation
@@ -42,7 +42,7 @@ class CompletionValuationFactory(UniqueFactory):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: K.valuation() is K.valuation() # indirect doctest
             True
@@ -57,21 +57,21 @@ class CompletionValuationFactory(UniqueFactory):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: K.valuation() # indirect doctest
             5-adic valuation
 
         """
         domain, = key
-        from mac_lane import DiscretePseudoValuationSpace
+        from sage.rings.valuation.valuation_space import DiscretePseudoValuationSpace
         parent = DiscretePseudoValuationSpace(domain)
         return parent.__make_element_class__(CompletionValuation)(parent)
 
 Valuation = CompletionValuationFactory("completion.valuation.Valuation")
 
 
-class CompletionValuation(mac_lane.valuation.DiscreteValuation):
+class CompletionValuation(DiscreteValuation):
     r"""
     The valuation on a completion.
 
@@ -81,7 +81,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 5)
+        sage: v = QQ.valuation(5)
         sage: K = Completion(QQ, v)
         sage: K.valuation()
         5-adic valuation
@@ -92,7 +92,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: v = K.valuation()
             sage: isinstance(v, CompletionValuation)
@@ -110,7 +110,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: K.valuation() # indirect doctest
             5-adic valuation
@@ -125,7 +125,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
             sage: w(K(25))
@@ -141,7 +141,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
             sage: w.uniformizer()
@@ -157,7 +157,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
             sage: w.residue_ring()
@@ -174,7 +174,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
             sage: w.lift(1)
@@ -191,7 +191,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
             sage: w.reduce(6)
@@ -208,7 +208,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 5)
+            sage: v = ZZ.valuation(5)
             sage: R = Completion(ZZ, v)
             sage: w = R.valuation()
             sage: w.value_semigroup()
@@ -224,7 +224,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: w = K.valuation()
             sage: R.<a> = K[]
@@ -244,7 +244,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         Return an estimate on the coefficient size of ``x``.
 
         The number returned is an estimate on the factor between the number of
-        Bits used by ``x`` and the minimal number of bits used by an element
+        bits used by ``x`` and the minimal number of bits used by an element
         congruent to ``x``.
 
         This is used by :meth:`simplify` to decide whether simplification of
@@ -254,10 +254,10 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES:: 
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.valuation()._relative_size(1024)
-            11
+            6
 
         """
         return self.domain().coerce(x)._relative_size()
@@ -273,7 +273,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.valuation().simplify(1025, force=True)
             1
@@ -291,7 +291,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.valuation().upper_bound(1025)
             0
@@ -309,7 +309,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.valuation().lower_bound(1025)
             0
@@ -324,7 +324,7 @@ class CompletionValuation(mac_lane.valuation.DiscreteValuation):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: K.valuation().restriction(ZZ)
             2-adic valuation

@@ -28,7 +28,7 @@ class GeneratorElement(CompletionElement_base):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 3)
+        sage: v = QQ.valuation(3)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 - 3)
@@ -51,7 +51,7 @@ class GeneratorElement(CompletionElement_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 3)
+            sage: v = QQ.valuation(3)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
@@ -72,7 +72,7 @@ class GeneratorElement(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 3)
+            sage: v = QQ.valuation(3)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
@@ -91,7 +91,7 @@ class GeneratorElement(CompletionElement_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 3)
+            sage: v = QQ.valuation(3)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
@@ -124,7 +124,7 @@ class GeneratorElement(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 3)
+            sage: v = QQ.valuation(3)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
@@ -147,7 +147,7 @@ class GeneratorElement(CompletionElement_base):
         This is not implemented yet::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 3)
+            sage: v = QQ.valuation(3)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
@@ -173,7 +173,7 @@ class GeneratorElement(CompletionElement_base):
         This is not implemented yet::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 3)
+            sage: v = QQ.valuation(3)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
