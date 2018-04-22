@@ -2,7 +2,8 @@ version: 2
 jobs:
   build:
     docker:
-    - image: saraedum/sagemath:develop
+    # TODO: change this to sagemath/sagemath:develop once 25226 has been merged.
+    - image: saraedum/sagemath:maclane-sort
       entrypoint: bash
     steps:
     - type: checkout
