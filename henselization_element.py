@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Base class for elements of completions
+Base class for elements of Henselizations
 
 AUTHORS:
 
@@ -17,61 +17,61 @@ AUTHORS:
 #*****************************************************************************
 from sage.structure.element import IntegralDomainElement
 
-class CompletionElement_base(IntegralDomainElement):
+class HenselizationElement_base(IntegralDomainElement):
     r"""
-    Abstract base class for elements of :class:`Completion_base`
+    Abstract base class for elements of :class:`Henselization_base`
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: x = K(0); x
         0
 
     TESTS::
 
-        sage: isinstance(x, CompletionElement_base)
+        sage: isinstance(x, HenselizationElement_base)
         True
         sage: TestSuite(x).run()
 
     """
 
-class CompletionElement_Field(CompletionElement_base):
+class HenselizationElement_Field(HenselizationElement_base):
     r"""
-    Abstract base class for elements of :class:`Completion_Field`
+    Abstract base class for elements of :class:`Henselization_Field`
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: x = K(0); x
         0
 
     TESTS::
 
-        sage: isinstance(x, CompletionElement_Field)
+        sage: isinstance(x, HenselizationElement_Field)
         True
         sage: TestSuite(x).run()
 
     """
 
-class CompletionElement_Ring(CompletionElement_base):
+class HenselizationElement_Ring(HenselizationElement_base):
     r"""
-    Abstract base class for elements of :class:`Completion_Ring`
+    Abstract base class for elements of :class:`Henselization_Ring`
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: S = Completion(ZZ, v)
+        sage: S = Henselization(ZZ, v)
         sage: x = S(0); x
         0
 
     TESTS::
 
-        sage: isinstance(x, CompletionElement_Ring)
+        sage: isinstance(x, HenselizationElement_Ring)
         True
         sage: TestSuite(x).run()
 
@@ -82,9 +82,9 @@ class CompletionElement_Ring(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(3)
-            sage: S = Completion(ZZ, v)
+            sage: S = Henselization(ZZ, v)
             sage: R.<x> = S[]
             sage: T.<y> = S.extension(x^2 + 3)
             sage: y.euclidean_degree()

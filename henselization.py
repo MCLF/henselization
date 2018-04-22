@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Exact completions of rings
+Henselizations of rings
 
 AUTHORS:
 
@@ -23,9 +23,9 @@ from sage.misc.cachefunc import cached_method
 from sage.categories.fields import Fields
 from sage.structure.element import is_Element
 
-class CompletionFactory(UniqueFactory):
+class HenselizationFactory(UniqueFactory):
     r"""
-    Return the completion of ``R`` with respect to ``v``.
+    Return the Henselization of ``R`` with respect to ``v``.
     
     INPUT:
     
@@ -37,21 +37,21 @@ class CompletionFactory(UniqueFactory):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(5)
-        sage: Completion(QQ, v)
-        Completion of Rational Field with respect to 5-adic valuation
+        sage: Henselization(QQ, v)
+        Henselization of Rational Field with respect to 5-adic valuation
 
     """
     def create_key(self, R, v):
         r"""
-        Create a key which uniquely identifies this completion.
+        Create a key which uniquely identifies this Henselization.
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: Completion(QQ, v) is Completion(QQ, v) # indirect doctest
+            sage: Henselization(QQ, v) is Henselization(QQ, v) # indirect doctest
             True
 
         """
@@ -68,24 +68,24 @@ class CompletionFactory(UniqueFactory):
 
     def create_object(self, version, key):
         r"""
-        Create the completion identified by ``key``.
+        Create the Henselization identified by ``key``.
 
         TESTS::
             
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: Completion(QQ, v) # indirect doctest
-            Completion of Rational Field with respect to 5-adic valuation
+            sage: Henselization(QQ, v) # indirect doctest
+            Henselization of Rational Field with respect to 5-adic valuation
 
         """
         R, v = key
 
         if v.value_semigroup().is_group():
-            return Completion_Field(R, v)
+            return Henselization_Field(R, v)
         else:
-            return Completion_Ring(R, v)
+            return Henselization_Ring(R, v)
 
-Completion = CompletionFactory("Completion")
+Henselization = HenselizationFactory("Henselization")
 
 
 class ExtensionFactory(UniqueFactory):
@@ -97,12 +97,12 @@ class ExtensionFactory(UniqueFactory):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(5)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: K.extension(x^2 - 5) # indirect doctest
-        Extension defined by x^2 - 5 of Completion of Rational Field with respect to 5-adic valuation
+        Extension defined by x^2 - 5 of Henselization of Rational Field with respect to 5-adic valuation
 
     """
     def create_key(self, base, polynomial, name, check=True):
@@ -111,9 +111,9 @@ class ExtensionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 - 5) is K.extension(x^2 - 5) # indirect doctest
             True
@@ -145,17 +145,17 @@ class ExtensionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 - 5) # indirect doctest
-            Extension defined by x^2 - 5 of Completion of Rational Field with respect to 5-adic valuation
+            Extension defined by x^2 - 5 of Henselization of Rational Field with respect to 5-adic valuation
 
         """
         base, polynomial = key
 
-        if isinstance(base, CompletionExtension):
+        if isinstance(base, HenselizationExtension):
             if polynomial.base_ring()._is_monic_mac_lane_polynomial(polynomial) and polynomial.base_ring() is base:
                 iterated_extension = self._get_isomorphic_approximation(polynomial)
             else:
@@ -167,16 +167,16 @@ class ExtensionFactory(UniqueFactory):
 
     def _get_isomorphic_approximation(self, polynomial):
         r"""
-        Return a completion backed by quotient by a polynomial that has the
+        Return a Henselization backed by quotient by a polynomial that has the
         same splitting field as the approximate ``polynomial`` over ``base``.
 
         EXAMPLES:
 
         A trivial case, a factor of degree one::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
             sage: F = sorted(F, key=str) # remove randomness in the output
@@ -203,7 +203,7 @@ class ExtensionFactory(UniqueFactory):
         A complex case where the initial approximation is not sufficient::
 
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: f = x^12 - 4*x^11 + 2*x^10 + 13*x^8 - 16*x^7 - 36*x^6 + 168*x^5 - 209*x^4 + 52*x^3 + 26*x^2 + 8*x - 13
             sage: L = K.extension(f.change_variable_name('a'))
@@ -300,18 +300,18 @@ class ExtensionFactory(UniqueFactory):
         TESTS:
     
         A ``model`` and a ``model_valuation`` can be specified to specify which
-        number field should back the implementation of the completion; if the
+        number field should back the implementation of the Henselization; if the
         ``model_valuation`` is omitted it is determined automatically::
     
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = QQ[]
             sage: M.<x> = QQ.extension(x^2 + x + 3)
             sage: R.<x> = K[]
             sage: L = Extension._create_extension(K, x^2 + x + 1, model = M)
             sage: L
-            Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
             sage: L.base()
             Number Field in x with defining polynomial x^2 + x + 3
     
@@ -325,44 +325,6 @@ class ExtensionFactory(UniqueFactory):
     
         """
         return Quotient(base, polynomial, model, model_valuation)
-        if model is None:
-            from base_element import BaseElement_base
-            if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients()]):
-                model_polynomial = polynomial.map_coefficients(base._base, base._base)
-            else:
-                raise NotImplementedError("Can not extend %s by adjoining a root of %s"%(base, polynomial))
-
-            if isinstance(base, CompletionExtension):
-                model = model_polynomial.parent().quo(model_polynomial)
-            else:
-                model = base.base().extension(model_polynomial, names=(model_polynomial.variable_name(),))
-        if model_valuation is None:
-            model_valuation = base._base_valuation.extension(model)
-
-
-        from sage.categories.all import Fields
-        if model in Fields():
-            # triggers refinement of category of model
-            pass
-    
-        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
-        if not isinstance(base, CompletionExtension):
-            if base in Fields():
-                clazz = CompletionExtensionSimple_Field
-            else:
-                clazz = CompletionExtensionSimple_Ring
-        elif is_PolynomialQuotientRing(model):
-            if base in Fields():
-                clazz = CompletionExtensionIteratedQuotient_Field
-            else:
-                clazz = CompletionExtensionIteratedQuotient_Ring
-        else:
-            if base in Fields():
-                clazz = CompletionExtensionIteratedAbsolute_Field
-            else:
-                clazz = CompletionExtensionIteratedAbsolute_Ring
-        
-        return clazz(base, polynomial, model, model_valuation)
 
 class QuotientFactory(UniqueFactory):
     def create_key(self, base, polynomial, model = None, model_valuation = None):
@@ -373,7 +335,7 @@ class QuotientFactory(UniqueFactory):
             else:
                 raise NotImplementedError("Can not extend %s by adjoining a root of %s"%(base, polynomial))
 
-            if isinstance(base, CompletionExtension):
+            if isinstance(base, HenselizationExtension):
                 model = model_polynomial.parent().quo(model_polynomial)
             else:
                 model = base.base().extension(model_polynomial, names=(model_polynomial.variable_name(),))
@@ -391,21 +353,21 @@ class QuotientFactory(UniqueFactory):
             pass
     
         from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
-        if not isinstance(base, CompletionExtension):
+        if not isinstance(base, HenselizationExtension):
             if base in Fields():
-                clazz = CompletionExtensionSimple_Field
+                clazz = HenselizationExtensionSimple_Field
             else:
-                clazz = CompletionExtensionSimple_Ring
+                clazz = HenselizationExtensionSimple_Ring
         elif is_PolynomialQuotientRing(model):
             if base in Fields():
-                clazz = CompletionExtensionIteratedQuotient_Field
+                clazz = HenselizationExtensionIteratedQuotient_Field
             else:
-                clazz = CompletionExtensionIteratedQuotient_Ring
+                clazz = HenselizationExtensionIteratedQuotient_Ring
         else:
             if base in Fields():
-                clazz = CompletionExtensionIteratedAbsolute_Field
+                clazz = HenselizationExtensionIteratedAbsolute_Field
             else:
-                clazz = CompletionExtensionIteratedAbsolute_Ring
+                clazz = HenselizationExtensionIteratedAbsolute_Ring
         
         return clazz(base, polynomial, model, model_valuation)
 
@@ -413,37 +375,37 @@ Extension = ExtensionFactory("Extension")
 Quotient = QuotientFactory("Quotient")
 
 
-class Completion_base(CommutativeRing):
+class Henselization_base(CommutativeRing):
     r"""
-    Abstract base class for the completion of ``base`` with respect to
+    Abstract base class for the Henselization of ``base`` with respect to
     ``base_valuation``.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: Completion(ZZ, v)
-        Completion of Integer Ring with respect to 2-adic valuation
+        sage: Henselization(ZZ, v)
+        Henselization of Integer Ring with respect to 2-adic valuation
 
     """
     def __init__(self, base, base_valuation, category):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: K.<x> = FunctionField(QQ)
             sage: v = K.valuation(x)
-            sage: C = Completion(K, v)
-            sage: isinstance(C, Completion_base)
+            sage: C = Henselization(K, v)
+            sage: isinstance(C, Henselization_base)
             True
             sage: TestSuite(C).run() # long time
 
         """
-        super(Completion_base, self).__init__(base_ring=base, category=category)
+        super(Henselization_base, self).__init__(base_ring=base, category=category)
 
         self._base_valuation = base_valuation
 
-        # The completion contains not only the elements of base but many more
+        # The Henselization contains not only the elements of base but many more
         # elements of the fraction field of base, namely the elements of
         # valuation zero. We therefore, extend base_valuation to that field of
         # fractions.
@@ -473,7 +435,7 @@ class Completion_base(CommutativeRing):
             self._gcd_univariate_polynomial_original = self._gcd_univariate_polynomial
             self._gcd_univariate_polynomial = lambda f, g: f.parent()(self._gcd_univariate_polynomial_original(f,g))
 
-        # provide conversions from the completion back to its base and its field of fractions
+        # provide conversions from the Henselization back to its base and its field of fractions
         from maps import ConvertMap_generic
         from sage.categories.all import SetsWithPartialMaps
         # TODO: use weak references
@@ -489,9 +451,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 4).factor()
             sage: F[0][0].is_squarefree() # indirect doctest
@@ -510,9 +472,9 @@ class Completion_base(CommutativeRing):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: (x^2 - 1).gcd(x - 1) # indirect doctest
             x - 1
@@ -529,9 +491,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: x.xgcd(x) # indirect doctest
             (x, 0, 1)
@@ -553,19 +515,19 @@ class Completion_base(CommutativeRing):
         r"""
         Return the base ring of this ring.
 
-        There are two different base rings for completions. The :meth:`base`
-        which is the ring that the completion completes and the
-        :meth:`base_ring` which is the ring from which the completion has been
+        There are two different base rings for Henselizations. The :meth:`base`
+        which is the ring that the Henselization completes and the
+        :meth:`base_ring` which is the ring from which the Henselization has been
         constructed.
 
         EXAMPLES:
 
-        For completions that are not algebraical extensions of another
-        completion, these two concepts coincide::
+        For Henselizations that are not algebraical extensions of another
+        Henselization, these two concepts coincide::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.base_ring() is K.base() is QQ
             True
 
@@ -578,9 +540,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.characteristic()
             0
 
@@ -593,9 +555,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.is_finite()
             False
 
@@ -610,9 +572,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.uniformizer()
             2
 
@@ -625,9 +587,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.has_coerce_map_from(QQ) # indirect doctest
             True
 
@@ -637,17 +599,17 @@ class Completion_base(CommutativeRing):
         
         from maps import ExtensionCoercion_generic
         if self.base_ring().has_coerce_map_from(other):
-            if isinstance(other, CompletionExtension):
+            if isinstance(other, HenselizationExtension):
                 if self.base().has_coerce_map_from(other.base()):
                     homspace = other.Hom(self)
                     return homspace.__make_element_class__(ExtensionCoercion_generic)(homspace)
 
-        if isinstance(other, Completion_base):
+        if isinstance(other, Henselization_base):
             if other.base().is_subring(self.base()):
                 if self._base_valuation.restriction(other.base()) == other._base_valuation:
                     homspace = other.Hom(self)
                     return homspace.__make_element_class__(ExtensionCoercion_generic)(homspace)
-        return super(Completion_base, self)._coerce_map_from_(other)
+        return super(Henselization_base, self)._coerce_map_from_(other)
 
     def _an_element_(self):
         r"""
@@ -655,9 +617,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.an_element()
             2
 
@@ -670,9 +632,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: x = K(0) # indirect doctest
             sage: x.parent() is K
             True
@@ -703,13 +665,13 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: Completion(QQ, v)
-            Completion of Rational Field with respect to 2-adic valuation
+            sage: Henselization(QQ, v)
+            Henselization of Rational Field with respect to 2-adic valuation
 
         """
-        return "Completion of %r with respect to %r"%(self.base_ring(), self._base_valuation)
+        return "Henselization of %r with respect to %r"%(self.base_ring(), self._base_valuation)
 
     def some_elements(self):
         r"""
@@ -717,9 +679,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: len(K.some_elements())
             100
 
@@ -735,9 +697,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation()
             2-adic valuation
 
@@ -752,9 +714,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.residue_field()
             Finite Field of size 2
 
@@ -768,12 +730,12 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 + x + 1)
-            Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
         """
         if names is not None:
@@ -793,9 +755,9 @@ class Completion_base(CommutativeRing):
 
         This ring is generated by its one element::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.ngens()
             1
             sage: K.gens()
@@ -812,9 +774,9 @@ class Completion_base(CommutativeRing):
 
         This ring is generated by its one element::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.gen(0)
             1
             sage: K.gen(1)
@@ -833,9 +795,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: f = x + 1
             sage: f.factor() # indirect doctest
@@ -849,7 +811,7 @@ class Completion_base(CommutativeRing):
             sage: G = GaussianIntegers().fraction_field()
             sage: I = G.gen()
             sage: v = G.valuation(2)
-            sage: K = Completion(G, v)
+            sage: K = Henselization(G, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: F = f.factor(); F # random output
@@ -862,7 +824,7 @@ class Completion_base(CommutativeRing):
         Another non-trivial example::
 
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor()
@@ -921,14 +883,14 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: R = Completion(ZZ, v)
+            sage: R = Henselization(ZZ, v)
             sage: R.ideal(1, 1)
-            Principal ideal (1) of Completion of Integer Ring with respect to 2-adic valuation
+            Principal ideal (1) of Henselization of Integer Ring with respect to 2-adic valuation
 
         """
-        I = super(Completion_base, self).ideal(*args, **kwds)
+        I = super(Henselization_base, self).ideal(*args, **kwds)
         gens = I.gens()
         # Use GCD algorithm to obtain a principal ideal
         g = gens[0]
@@ -941,7 +903,7 @@ class Completion_base(CommutativeRing):
             for h in gens[1:]:
                 g = g.gcd(h)
         gens = [g]
-        return super(Completion_base, self).ideal(gens)
+        return super(Henselization_base, self).ideal(gens)
 
     def _krasner_bound(self, minpoly, assume_irreducible=False):
         r"""
@@ -992,9 +954,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: C._krasner_bound(x^2 + x + 1)
             [0, 0, +Infinity]
@@ -1052,9 +1014,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 4).factor()
             sage: K._is_monic_mac_lane_polynomial(F[0][0])
@@ -1087,27 +1049,27 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.module(base=L)
-            (Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+            (Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation,
              Isomorphism morphism:
-               From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+               From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
+               To:   Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation,
              Isomorphism morphism:
-               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-               To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation)
+               From: Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
+               To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation)
             sage: L.module(base=K)
-            (Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation,
+            (Vector space of dimension 2 over Henselization of Rational Field with respect to 2-adic valuation,
              Isomorphism morphism:
-               From: Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation
-               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation,
+               From: Vector space of dimension 2 over Henselization of Rational Field with respect to 2-adic valuation
+               To:   Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation,
              Isomorphism morphism:
-               From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-               To:   Vector space of dimension 2 over Completion of Rational Field with respect to 2-adic valuation)
+               From: Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
+               To:   Vector space of dimension 2 over Henselization of Rational Field with respect to 2-adic valuation)
 
         """
         if base is None:
@@ -1116,10 +1078,10 @@ class Completion_base(CommutativeRing):
         V = base**len(basis)
         from sage.all import Hom
         to_self_parent = Hom(V, self)
-        from maps import VectorSpaceToCompletion, CompletionToVectorSpace
-        to_self = to_self_parent.__make_element_class__(VectorSpaceToCompletion)(to_self_parent, basis)
+        from maps import VectorSpaceToHenselization, HenselizationToVectorSpace
+        to_self = to_self_parent.__make_element_class__(VectorSpaceToHenselization)(to_self_parent, basis)
         from_self_parent = Hom(self, V)
-        from_self = from_self_parent.__make_element_class__(CompletionToVectorSpace)(from_self_parent, base)
+        from_self = from_self_parent.__make_element_class__(HenselizationToVectorSpace)(from_self_parent, base)
         return (V, to_self, from_self)
 
     def _module_basis(self, base):
@@ -1128,9 +1090,9 @@ class Completion_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K._module_basis(K)
             (1,)
 
@@ -1147,9 +1109,9 @@ class Completion_base(CommutativeRing):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K._test_module_basis()
 
         """
@@ -1160,26 +1122,26 @@ class Completion_base(CommutativeRing):
         tester.assertEqual(len(basis), 1)
 
 
-class Completion_Ring(Completion_base):
+class Henselization_Ring(Henselization_base):
     r"""
-    The completion of ``base`` with respect to ``base_valuation``.
+    The Henselization of ``base`` with respect to ``base_valuation``.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: Completion(ZZ, v)
-        Completion of Integer Ring with respect to 2-adic valuation
+        sage: Henselization(ZZ, v)
+        Henselization of Integer Ring with respect to 2-adic valuation
 
     """
     def __init__(self, base, base_valuation, category = None):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: C = Completion(ZZ, v)
-            sage: isinstance(C, Completion_Ring)
+            sage: C = Henselization(ZZ, v)
+            sage: isinstance(C, Henselization_Ring)
             True
             sage: TestSuite(C).run() # long time
             
@@ -1189,10 +1151,10 @@ class Completion_Ring(Completion_base):
             raise TypeError("base must not be a field")
 
         if category is None:
-            from completions import CompleteDiscreteValuationRings
-            category = CompleteDiscreteValuationRings()
+            from henselizations import HenselianDiscreteValuationRings
+            category = HenselianDiscreteValuationRings()
 
-        super(Completion_Ring, self).__init__(base=base, base_valuation=base_valuation, category=category)
+        super(Henselization_Ring, self).__init__(base=base, base_valuation=base_valuation, category=category)
 
     @lazy_attribute
     def _base_element_class(self):
@@ -1202,9 +1164,9 @@ class Completion_Ring(Completion_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: R = Completion(ZZ, v)
+            sage: R = Henselization(ZZ, v)
             sage: x = R(0) # indirect doctest
             sage: isinstance(x, R._base_element_class)
             True
@@ -1221,9 +1183,9 @@ class Completion_Ring(Completion_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(5)
-            sage: S = Completion(ZZ, v)
+            sage: S = Henselization(ZZ, v)
             sage: R.<x> = S[]
             sage: f = x^2 + 1
             sage: F = f.factor() # indirect doctest
@@ -1240,9 +1202,9 @@ class Completion_Ring(Completion_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: R = Completion(ZZ, v)
+            sage: R = Henselization(ZZ, v)
             sage: R.is_field()
             False
 
@@ -1255,45 +1217,45 @@ class Completion_Ring(Completion_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: R = Completion(ZZ, v)
+            sage: R = Henselization(ZZ, v)
             sage: R.fraction_field()
-            Completion of Rational Field with respect to 2-adic valuation
+            Henselization of Rational Field with respect to 2-adic valuation
 
         """
-        return Completion(self._base_fraction_field, self._base_fraction_field_valuation)
+        return Henselization(self._base_fraction_field, self._base_fraction_field_valuation)
 
 
-class Completion_Field(Completion_base, Field):
+class Henselization_Field(Henselization_base, Field):
     r"""
-    The completion of the field ``base`` with respect to ``base_valuation``.
+    The Henselization of the field ``base`` with respect to ``base_valuation``.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: Completion(QQ, v)
-        Completion of Rational Field with respect to 2-adic valuation
+        sage: Henselization(QQ, v)
+        Henselization of Rational Field with respect to 2-adic valuation
 
     """
     def __init__(self, base, base_valuation, category = None):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
-            sage: isinstance(K, Completion_Field)
+            sage: K = Henselization(QQ, v)
+            sage: isinstance(K, Henselization_Field)
             True
             sage: TestSuite(K).run() # long time
 
         """
         if category is None:
-            from completions import CompleteDiscreteValuationFields
-            category = CompleteDiscreteValuationFields()
+            from henselizations import HenselianDiscreteValuationFields
+            category = HenselianDiscreteValuationFields()
 
-        super(Completion_Field, self).__init__(base=base, base_valuation=base_valuation, category=category)
+        super(Henselization_Field, self).__init__(base=base, base_valuation=base_valuation, category=category)
 
     @lazy_attribute
     def _base_element_class(self):
@@ -1302,9 +1264,9 @@ class Completion_Field(Completion_base, Field):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: x = K(0) # indirect doctest
             sage: isinstance(x, K._base_element_class)
             True
@@ -1321,9 +1283,9 @@ class Completion_Field(Completion_base, Field):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: F = f.factor() # indirect doctest
@@ -1335,35 +1297,35 @@ class Completion_Field(Completion_base, Field):
         return self.__make_element_class__(MacLaneElement_Field)
 
 
-class CompletionExtension(Completion_base):
+class HenselizationExtension(Henselization_base):
     r"""
-    Abstract base class for the extension of a completion by adjunction of a
+    Abstract base class for the extension of a Henselization by adjunction of a
     root of ``polynomial`` to the complete ring ``base_ring``.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L.<a> = K.extension(x^2 + x + 1); L
-        Extension defined by a^2 + a + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by a^2 + a + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
         sage: R.<x> = L[]
         sage: M.<b> = L.extension(x^12 - 4*x^11 + 2*x^10 + 13*x^8 - 16*x^7 - 36*x^6 + 168*x^5 - 209*x^4 + 52*x^3 + 26*x^2 + 8*x - 13); M
-        Extension defined by b^12 - 4*b^11 + 2*b^10 + 13*b^8 - 16*b^7 - 36*b^6 + 168*b^5 - 209*b^4 + 52*b^3 + 26*b^2 + 8*b - 13 of Extension defined by a^2 + a + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by b^12 - 4*b^11 + 2*b^10 + 13*b^8 - 16*b^7 - 36*b^6 + 168*b^5 - 209*b^4 + 52*b^3 + 26*b^2 + 8*b - 13 of Extension defined by a^2 + a + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: isinstance(L, CompletionExtension)
+            sage: isinstance(L, HenselizationExtension)
             True
             sage: TestSuite(L).run() # long time
 
@@ -1376,11 +1338,11 @@ class CompletionExtension(Completion_base):
             sage: F = f.change_ring(L).factor()
             sage: g = [g for (g,e) in F if g.degree() == 2][0]
             sage: M.<a24> = L.extension(g); M
-            Extension defined by a24^2 + (5*a12^11 + 15/2*a12^10 + 7*a12^9 + 27/4*a12^8 + 6*a12^7 + 7/2*a12^4 + 5*a12^3 + 13/2*a12^2 + 3*a12 + 19/4 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)))*a24 + 15/2*a12^11 + 1/2*a12^10 + 11/4*a12^9 + 2*a12^8 + 6*a12^7 + 2*a12^6 + 15/2*a12^5 + 2*a12^4 + 1/2*a12^3 + 1/2*a12^2 + 19/4*a12 + 2 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)) of Extension defined by a12^12 - 4*a12^11 + 2*a12^10 + 13*a12^8 - 16*a12^7 - 36*a12^6 + 168*a12^5 - 209*a12^4 + 52*a12^3 + 26*a12^2 + 8*a12 - 13 of Completion of Rational Field with respect to 2-adic valuation
+            Extension defined by a24^2 + (5*a12^11 + 15/2*a12^10 + 7*a12^9 + 27/4*a12^8 + 6*a12^7 + 7/2*a12^4 + 5*a12^3 + 13/2*a12^2 + 3*a12 + 19/4 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)))*a24 + 15/2*a12^11 + 1/2*a12^10 + 11/4*a12^9 + 2*a12^8 + 6*a12^7 + 2*a12^6 + 15/2*a12^5 + 2*a12^4 + 1/2*a12^3 + 1/2*a12^2 + 19/4*a12 + 2 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)) of Extension defined by a12^12 - 4*a12^11 + 2*a12^10 + 13*a12^8 - 16*a12^7 - 36*a12^6 + 168*a12^5 - 209*a12^4 + 52*a12^3 + 26*a12^2 + 8*a12 - 13 of Henselization of Rational Field with respect to 2-adic valuation
     
         """
-        if not isinstance(base_ring, Completion_base):
-            raise TypeError("base_ring must be a completion")
+        if not isinstance(base_ring, Henselization_base):
+            raise TypeError("base_ring must be a Henselization")
         if polynomial.base_ring() is not base_ring:
             raise ValueError("polynomial must be defined over base_ring")
         if model_valuation.domain() is not model:
@@ -1392,7 +1354,7 @@ class CompletionExtension(Completion_base):
         self._name = polynomial.variable_name()
         self._assign_names((self._name,))
 
-        super(CompletionExtension, self).__init__(base=model, base_valuation=model_valuation, category=category or base_ring.category())
+        super(HenselizationExtension, self).__init__(base=model, base_valuation=model_valuation, category=category or base_ring.category())
 
         from sage.categories.all import SetsWithPartialMaps
         homspace = base_ring.Hom(self, category=SetsWithPartialMaps())
@@ -1405,9 +1367,9 @@ class CompletionExtension(Completion_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.degree()
@@ -1427,9 +1389,9 @@ class CompletionExtension(Completion_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.base_ring() is K
@@ -1440,14 +1402,14 @@ class CompletionExtension(Completion_base):
 
     def _absolute_base_ring(self):
         r"""
-        Return the :class:`Completion_base` that lies at the bottom of this
+        Return the :class:`Henselization_base` that lies at the bottom of this
         tower of complete extensions.
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -1457,20 +1419,20 @@ class CompletionExtension(Completion_base):
 
         """
         ret = self.base_ring()
-        while isinstance(ret, CompletionExtension):
+        while isinstance(ret, HenselizationExtension):
             ret = ret.base_ring()
         return ret
 
     def _absolute_degree(self):
         r"""
-        Return the degree this extension has over the :class:`Completion_base`
+        Return the degree this extension has over the :class:`Henselization_base`
         that lies at the bottom of this tower of complete extensions.
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -1482,7 +1444,7 @@ class CompletionExtension(Completion_base):
         from sage.all import ZZ
         ret = ZZ(1)
         base = self
-        while isinstance(base, CompletionExtension):
+        while isinstance(base, HenselizationExtension):
             ret *= base.degree()
             base = base.base_ring()
         return ret
@@ -1493,12 +1455,12 @@ class CompletionExtension(Completion_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: K.extension(x^2 + x + 1) # indirect doctest
-            Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
         """
         return "Extension defined by %r of %r"%(self._polynomial, self.base_ring())
@@ -1511,9 +1473,9 @@ class CompletionExtension(Completion_base):
 
         This extension is generated by a root of its defining polynomial::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
             sage: L.ngens()
@@ -1533,9 +1495,9 @@ class CompletionExtension(Completion_base):
 
         A totally ramified extension::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<t> = C[]
             sage: f = t^12 - 4*t^11 + 2*t^10 + 13*t^8 - 16*t^7 - 36*t^6 + 168*t^5 - 209*t^4 + 52*t^3 + 26*t^2 + 8*t - 13
             sage: C12 = C.extension(f)
@@ -1586,37 +1548,37 @@ class CompletionExtension(Completion_base):
             return eisenstein_model, model_valuation
 
 
-class CompletionExtension_Field(CompletionExtension, Completion_Field):
+class HenselizationExtension_Field(HenselizationExtension, Henselization_Field):
     r"""
-    A :class:`CompletionExtension` that is a field.
+    A :class:`HenselizationExtension` that is a field.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(3)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: K.extension(x^2 + 3)
-        Extension defined by x^2 + 3 of Completion of Rational Field with respect to 3-adic valuation
+        Extension defined by x^2 + 3 of Henselization of Rational Field with respect to 3-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(3)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + 3)
-            sage: isinstance(L, CompletionExtension_Field)
+            sage: isinstance(L, HenselizationExtension_Field)
             True
             sage: TestSuite(L).run() # long time
 
         """
         if model not in Fields():
             raise TypeError("model must be a field")
-        super(CompletionExtension_Field, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
+        super(HenselizationExtension_Field, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
     def _test_extension_module_basis(self, **options):
         r"""
@@ -1624,9 +1586,9 @@ class CompletionExtension_Field(CompletionExtension, Completion_Field):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + 2)
             sage: L._test_extension_module_basis()
@@ -1639,22 +1601,22 @@ class CompletionExtension_Field(CompletionExtension, Completion_Field):
         tester.assertEqual(len(basis), self._absolute_degree())
 
 
-class CompletionExtension_Ring(CompletionExtension, Completion_Ring):
+class HenselizationExtension_Ring(HenselizationExtension, Henselization_Ring):
     r"""
-    A :class:`CompletionExtension` that is not a field.
+    A :class:`HenselizationExtension` that is not a field.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(3)
-        sage: S = Completion(ZZ, v)
+        sage: S = Henselization(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + 3); T
-        Extension defined by x^2 + 3 of Completion of Integer Ring with respect to 3-adic valuation
+        Extension defined by x^2 + 3 of Henselization of Integer Ring with respect to 3-adic valuation
 
     TESTS::
 
-        sage: isinstance(T, CompletionExtension_Ring)
+        sage: isinstance(T, HenselizationExtension_Ring)
         True
         sage: TestSuite(T).run() # long time
 
@@ -1665,49 +1627,49 @@ class CompletionExtension_Ring(CompletionExtension, Completion_Ring):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(3)
-            sage: S = Completion(ZZ, v)
+            sage: S = Henselization(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + 3)
             sage: T.fraction_field()
-            Extension defined by x^2 + 3 of Completion of Rational Field with respect to 3-adic valuation
+            Extension defined by x^2 + 3 of Henselization of Rational Field with respect to 3-adic valuation
 
         """
         base_ring = self.base_ring().fraction_field()
         return Extension(base_ring, self._polynomial.change_ring(base_ring), name=self.variable_name(), check=False)
 
 
-class CompletionExtensionAbsolute(CompletionExtension):
+class HenselizationExtensionAbsolute(HenselizationExtension):
     r"""
-    Extension of a :class:`Completion` whose model is an absolute
+    Extension of a :class:`Henselization` whose model is an absolute
     extension.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: L.<x> = K[]
         sage: K.extension(x^2 + x + 1)
-        Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: L.<x> = K[]
             sage: M = K.extension(x^2 + x + 1)
-            sage: isinstance(M, CompletionExtensionAbsolute)
+            sage: isinstance(M, HenselizationExtensionAbsolute)
             True
             sage: TestSuite(M).run() # long time
 
         """
-        super(CompletionExtensionAbsolute, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
+        super(HenselizationExtensionAbsolute, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
         if not model.base_ring() is self._absolute_base_ring().base():
             raise ValueError("model must be an absolute extension of the base of absolute base_ring")
@@ -1718,9 +1680,9 @@ class CompletionExtensionAbsolute(CompletionExtension):
  
         EXAMPLES::
 
-           sage: sys.path.append(os.getcwd()); from completion import *
+           sage: sys.path.append(os.getcwd()); from henselization import *
            sage: v = QQ.valuation(2)
-           sage: K = Completion(QQ, v)
+           sage: K = Henselization(QQ, v)
            sage: R.<x> = K[]
            sage: L = K.extension(x^2 + x + 1)
            sage: L._module_basis(base = K)
@@ -1730,26 +1692,26 @@ class CompletionExtensionAbsolute(CompletionExtension):
         if base is self._absolute_base_ring():
             gen = self._base(self._base.fraction_field().gen())
             return tuple(self(gen)**i for i in range(self._absolute_degree()))
-        return super(CompletionExtensionAbsolute, self)._module_basis(base = base)
+        return super(HenselizationExtensionAbsolute, self)._module_basis(base = base)
 
 
-class CompletionExtensionAbsolute_Field(CompletionExtensionAbsolute, CompletionExtension_Field):
+class HenselizationExtensionAbsolute_Field(HenselizationExtensionAbsolute, HenselizationExtension_Field):
     r"""
-    Extension of a field :class:`Completion` whose model is an absolute
+    Extension of a field :class:`Henselization` whose model is an absolute
     extension.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: L.<x> = K[]
         sage: L = K.extension(x^2 + 2); L
-        Extension defined by x^2 + 2 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by x^2 + 2 of Henselization of Rational Field with respect to 2-adic valuation
     
     TESTS::
 
-        sage: isinstance(L, CompletionExtensionAbsolute_Field)
+        sage: isinstance(L, HenselizationExtensionAbsolute_Field)
         True
         sage: TestSuite(L).run() # long time
 
@@ -1757,37 +1719,37 @@ class CompletionExtensionAbsolute_Field(CompletionExtensionAbsolute, CompletionE
     pass
 
 
-class CompletionExtensionSimple(CompletionExtensionAbsolute):
+class HenselizationExtensionSimple(HenselizationExtensionAbsolute):
     r"""
-    Simple extension of a :class:`Completion`.
+    Simple extension of a :class:`Henselization`.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: S = Completion(ZZ, v)
+        sage: S = Henselization(ZZ, v)
         sage: R.<x> = S[]
         sage: S.extension(x^2 + x + 1)
-        Extension defined by x^2 + x + 1 of Completion of Integer Ring with respect to 2-adic valuation
+        Extension defined by x^2 + x + 1 of Henselization of Integer Ring with respect to 2-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: S = Completion(ZZ, v)
+            sage: S = Henselization(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
-            sage: isinstance(T, CompletionExtensionSimple)
+            sage: isinstance(T, HenselizationExtensionSimple)
             True
             sage: TestSuite(T).run() # long time
 
         """
-        if isinstance(base_ring, CompletionExtension):
+        if isinstance(base_ring, HenselizationExtension):
             raise TypeError("base_ring must not be an extension")
-        super(CompletionExtensionSimple, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
+        super(HenselizationExtensionSimple, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
     def gen(self, i=0):
         r"""
@@ -1795,9 +1757,9 @@ class CompletionExtensionSimple(CompletionExtensionAbsolute):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
             sage: L.gen(0)
@@ -1813,53 +1775,53 @@ class CompletionExtensionSimple(CompletionExtensionAbsolute):
         return self(self._base_fraction_field.gen())
 
 
-class CompletionExtensionSimple_Field(CompletionExtensionSimple, CompletionExtensionAbsolute_Field):
+class HenselizationExtensionSimple_Field(HenselizationExtensionSimple, HenselizationExtensionAbsolute_Field):
     r"""
-    Simple extension of a :class:`Completion_Field` that is not an extension.
+    Simple extension of a :class:`Henselization_Field` that is not an extension.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1); L
-        Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS::
 
-        sage: isinstance(L, CompletionExtensionSimple_Field)
+        sage: isinstance(L, HenselizationExtensionSimple_Field)
         True
         sage: TestSuite(L).run() # long time
 
     """
 
 
-class CompletionExtensionSimple_Ring(CompletionExtensionSimple, CompletionExtension_Ring):
+class HenselizationExtensionSimple_Ring(HenselizationExtensionSimple, HenselizationExtension_Ring):
     r"""
-    Simple extension of a :class:`Completion_Ring` that is not an extension.
+    Simple extension of a :class:`Henselization_Ring` that is not an extension.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: S = Completion(ZZ, v)
+        sage: S = Henselization(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1); T
-        Extension defined by x^2 + x + 1 of Completion of Integer Ring with respect to 2-adic valuation
+        Extension defined by x^2 + x + 1 of Henselization of Integer Ring with respect to 2-adic valuation
 
     TESTS::
 
-        sage: isinstance(T, CompletionExtensionSimple_Ring)
+        sage: isinstance(T, HenselizationExtensionSimple_Ring)
         True
         sage: TestSuite(T).run() # long time
 
     """
 
 
-class CompletionExtensionIteratedQuotient(CompletionExtension):
+class HenselizationExtensionIteratedQuotient(HenselizationExtension):
     r"""
-    Extension of a :class:`CompletionExtensionAbsolute` that is realized
+    Extension of a :class:`HenselizationExtensionAbsolute` that is realized
     as a quotient over its model.
 
     EXAMPLES:
@@ -1867,39 +1829,39 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
     Instances of this class are not exposed through public methods but only
     exist internally when building iterated extensions::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
         sage: Extension._create_extension(L, y^2 - 2)
-        Extension defined by y^2 - 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by y^2 - 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
             sage: M = Extension._create_extension(L, y^2 - 2)
-            sage: isinstance(M, CompletionExtensionIteratedQuotient)
+            sage: isinstance(M, HenselizationExtensionIteratedQuotient)
             True
             sage: TestSuite(M).run() # long time
 
         """
-        if not isinstance(base_ring, CompletionExtension):
+        if not isinstance(base_ring, HenselizationExtension):
             raise TypeError("base_ring must be an extension")
         from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
         if not is_PolynomialQuotientRing(model):
             raise TypeError("model must be a quotient")
 
-        super(CompletionExtensionIteratedQuotient, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
+        super(HenselizationExtensionIteratedQuotient, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
         if not model.base_ring() is base_ring.base():
             raise ValueError("model must be a quotient over the base of base_ring")
@@ -1910,9 +1872,9 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -1936,9 +1898,9 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -1953,22 +1915,22 @@ class CompletionExtensionIteratedQuotient(CompletionExtension):
             return tuple(self(self.base().gen()**i) for i in range(self.base().degree())) 
         if base is self._absolute_base_ring():
             return tuple(b*self(p) for b in self._module_basis(self.base_ring()) for p in self.base_ring()._module_basis(base))
-        return super(CompletionExtensionIteratedQuotient, self)._module_basis(base = base)
+        return super(HenselizationExtensionIteratedQuotient, self)._module_basis(base = base)
 
     def _coerce_map_from_(self, other):
-        if isinstance(other, CompletionExtensionIteratedQuotient):
+        if isinstance(other, HenselizationExtensionIteratedQuotient):
             if self.base_ring().has_coerce_map_from(other.base_ring()):
                 if other._polynomial.change_ring(self.base_ring()) == self._polynomial:
                     homspace = other.Hom(self)
                     from maps import QuotientConversion_generic
                     return homspace.__make_element_class__(QuotientConversion_generic)(homspace)
                     
-        return super(CompletionExtensionIteratedQuotient, self)._coerce_map_from_(other)
+        return super(HenselizationExtensionIteratedQuotient, self)._coerce_map_from_(other)
 
 
-class CompletionExtensionIteratedQuotient_Field(CompletionExtensionIteratedQuotient, CompletionExtension_Field):
+class HenselizationExtensionIteratedQuotient_Field(HenselizationExtensionIteratedQuotient, HenselizationExtension_Field):
     r"""
-    Extension of a :class:`CompletionExtensionAbsolute` field that is realized
+    Extension of a :class:`HenselizationExtensionAbsolute` field that is realized
     as a quotient over its model.
 
     EXAMPLES:
@@ -1976,29 +1938,29 @@ class CompletionExtensionIteratedQuotient_Field(CompletionExtensionIteratedQuoti
     Instances of this class are not exposed through public methods but only
     exist internally when building iterated extensions::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
         sage: M = Extension._create_extension(L, y^4 - 2); M
-        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS::
 
-        sage: isinstance(M, CompletionExtensionIteratedQuotient_Field)
+        sage: isinstance(M, HenselizationExtensionIteratedQuotient_Field)
         True
         sage: TestSuite(M).run() # long time
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
-        super(CompletionExtensionIteratedQuotient_Field, self).__init__(base_ring, polynomial, model,model_valuation,category)
+        super(HenselizationExtensionIteratedQuotient_Field, self).__init__(base_ring, polynomial, model,model_valuation,category)
 
 
-class CompletionExtensionIteratedQuotient_Ring(CompletionExtensionIteratedQuotient, CompletionExtension_Ring):
+class HenselizationExtensionIteratedQuotient_Ring(HenselizationExtensionIteratedQuotient, HenselizationExtension_Ring):
     r"""
-    Extension of a :class:`CompletionExtensionAbsolute` domain that is not a
+    Extension of a :class:`HenselizationExtensionAbsolute` domain that is not a
     field that is realized as a quotient over its model.
 
     EXAMPLES:
@@ -2006,33 +1968,33 @@ class CompletionExtensionIteratedQuotient_Ring(CompletionExtensionIteratedQuotie
     Instances of this class are not exposed through public methods but only
     exist internally when building iterated extensions::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: S = Completion(ZZ, v)
+        sage: S = Henselization(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1)
         sage: R.<y> = T[]
         sage: U = Extension._create_extension(T, y^4 - 2); U
-        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Integer Ring with respect to 2-adic valuation
+        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Henselization of Integer Ring with respect to 2-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: S = Completion(ZZ, v)
+            sage: S = Henselization(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
             sage: R.<y> = T[]
             sage: U = Extension._create_extension(T, y^4 - 2)
-            sage: isinstance(U, CompletionExtensionIteratedQuotient_Ring)
+            sage: isinstance(U, HenselizationExtensionIteratedQuotient_Ring)
             True
             sage: TestSuite(U).run() # long time
 
         """
-        super(CompletionExtensionIteratedQuotient_Ring, self).__init__(base_ring, polynomial, model,model_valuation,category)
+        super(HenselizationExtensionIteratedQuotient_Ring, self).__init__(base_ring, polynomial, model,model_valuation,category)
 
     def fraction_field(self):
         r"""
@@ -2040,57 +2002,57 @@ class CompletionExtensionIteratedQuotient_Ring(CompletionExtensionIteratedQuotie
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: S = Completion(ZZ, v)
+            sage: S = Henselization(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
             sage: R.<y> = T[]
             sage: U = Extension._create_extension(T, y^4 - 2)
             sage: U.fraction_field()
-            Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
         """
         K = self.base_ring().fraction_field()
         return Extension._create_extension(K, self._polynomial.change_ring(K))
 
 
-class CompletionExtensionIteratedAbsolute(CompletionExtensionAbsolute):
+class HenselizationExtensionIteratedAbsolute(HenselizationExtensionAbsolute):
     r"""
-    Extension of a :class:`CompletionExtension` that is realized
+    Extension of a :class:`HenselizationExtension` that is realized
     as an absolute extension.
 
     EXAMPLES:
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
         sage: L.extension(y^2 - 2)
-        Extension defined by y^2 - 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by y^2 - 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     """
     def __init__(self, base_ring, polynomial, model, model_valuation, category=None):
         r"""
         TESTS::
     
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
             sage: M = L.extension(y^2 - 2)
-            sage: isinstance(M, CompletionExtensionIteratedAbsolute)
+            sage: isinstance(M, HenselizationExtensionIteratedAbsolute)
             True
             sage: TestSuite(M).run() # long time
     
         """
-        if not isinstance(base_ring, CompletionExtension):
+        if not isinstance(base_ring, HenselizationExtension):
             raise TypeError("base_ring must be an extension")
-        super(CompletionExtensionIteratedAbsolute, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
+        super(HenselizationExtensionIteratedAbsolute, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)
 
     @cached_method
     def gen(self, i=0):
@@ -2099,9 +2061,9 @@ class CompletionExtensionIteratedAbsolute(CompletionExtensionAbsolute):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
             sage: L.gen(0)
@@ -2119,50 +2081,50 @@ class CompletionExtensionIteratedAbsolute(CompletionExtensionAbsolute):
         return self.__make_element_class__(GeneratorElement)(self)
 
 
-class CompletionExtensionIteratedAbsolute_Field(CompletionExtensionIteratedAbsolute, CompletionExtensionAbsolute_Field):
+class HenselizationExtensionIteratedAbsolute_Field(HenselizationExtensionIteratedAbsolute, HenselizationExtensionAbsolute_Field):
     r"""
-    Extension of a :class:`CompletionExtension` field that is realized as an
+    Extension of a :class:`HenselizationExtension` field that is realized as an
     absolute extension.
 
     EXAMPLES:
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
         sage: M = L.extension(y^4 - 2); M
-        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS::
 
-        sage: isinstance(M, CompletionExtensionIteratedAbsolute_Field)
+        sage: isinstance(M, HenselizationExtensionIteratedAbsolute_Field)
         True
         sage: TestSuite(M).run() # long time
 
     """
 
 
-class CompletionExtensionIteratedAbsolute_Ring(CompletionExtensionIteratedAbsolute, CompletionExtension_Ring):
+class HenselizationExtensionIteratedAbsolute_Ring(HenselizationExtensionIteratedAbsolute, HenselizationExtension_Ring):
     r"""
-    Extension of a :class:`CompletionExtension` that is not a field and
+    Extension of a :class:`HenselizationExtension` that is not a field and
     realized as an absolute extension.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: S = Completion(ZZ, v)
+        sage: S = Henselization(ZZ, v)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1)
         sage: R.<y> = T[]
         sage: U = T.extension(y^4 - 2); U
-        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Completion of Integer Ring with respect to 2-adic valuation
+        Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Henselization of Integer Ring with respect to 2-adic valuation
 
     TESTS::
 
-        sage: isinstance(U, CompletionExtensionIteratedAbsolute_Ring)
+        sage: isinstance(U, HenselizationExtensionIteratedAbsolute_Ring)
         True
         sage: TestSuite(U).run() # long time
 

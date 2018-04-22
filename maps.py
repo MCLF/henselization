@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Maps from and to completions of rings
+Maps from and to Henselizations of rings
 
 AUTHORS:
 
@@ -21,16 +21,16 @@ from sage.structure.unique_representation import UniqueRepresentation
 class ConvertMap_generic(Morphism):
     r"""
     Conversion map for codomains which can handle elements in the fraction
-    field of the base of a completion.
+    field of the base of a Henselization.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(5)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: QQ.convert_map_from(K)
         Generic morphism:
-            From: Completion of Rational Field with respect to 5-adic valuation
+            From: Henselization of Rational Field with respect to 5-adic valuation
             To:   Rational Field
 
     """
@@ -40,9 +40,9 @@ class ConvertMap_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: f = QQ.convert_map_from(K)
             sage: f(K(0))
             0
@@ -56,19 +56,19 @@ class ConvertMap_generic(Morphism):
 
 class ExtensionCoercion_generic(ConvertMap_generic):
     r"""
-    Coercion map from a completion to an algebraic extension.
+    Coercion map from a Henselization to an algebraic extension.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: L.coerce_map_from(K)
         Generic morphism:
-            From: Completion of Rational Field with respect to 2-adic valuation
-            To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            From: Henselization of Rational Field with respect to 2-adic valuation
+            To:   Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     """
     def is_injective(self):
@@ -77,9 +77,9 @@ class ExtensionCoercion_generic(ConvertMap_generic):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: S = Completion(ZZ, v)
+            sage: S = Henselization(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
             sage: T.coerce_map_from(S).is_injective()
@@ -89,19 +89,19 @@ class ExtensionCoercion_generic(ConvertMap_generic):
         return True
 
 
-class VectorSpaceCompletionIsomorphism(Morphism):
+class VectorSpaceHenselizationIsomorphism(Morphism):
     r"""
-    Base class for isomorphisms of completions and vector spaces.
+    Base class for isomorphisms of Henselizations and vector spaces.
 
     TESTS::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[1]
-        sage: isinstance(f, VectorSpaceCompletionIsomorphism)
+        sage: isinstance(f, VectorSpaceHenselizationIsomorphism)
         True
 
     """
@@ -111,15 +111,15 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]; f # indirect doctest
             Isomorphism morphism:
-              From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-              To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+              From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
+              To:   Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
         """
         return "Isomorphism"
@@ -130,9 +130,9 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -148,9 +148,9 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -166,9 +166,9 @@ class VectorSpaceCompletionIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -179,21 +179,21 @@ class VectorSpaceCompletionIsomorphism(Morphism):
         return True
 
 
-class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresentation):
+class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepresentation):
     r"""
     An isomorphism from a vector space to a complete field.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[1]; f
         Isomorphism morphism:
-          From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-          To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+          From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
+          To:   Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS:
 
@@ -212,13 +212,13 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
-            sage: isinstance(f, VectorSpaceToCompletion)
+            sage: isinstance(f, VectorSpaceToHenselization)
             True
 
         """
@@ -233,9 +233,9 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: V,f,_ = L.module(base=K)
@@ -246,21 +246,21 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         return sum(self.codomain()(x)*b for x,b in zip(v,self._basis) if x != 0)
 
 
-class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresentation):
+class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepresentation):
     r"""
     An isomorphism from a complete field to a vector space.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[2]; f
         Isomorphism morphism:
-          From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-          To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+          From: Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
+          To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS:
 
@@ -279,13 +279,13 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[2]
-            sage: isinstance(f, CompletionToVectorSpace)
+            sage: isinstance(f, HenselizationToVectorSpace)
             True
 
         """
@@ -300,9 +300,9 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: _,_,f = L.module(base=K)
@@ -319,17 +319,17 @@ class RelativeExtensionCoercion_generic(Morphism):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
         sage: M = L.extension(y^2 + 2)
         sage: f = M.coerce_map_from(L); f
         Generic morphism:
-          From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
-          To:   Extension defined by y^2 + 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+          From: Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
+          To:   Extension defined by y^2 + 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS::
 
@@ -345,9 +345,9 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -365,9 +365,9 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -395,9 +395,9 @@ class RelativeExtensionCoercion_generic(Morphism):
         this, we would need to make sure that we are choosing
         the roots of the defining polynomial consistently.)::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L.<x> = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -405,7 +405,7 @@ class RelativeExtensionCoercion_generic(Morphism):
             sage: M.coerce(x)
             Traceback (most recent call last):
             ...
-            NotImplementedError: Selection of approximate root of x^2 + x + 1 in Extension defined by y^2 + 2 of Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
+            NotImplementedError: Selection of approximate root of x^2 + x + 1 in Extension defined by y^2 + 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
         """
         from base_element import BaseElement_base
@@ -425,9 +425,9 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -445,9 +445,9 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]

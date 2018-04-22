@@ -18,7 +18,7 @@ import sys, os
 sys.path.append(os.getcwd())
 sys.path.append(os.path.dirname(os.getcwd()))
 from mac_lane import *
-from completion import *
+from henselization import *
 
 def splitting_field(polynomial, ramified_variable_name = 'a', unramified_variable_name = 'u'):
     ret = polynomial.base_ring()
@@ -63,7 +63,7 @@ def splitting_field(polynomial, ramified_variable_name = 'a', unramified_variabl
     return ret
 
 v = pAdicValuation(QQ, 2)
-C = Completion(QQ, v)
+C = Henselization(QQ, v)
 R.<T> = C[]
 f = T^12 - 4*T^11 + 2*T^10 + 13*T^8 - 16*T^7 - 36*T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 13
 print(splitting_field(f))

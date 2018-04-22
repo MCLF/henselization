@@ -3,7 +3,7 @@ r"""
 Categories for complete discrete valuation rings.
 
 Eventually, this should be merged with the corresponding category that is
-already in Sage. Then, there should also be an axiom Complete on the level of
+already in Sage. Then, there should also be an axiom Henselian on the level of
 DiscreteValuationRings.
 
 AUTHORS:
@@ -24,7 +24,7 @@ from sage.categories.category_singleton import Category_singleton
 from sage.categories.category_with_axiom import CategoryWithAxiom, all_axioms
 from sage.categories.discrete_valuation import DiscreteValuationRings, DiscreteValuationFields
 
-#TODO: This should be a patch to DicsreteValuationRings.ElementMethods
+#TODO: This should be a patch to DiscreteValuationRings.ElementMethods
 def is_squarefree(self):
     r"""
     Return whether this element is squarefree.
@@ -35,9 +35,9 @@ def is_squarefree(self):
     parent has no repeated factors. For field elements, this is therefore
     trivial since there are no prime elements::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: x = K(4)
         sage: x.is_squarefree()
         True
@@ -45,7 +45,7 @@ def is_squarefree(self):
     Over rings, the only prime is the uniformizing element::
 
         sage: v = ZZ.valuation(2)
-        sage: K = Completion(ZZ, v)
+        sage: K = Henselization(ZZ, v)
         sage: K(4).is_squarefree()
         False
         sage: K(9).is_squarefree()
@@ -60,23 +60,25 @@ DiscreteValuationRings().element_class.is_squarefree = is_squarefree
 from sage.categories.fields import Fields
 Fields().element_class.is_squarefree = lambda self: True
 
-class CompleteDiscreteValuationRings(Category_singleton):
+class HenselianDiscreteValuationRings(Category_singleton):
     def super_categories(self):
         """
         EXAMPLES::
 
-            sage: CompleteDiscreteValuationRings().super_categories()
+            sage: sys.path.append(os.getcwd()); from henselization import *
+            sage: HenselianDiscreteValuationRings().super_categories()
             [Category of discrete valuation rings]
         """
         return [DiscreteValuationRings()]
 
 
-class CompleteDiscreteValuationFields(Category_singleton):
+class HenselianDiscreteValuationFields(Category_singleton):
     def super_categories(self):
         """
         EXAMPLES::
 
-            sage: CompleteDiscreteValuationFields().super_categories()
+            sage: sys.path.append(os.getcwd()); from henselization import *
+            sage: HenselianDiscreteValuationFields().super_categories()
             [Category of discrete valuation fields]
         """
         return [DiscreteValuationFields()]

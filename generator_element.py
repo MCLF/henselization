@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Symbolic elements which generate an extension of a completion
+Symbolic elements which generate an extension of a Henselization
 
 AUTHORS:
 
@@ -8,7 +8,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2017 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2017-2018 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
@@ -17,19 +17,19 @@ AUTHORS:
 #*****************************************************************************
 from sage.structure.element import IntegralDomainElement
 from sage.misc.cachefunc import cached_method
-from completion_element import CompletionElement_base
+from henselization_element import HenselizationElement_base
 
-class GeneratorElement(CompletionElement_base):
+class GeneratorElement(HenselizationElement_base):
     r"""
-    Element class for generators of :class:`CompletionExtension_base` which
+    Element class for generators of :class:`HenselizationExtension_base` which
     merely exist symbolically as the root of a certain polynomial but which
     support essentially no arithmetic.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(3)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 - 3)
         sage: R.<y> = L[]
@@ -43,16 +43,16 @@ class GeneratorElement(CompletionElement_base):
         sage: M(L.gen()) == -M(L.gen())
         Traceback (most recent call last):
         ...
-        NotImplementedError: Selection of approximate root of x^2 - 3 in Extension defined by y^3 - 3 of Extension defined by x^2 - 3 of Completion of Rational Field with respect to 3-adic valuation
+        NotImplementedError: Selection of approximate root of x^2 - 3 in Extension defined by y^3 - 3 of Extension defined by x^2 - 3 of Henselization of Rational Field with respect to 3-adic valuation
 
     """
     def __init__(self, parent):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(3)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -71,9 +71,9 @@ class GeneratorElement(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(3)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -90,9 +90,9 @@ class GeneratorElement(CompletionElement_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(3)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -123,9 +123,9 @@ class GeneratorElement(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(3)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -146,9 +146,9 @@ class GeneratorElement(CompletionElement_base):
 
         This is not implemented yet::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(3)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -172,9 +172,9 @@ class GeneratorElement(CompletionElement_base):
 
         This is not implemented yet::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(3)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
