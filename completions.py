@@ -36,7 +36,7 @@ def is_squarefree(self):
     trivial since there are no prime elements::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: x = K(4)
         sage: x.is_squarefree()
@@ -44,7 +44,7 @@ def is_squarefree(self):
 
     Over rings, the only prime is the uniformizing element::
 
-        sage: v = pAdicValuation(ZZ, 2)
+        sage: v = ZZ.valuation(2)
         sage: K = Completion(ZZ, v)
         sage: K(4).is_squarefree()
         False

@@ -27,7 +27,7 @@ class MacLaneElement_base(CompletionElement_base):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 5)
+        sage: v = QQ.valuation(5)
         sage: C = Completion(QQ, v)
         sage: R.<x> = C[]
         sage: F = (x^2 + 1).factor()
@@ -44,7 +44,7 @@ class MacLaneElement_base(CompletionElement_base):
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
@@ -65,7 +65,7 @@ class MacLaneElement_base(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: (x^2 + 1).factor() # indirect doctest
@@ -101,7 +101,7 @@ class MacLaneElement_base(CompletionElement_base):
         hash function that is fast and consistent with equality::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
@@ -130,7 +130,7 @@ class MacLaneElement_base(CompletionElement_base):
         We can sometimes compare elements that came from the same factorization::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
@@ -144,7 +144,7 @@ class MacLaneElement_base(CompletionElement_base):
         In some cases, we can also compare to exact elements::
 
             sage: G = GaussianIntegers().fraction_field()
-            sage: v = pAdicValuation(G, 2)
+            sage: v = G.valuation(2)
             sage: K = Completion(G, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
@@ -229,7 +229,7 @@ class MacLaneElement_base(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
@@ -258,7 +258,7 @@ class MacLaneElement_base(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
@@ -280,7 +280,7 @@ class MacLaneElement_base(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
@@ -301,7 +301,7 @@ class MacLaneElement_base(CompletionElement_base):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: C = Completion(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
@@ -322,7 +322,7 @@ class MacLaneElement_Ring(MacLaneElement_base, CompletionElement_Ring):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(ZZ, 5)
+        sage: v = ZZ.valuation(5)
         sage: C = Completion(ZZ, v)
         sage: R.<x> = C[]
         sage: F = (x^2 + 1).factor()
@@ -344,7 +344,7 @@ class MacLaneElement_Field(MacLaneElement_base, CompletionElement_Field):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 5)
+        sage: v = QQ.valuation(5)
         sage: C = Completion(QQ, v)
         sage: R.<x> = C[]
         sage: F = (x^2 + 1).factor()

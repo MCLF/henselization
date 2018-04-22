@@ -26,7 +26,7 @@ class ConvertMap_generic(Morphism):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 5)
+        sage: v = QQ.valuation(5)
         sage: K = Completion(QQ, v)
         sage: QQ.convert_map_from(K)
         Generic morphism:
@@ -41,7 +41,7 @@ class ConvertMap_generic(Morphism):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 5)
+            sage: v = QQ.valuation(5)
             sage: K = Completion(QQ, v)
             sage: f = QQ.convert_map_from(K)
             sage: f(K(0))
@@ -61,7 +61,7 @@ class ExtensionCoercion_generic(ConvertMap_generic):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
@@ -78,7 +78,7 @@ class ExtensionCoercion_generic(ConvertMap_generic):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(ZZ, 2)
+            sage: v = ZZ.valuation(2)
             sage: S = Completion(ZZ, v)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
@@ -96,11 +96,11 @@ class VectorSpaceCompletionIsomorphism(Morphism):
     TESTS::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
-        sage: f = L.vector_space()[1]
+        sage: f = L.module()[1]
         sage: isinstance(f, VectorSpaceCompletionIsomorphism)
         True
 
@@ -112,11 +112,11 @@ class VectorSpaceCompletionIsomorphism(Morphism):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: f = L.vector_space()[1]; f # indirect doctest
+            sage: f = L.module()[1]; f # indirect doctest
             Isomorphism morphism:
               From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
               To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
@@ -131,11 +131,11 @@ class VectorSpaceCompletionIsomorphism(Morphism):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: f = L.vector_space()[1]
+            sage: f = L.module()[1]
             sage: f.is_injective()
             True
 
@@ -149,11 +149,11 @@ class VectorSpaceCompletionIsomorphism(Morphism):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: f = L.vector_space()[1]
+            sage: f = L.module()[1]
             sage: f.is_surjective()
             True
 
@@ -167,11 +167,11 @@ class VectorSpaceCompletionIsomorphism(Morphism):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: f = L.vector_space()[1]
+            sage: f = L.module()[1]
             sage: bool(f) # indirect doctest
             True
 
@@ -186,11 +186,11 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
-        sage: f = L.vector_space()[1]; f
+        sage: f = L.module()[1]; f
         Isomorphism morphism:
           From: Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
           To:   Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
@@ -213,11 +213,11 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: f = L.vector_space()[1]
+            sage: f = L.module()[1]
             sage: isinstance(f, VectorSpaceToCompletion)
             True
 
@@ -234,11 +234,11 @@ class VectorSpaceToCompletion(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: V,f,_ = L.vector_space(base=K)
+            sage: V,f,_ = L.module(base=K)
             sage: f(V((1,2)))
             2*x + 1
 
@@ -253,11 +253,11 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
-        sage: f = L.vector_space()[2]; f
+        sage: f = L.module()[2]; f
         Isomorphism morphism:
           From: Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
           To:   Vector space of dimension 1 over Extension defined by x^2 + x + 1 of Completion of Rational Field with respect to 2-adic valuation
@@ -280,11 +280,11 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         TESTS::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: f = L.vector_space()[2]
+            sage: f = L.module()[2]
             sage: isinstance(f, CompletionToVectorSpace)
             True
 
@@ -301,11 +301,11 @@ class CompletionToVectorSpace(VectorSpaceCompletionIsomorphism, UniqueRepresenta
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
-            sage: _,_,f = L.vector_space(base=K)
+            sage: _,_,f = L.module(base=K)
             sage: f(L.gen() + 2)
             (2, 1)
 
@@ -320,7 +320,7 @@ class RelativeExtensionCoercion_generic(Morphism):
     EXAMPLES::
 
         sage: sys.path.append(os.getcwd()); from completion import *
-        sage: v = pAdicValuation(QQ, 2)
+        sage: v = QQ.valuation(2)
         sage: K = Completion(QQ, v)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
@@ -346,7 +346,7 @@ class RelativeExtensionCoercion_generic(Morphism):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -366,7 +366,7 @@ class RelativeExtensionCoercion_generic(Morphism):
         EXAMPLES::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
@@ -393,10 +393,10 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         This is currently not implemented for non-trivial cases (to implement
         this, we would need to make sure that we are choosing
-        the roots of the defining polynomial consistenly.)::
+        the roots of the defining polynomial consistently.)::
 
             sage: sys.path.append(os.getcwd()); from completion import *
-            sage: v = pAdicValuation(QQ, 2)
+            sage: v = QQ.valuation(2)
             sage: K = Completion(QQ, v)
             sage: R.<x> = K[]
             sage: L.<x> = K.extension(x^2 + x + 1)
@@ -418,3 +418,62 @@ class RelativeExtensionCoercion_generic(Morphism):
                     return self.codomain()(-minpoly[0])
                 raise NotImplementedError("Selection of approximate root of %s in %s"%(minpoly, self.codomain()))
         raise NotImplementedError("Coercion of %s into %s"%(x, self.codomain()))
+
+    def _hash_(self):
+        r"""
+        Return a hash value for this morphism.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = QQ.valuation(2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 + 2)
+            sage: f = M.coerce_map_from(L)
+            sage: hash(f) == hash(loads(dumps(f)))
+            True
+
+        """
+        return hash((self.domain(), self.codomain()))
+
+    def _richcmp_(self, other, op):
+        r"""
+        Compare this element to ``other``.
+
+        EXAMPLES::
+
+            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: v = QQ.valuation(2)
+            sage: K = Completion(QQ, v)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 + 2)
+            sage: f = M.coerce_map_from(L)
+            sage: f == loads(dumps(f))
+            True
+
+        """
+        from sage.structure.richcmp import op_EQ, op_NE
+        if type(self) is not type(other):
+            raise NotImplementedError("Comparison operators only implemented for morphisms with the same underlying implementation.")
+
+        if op == op_EQ:
+            return self.domain() is other.domain() and self.codomain() is other.codomain()
+        if op == op_NE:
+            return not self == other
+        raise NotImplementedError("Operator not implemented for this morphism")
+
+class QuotientConversion_generic(Morphism):
+    r"""
+    A conversion between two quotients that is induced by a conversion between
+    their bases.
+    """
+    def _call_(self, x):
+        r"""
+        Evaluate this morphism at ``x``.
+        """
+        return x._x.lift().map_coefficients(self.codomain().base_ring().convert_map_from(self.domain().base_ring()))(self.codomain().gen())
