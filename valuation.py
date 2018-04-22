@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Valuations on completions of rings
+Valuations on Henselizations of rings
 
 AUTHORS:
 
@@ -19,18 +19,18 @@ from sage.structure.factory import UniqueFactory
 
 from sage.rings.valuation.valuation import DiscreteValuation
 
-class CompletionValuationFactory(UniqueFactory):
+class HenselizationValuationFactory(UniqueFactory):
     r"""
-    Return the valuation on the completion ``domain``.
+    Return the valuation on the Henselization ``domain``.
 
     EXAMPLES:
 
     Do not call this factory directly, but call the ``valuation`` method of a
-    completion::
+    Henselization::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(5)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: K.valuation() # indirect doctest
         5-adic valuation
 
@@ -41,9 +41,9 @@ class CompletionValuationFactory(UniqueFactory):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation() is K.valuation() # indirect doctest
             True
 
@@ -56,9 +56,9 @@ class CompletionValuationFactory(UniqueFactory):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation() # indirect doctest
             5-adic valuation
 
@@ -66,23 +66,23 @@ class CompletionValuationFactory(UniqueFactory):
         domain, = key
         from sage.rings.valuation.valuation_space import DiscretePseudoValuationSpace
         parent = DiscretePseudoValuationSpace(domain)
-        return parent.__make_element_class__(CompletionValuation)(parent)
+        return parent.__make_element_class__(HenselizationValuation)(parent)
 
-Valuation = CompletionValuationFactory("completion.valuation.Valuation")
+Valuation = HenselizationValuationFactory("Henselization.valuation.Valuation")
 
 
-class CompletionValuation(DiscreteValuation):
+class HenselizationValuation(DiscreteValuation):
     r"""
-    The valuation on a completion.
+    The valuation on a Henselization.
 
-    This class turns the valuation that was used to create a completion into a
-    valuation on the actual completion.
+    This class turns the valuation that was used to create a Henselization into a
+    valuation on the actual Henselization.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(5)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: K.valuation()
         5-adic valuation
 
@@ -91,16 +91,16 @@ class CompletionValuation(DiscreteValuation):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: v = K.valuation()
-            sage: isinstance(v, CompletionValuation)
+            sage: isinstance(v, HenselizationValuation)
             True
             sage: TestSuite(v).run() # long time
 
         """
-        super(CompletionValuation, self).__init__(parent)
+        super(HenselizationValuation, self).__init__(parent)
         self._base_valuation = self.domain()._base_valuation
 
     def _repr_(self):
@@ -109,9 +109,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation() # indirect doctest
             5-adic valuation
 
@@ -124,9 +124,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: w = K.valuation()
             sage: w(K(25))
             2
@@ -140,9 +140,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: w = K.valuation()
             sage: w.uniformizer()
             5
@@ -156,9 +156,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: w = K.valuation()
             sage: w.residue_ring()
             Finite Field of size 5
@@ -173,9 +173,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: w = K.valuation()
             sage: w.lift(1)
             1
@@ -190,9 +190,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: w = K.valuation()
             sage: w.reduce(6)
             1
@@ -207,9 +207,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(5)
-            sage: R = Completion(ZZ, v)
+            sage: R = Henselization(ZZ, v)
             sage: w = R.valuation()
             sage: w.value_semigroup()
             Additive Abelian Semigroup generated by 1
@@ -223,9 +223,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: w = K.valuation()
             sage: R.<a> = K[]
             sage: L.<a> = K.extension(a^2 + a + 1)
@@ -234,10 +234,10 @@ class CompletionValuation(DiscreteValuation):
 
         """
         if self.domain().is_subring(ring):
-            from completion import Completion_base
-            if isinstance(ring, Completion_base):
+            from henselization import Henselization_base
+            if isinstance(ring, Henselization_base):
                 return [ring.valuation()]
-        return super(CompletionValuation, self).extensions(ring)
+        return super(HenselizationValuation, self).extensions(ring)
 
     def _relative_size(self, x):
         r"""
@@ -253,9 +253,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES:: 
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation()._relative_size(1024)
             6
 
@@ -272,9 +272,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation().simplify(1025, force=True)
             1
 
@@ -290,9 +290,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation().upper_bound(1025)
             0
 
@@ -308,9 +308,9 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation().lower_bound(1025)
             0
 
@@ -323,13 +323,13 @@ class CompletionValuation(DiscreteValuation):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K.valuation().restriction(ZZ)
             2-adic valuation
         
         """
         if ring.is_subring(self.domain()._base):
             return self.domain()._base_valuation.restriction(ring)
-        return super(CompletionValuation, self).restriction(ring)
+        return super(HenselizationValuation, self).restriction(ring)

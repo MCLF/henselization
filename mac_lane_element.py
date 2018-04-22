@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Elements in a completion which are described by a limit valuation
+Elements in a Henselization which are described by a limit valuation
 
 AUTHORS:
 
@@ -16,9 +16,9 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 from sage.structure.element import IntegralDomainElement
-from completion_element import CompletionElement_base, CompletionElement_Ring, CompletionElement_Field
+from henselization_element import HenselizationElement_base, HenselizationElement_Ring, HenselizationElement_Field
 
-class MacLaneElement_base(CompletionElement_base):
+class MacLaneElement_base(HenselizationElement_base):
     r"""
     Element class for elements of :class:`CompleteRing_base` which are given by
     the limit of the coefficients in a specific degree of the key polynomials
@@ -26,9 +26,9 @@ class MacLaneElement_base(CompletionElement_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(5)
-        sage: C = Completion(QQ, v)
+        sage: C = Henselization(QQ, v)
         sage: R.<x> = C[]
         sage: F = (x^2 + 1).factor()
 
@@ -43,9 +43,9 @@ class MacLaneElement_base(CompletionElement_base):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
             sage: a = F[0][0][0]
@@ -64,9 +64,9 @@ class MacLaneElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: (x^2 + 1).factor() # indirect doctest
             (x + 2 + O(5)) * (x + 3 + O(5))
@@ -100,16 +100,16 @@ class MacLaneElement_base(CompletionElement_base):
         Mac Lane elements are not hashable as it seems too hard to implement a
         hash function that is fast and consistent with equality::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
             sage: a = F[0][0][0]
             sage: hash(a)
             Traceback (most recent call last):
             ...
-            TypeError: <class 'completion.mac_lane_element.MacLaneElement_Field_with_category'> is not hashable
+            TypeError: <class 'henselization.mac_lane_element.MacLaneElement_Field_with_category'> is not hashable
 
         Therefore, they implement :meth:`_cache_key`, so that they can be used
         in caches::
@@ -129,9 +129,9 @@ class MacLaneElement_base(CompletionElement_base):
 
         We can sometimes compare elements that came from the same factorization::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
             sage: f = F[0][0] # x + 2 + …
@@ -145,7 +145,7 @@ class MacLaneElement_base(CompletionElement_base):
 
             sage: G = GaussianIntegers().fraction_field()
             sage: v = G.valuation(2)
-            sage: K = Completion(G, v)
+            sage: K = Henselization(G, v)
             sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
             sage: f = F[0][0] # x + I
@@ -228,9 +228,9 @@ class MacLaneElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a._precision()
@@ -257,9 +257,9 @@ class MacLaneElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a.valuation()
@@ -279,9 +279,9 @@ class MacLaneElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a.reduction()
@@ -300,9 +300,9 @@ class MacLaneElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(5)
-            sage: C = Completion(QQ, v)
+            sage: C = Henselization(QQ, v)
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a
@@ -315,15 +315,15 @@ class MacLaneElement_base(CompletionElement_base):
             self._limit_valuation._improve_approximation()
         return self.parent()(self._limit_valuation._approximation.phi()[self._degree])
 
-class MacLaneElement_Ring(MacLaneElement_base, CompletionElement_Ring):
+class MacLaneElement_Ring(MacLaneElement_base, HenselizationElement_Ring):
     r"""
     A :class:`MacLaneElement_base` that lives in a ring that is not a field.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(5)
-        sage: C = Completion(ZZ, v)
+        sage: C = Henselization(ZZ, v)
         sage: R.<x> = C[]
         sage: F = (x^2 + 1).factor()
         sage: a = F[0][0][0]; a
@@ -337,15 +337,15 @@ class MacLaneElement_Ring(MacLaneElement_base, CompletionElement_Ring):
 
     """
 
-class MacLaneElement_Field(MacLaneElement_base, CompletionElement_Field):
+class MacLaneElement_Field(MacLaneElement_base, HenselizationElement_Field):
     r"""
     A :class:`MacLaneElement_base` that lives in a field.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(5)
-        sage: C = Completion(QQ, v)
+        sage: C = Henselization(QQ, v)
         sage: R.<x> = C[]
         sage: F = (x^2 + 1).factor()
         sage: a = F[0][0][0]; a

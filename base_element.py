@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Elements of the completion that come from the uncompleted ring
+Elements of the Henselization that come from the uncompleted ring
 
 AUTHORS:
 
@@ -8,7 +8,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2016-2017 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2016-2018 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
@@ -17,18 +17,18 @@ AUTHORS:
 #*****************************************************************************
 from sage.structure.element import Element, IntegralDomainElement, coerce_binop
 from sage.misc.cachefunc import cached_method
-from completion_element import CompletionElement_Field, CompletionElement_Ring, CompletionElement_base
+from henselization_element import HenselizationElement_Field, HenselizationElement_Ring, HenselizationElement_base
 
-class BaseElement_base(CompletionElement_base):
+class BaseElement_base(HenselizationElement_base):
     r"""
-    Abstract base class for elements of :class:`Completion_base` which are in
+    Abstract base class for elements of :class:`Henselization_base` which are in
     one of its uncompleted ``base`` fields.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = QQ.valuation(2)
-        sage: K = Completion(QQ, v)
+        sage: K = Henselization(QQ, v)
         sage: x = K(0); x
         0
 
@@ -37,9 +37,9 @@ class BaseElement_base(CompletionElement_base):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: x = K(0)
             sage: isinstance(x, BaseElement_base)
             True
@@ -57,9 +57,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: hash(K(1)) # indirect doctest
             1
 
@@ -72,9 +72,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1) # indirect doctest
             1
             
@@ -87,9 +87,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1) + K(2) # indirect doctest
             3
 
@@ -105,9 +105,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1) - K(2) # indirect doctest
             -1
 
@@ -123,9 +123,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(3) * K(2) # indirect doctest
             6
 
@@ -141,9 +141,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: K = Completion(ZZ, v)
+            sage: K = Henselization(ZZ, v)
             sage: K(2) / K(3) # indirect doctest
             2/3
 
@@ -160,9 +160,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(3) == K(2) # indirect doctest
             False
 
@@ -192,9 +192,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: x = K(1/4)
             sage: x.valuation()
             -2
@@ -209,9 +209,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: x = K(4)
             sage: x.reduction()
             0
@@ -226,9 +226,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1)._vector_()
             (1,)
 
@@ -263,9 +263,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.gen().matrix(base=K)
@@ -283,9 +283,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.gen().approximation(123)
@@ -308,9 +308,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES:: 
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1024)._relative_size()
             6
 
@@ -327,9 +327,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1025).simplify(force=True)
             1
 
@@ -345,9 +345,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1025)._upper_bound()
             0
 
@@ -363,9 +363,9 @@ class BaseElement_base(CompletionElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: K(1025)._lower_bound()
             0
 
@@ -373,16 +373,16 @@ class BaseElement_base(CompletionElement_base):
         return self._valuation.lower_bound(self._x)
         
 
-class BaseElement_Ring(BaseElement_base, CompletionElement_Ring):
+class BaseElement_Ring(BaseElement_base, HenselizationElement_Ring):
     r"""
-    An element of :class:`Completion_Ring` which is in one of its uncompleted
+    An element of :class:`Henselization_Ring` which is in one of its uncompleted
     ``base`` fields.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: R = Completion(ZZ, v)
+        sage: R = Henselization(ZZ, v)
         sage: x = R(0); x
         0
 
@@ -401,9 +401,9 @@ class BaseElement_Ring(BaseElement_base, CompletionElement_Ring):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: R = Completion(ZZ, v)
+            sage: R = Henselization(ZZ, v)
             sage: R(3) // R(2) # indirect doctest
             1
 
@@ -430,9 +430,9 @@ class BaseElement_Ring(BaseElement_base, CompletionElement_Ring):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = ZZ.valuation(2)
-            sage: R = Completion(ZZ, v)
+            sage: R = Henselization(ZZ, v)
             sage: R(3) % R(2) # indirect doctest
             1
 
@@ -440,16 +440,16 @@ class BaseElement_Ring(BaseElement_base, CompletionElement_Ring):
         return self - (self // other) * other
 
 
-class BaseElement_Field(BaseElement_base, CompletionElement_Field):
+class BaseElement_Field(BaseElement_base, HenselizationElement_Field):
     r"""
-    An element of :class:`Completion_Field` which is in one of its uncompleted
+    An element of :class:`Henselization_Field` which is in one of its uncompleted
     ``base`` fields.
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from completion import *
+        sage: sys.path.append(os.getcwd()); from henselization import *
         sage: v = ZZ.valuation(2)
-        sage: R = Completion(ZZ, v)
+        sage: R = Henselization(ZZ, v)
         sage: R(0)
         0
 
@@ -458,9 +458,9 @@ class BaseElement_Field(BaseElement_base, CompletionElement_Field):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from completion import *
+            sage: sys.path.append(os.getcwd()); from henselization import *
             sage: v = QQ.valuation(2)
-            sage: K = Completion(QQ, v)
+            sage: K = Henselization(QQ, v)
             sage: isinstance(K(0), BaseElement_Field)
             True
 
