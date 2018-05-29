@@ -141,10 +141,10 @@ workflows:
        - test-sage-8.3.beta3
        - pyflakes
        - coverage
-       - docbuild-sage
-       - docbuild-readthedocs
        - benchmark:
            filters:
              branches:
                only:
                - master
+       # - docbuild-sage
+       # - docbuild-readthedocs
