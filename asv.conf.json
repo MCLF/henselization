@@ -8,5 +8,5 @@
     "env_dir": ".asv/env",
     "results_dir": ".asv/results",
     "html_dir": ".asv/html",
-    "benchmark_dir": "mclf/benchmarks"
+    "benchmark_dir": "henselization/benchmarks"
 }
