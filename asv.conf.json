@@ -1,0 +1,12 @@
+{
+    "version": 1,
+    "project": "henselization",
+    "project_url": "https://github.com/MCLF/henselization",
+    "repo": ".",
+    "plugins": ["sage_asv"],
+    "environment_type": "sage",
+    "env_dir": ".asv/env",
+    "results_dir": ".asv/results",
+    "html_dir": ".asv/html",
+    "benchmark_dir": "mclf/benchmarks"
+}

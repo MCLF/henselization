@@ -15,7 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from sage.structure.element import IntegralDomainElement
 from sage.misc.cachefunc import cached_method
 from henselization_element import HenselizationElement_base
 
