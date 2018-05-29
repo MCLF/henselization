@@ -12,4 +12,4 @@ class Rational:
 
     """
     def time_create(self):
-        C = Henselization(QQ, QQ.valuation(2))
+        Henselization(QQ, QQ.valuation(2))
