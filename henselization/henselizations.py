@@ -19,9 +19,7 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from sage.misc.abstract_method import abstract_method
 from sage.categories.category_singleton import Category_singleton
-from sage.categories.category_with_axiom import CategoryWithAxiom, all_axioms
 from sage.categories.discrete_valuation import DiscreteValuationRings, DiscreteValuationFields
 
 #TODO: This should be a patch to DiscreteValuationRings.ElementMethods

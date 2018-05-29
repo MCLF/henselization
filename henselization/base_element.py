@@ -15,7 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from sage.structure.element import Element, IntegralDomainElement, coerce_binop
 from sage.misc.cachefunc import cached_method
 from henselization_element import HenselizationElement_Field, HenselizationElement_Ring, HenselizationElement_base
 from sage.all import ZZ, QQ
@@ -417,7 +416,6 @@ class BaseElement_Ring(BaseElement_base, HenselizationElement_Ring):
         """
         if isinstance(other, BaseElement_Ring):
             if self._base is other._base and self._valuation is other._valuation:
-                from sage.rings.all import ZZ
                 other_unit_part = self.parent()(self.parent()._base_fraction_field_valuation.shift(other._x, -other.valuation()))
                 x = (self / other_unit_part)._x
                 if x in self.parent()._base_valuation.domain():

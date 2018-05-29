@@ -21,7 +21,6 @@ from sage.misc.lazy_attribute import lazy_attribute
 from sage.misc.cachefunc import cached_method
 
 from sage.categories.fields import Fields
-from sage.structure.element import is_Element
 
 class HenselizationFactory(UniqueFactory):
     r"""
@@ -838,6 +837,7 @@ class Henselization_base(CommutativeRing):
         if any([c.valuation() < 0 for c in f.coefficients()]):
             raise NotImplementedError("factorization of non-integral polynomials")
         if self._is_monic_mac_lane_polynomial(f):
+            from sage.structure.factorization import Factorization
             return Factorization([(f,1)])
         if not f.is_squarefree():
             F = f.squarefree_decomposition()

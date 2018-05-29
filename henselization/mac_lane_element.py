@@ -15,7 +15,6 @@ AUTHORS:
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from sage.structure.element import IntegralDomainElement
 from henselization_element import HenselizationElement_base, HenselizationElement_Ring, HenselizationElement_Field
 
 class MacLaneElement_base(HenselizationElement_base):
