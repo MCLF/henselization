@@ -2,14 +2,14 @@ version: 2
 jobs:
   build:
     docker:
-    - image: saraedum/sagemath:develop
+    # TODO: change this to sagemath/sagemath:develop once all dependencies of 22956 have been merged.
+    - image: saraedum/sagemath:henselization
       entrypoint: bash
     steps:
     - type: checkout
-      path: /home/sage/sage/completion
+      path: /home/sage/sage/henselization
     - type: run
       working_directory: /home/sage/sage
       command: |
-        export SAGE_NUM_THREADS=4
         chmod go-w .
-        ./sage -tp completion
+        ./sage -tp --long --initial henselization
