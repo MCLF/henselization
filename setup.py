@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="completion",
+    name="henselization",
     packages=find_packages(include=['henselization*'])
 )
 

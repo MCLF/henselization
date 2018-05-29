@@ -2,7 +2,7 @@ version: 2
 
 jobs:
   test: &test
-    working_directory: /home/sage/completion
+    working_directory: /home/sage/henselization
     docker:
       - image: sagemath/sagemath:latest
     steps:
@@ -22,7 +22,7 @@ jobs:
     docker:
       - image: sagemath/sagemath:8.3.beta3
   coverage:
-    working_directory: /home/sage/completion
+    working_directory: /home/sage/henselization
     docker:
       - image: sagemath/sagemath:8.2
     steps:
@@ -35,7 +35,7 @@ jobs:
             cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python2.7/site-packages/sitecustomize.py
             export COVERAGE_PROCESS_START=`pwd`/.coveragerc
             sage -pip install coverage patchy
-            ln -s /home/sage/completion/henselization /home/sage/sage/local/lib/python2.7/site-packages/
+            ln -s /home/sage/henselization/henselization /home/sage/sage/local/lib/python2.7/site-packages/
             sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
             sage -sh -c 'coverage combine'
             sage -sh -c 'coverage report'
@@ -79,7 +79,7 @@ jobs:
             # fail on warnings
             ! grep WARNING /tmp/rdt.log > /dev/null
             # check that readthedocs produced something non-empty
-            (( $(du -s _readthedocs_build/completion/html | cut -f1) > 1000 ))
+            (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 1000 ))
   benchmark:
     docker:
       - image: sagemath/sagemath:8.2
@@ -91,7 +91,7 @@ jobs:
             # There is an obvious security issue in this script that CircleCI
             # seems to refuse to fix. The options are to disable pull requests
             # or leave it in. Worst case somebody who's bored could push crap
-            # to the completion-asv repository. I guess we can live with that.
+            # to the henselization-asv repository. I guess we can live with that.
             set -x
             sage -pip install patchy
             sage -python setup.py install
@@ -111,8 +111,8 @@ jobs:
             chmod 400 ~/.ssh/id_rsa
             set -x
 
-            # Clone completion-asv with performance data of previous runs
-            git clone git@github.com:MCLF/completion-asv.git .asv/results
+            # Clone henselization-asv with performance data of previous runs
+            git clone git@github.com:MCLF/henselization-asv.git .asv/results
             # Install sage-asv plugin
             # TODO: move the python module into Sage
             pushd .circleci/sage-asv
@@ -121,7 +121,7 @@ jobs:
             # Run benchmarks
             cp .circleci/asv-machine.json ~/.asv-machine.json
             sage -sh -c 'asv run --machine=circleci --python=python'
-            # Commit and store benchmark results in the completion-asv repository
+            # Commit and store benchmark results in the henselization-asv repository
             pushd .asv/results
             git add .
             git commit -m 'Added benchmark run'
@@ -130,7 +130,7 @@ jobs:
             popd
             # Publish benchmark results to github pages
             sage -sh -c 'asv gh-pages --no-push'
-            git push git@github.com:MCLF/completion-asv.git gh-pages:gh-pages -f
+            git push git@github.com:MCLF/henselization-asv.git gh-pages:gh-pages -f
 
 workflows:
   version: 2

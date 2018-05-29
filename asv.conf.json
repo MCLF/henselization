@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "project": "completion",
-    "project_url": "https://github.com/MCLF/completion",
+    "project": "henselization",
+    "project_url": "https://github.com/MCLF/henselization",
     "repo": ".",
     "plugins": ["sage_asv"],
     "environment_type": "sage",
