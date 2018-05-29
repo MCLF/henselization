@@ -325,15 +325,15 @@ class MacLaneElement_Ring(MacLaneElement_base, HenselizationElement_Ring):
         sage: v = ZZ.valuation(5)
         sage: C = Henselization(ZZ, v)
         sage: R.<x> = C[]
-        sage: F = (x^2 + 1).factor()
-        sage: a = F[0][0][0]; a
+        sage: F = (x^2 + 1).factor() # known bug https://github.com/MCLF/completion/issues/14
+        sage: a = F[0][0][0]; a # known bug https://github.com/MCLF/completion/issues/14
         2 + O(5)
 
     TESTS::
 
-        sage: isinstance(a, MacLaneElement_Ring)
+        sage: isinstance(a, MacLaneElement_Ring) # known bug https://github.com/MCLF/completion/issues/14
         True
-        sage: TestSuite(a).run() # long time
+        sage: TestSuite(a).run() # long time, known bug https://github.com/MCLF/completion/issues/14
 
     """
 
