@@ -12,7 +12,7 @@ jobs:
           command: |
             sage -pip install patchy
             sage -python setup.py install
-            sage -tp --initial henselization
+            sage -tp --long --initial henselization
   "test-sage-8.2":
     <<: *test
     docker:
@@ -36,7 +36,7 @@ jobs:
             export COVERAGE_PROCESS_START=`pwd`/.coveragerc
             sage -pip install coverage patchy
             ln -s /home/sage/completion/henselization /home/sage/sage/local/lib/python2.7/site-packages/
-            sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --initial henselization'
+            sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
             sage -sh -c 'coverage combine'
             sage -sh -c 'coverage report'
             # Report to coveralls.io
