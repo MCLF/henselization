@@ -8,7 +8,7 @@ class Rational:
     TESTS::
 
         sage: from henselization.benchmarks.henselizations import Rational
-        sage: Rational.time_create()
+        sage: Rational().time_create()
 
     """
     def time_create(self):
