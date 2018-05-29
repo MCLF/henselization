@@ -18,6 +18,7 @@ AUTHORS:
 from sage.structure.element import Element, IntegralDomainElement, coerce_binop
 from sage.misc.cachefunc import cached_method
 from henselization_element import HenselizationElement_Field, HenselizationElement_Ring, HenselizationElement_base
+from sage.all import ZZ, QQ
 
 class BaseElement_base(HenselizationElement_base):
     r"""
@@ -50,6 +51,12 @@ class BaseElement_base(HenselizationElement_base):
         self._x = x
         self._base = base
         self._valuation = valuation
+
+    def _integer_(self):
+        return ZZ(self._x)
+
+    def _rational_(self):
+        return QQ(self._x)
 
     def __hash__(self):
         r"""
