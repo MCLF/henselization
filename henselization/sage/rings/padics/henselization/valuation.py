@@ -65,7 +65,7 @@ class HenselizationValuationFactory(UniqueFactory):
         parent = DiscretePseudoValuationSpace(domain)
         return parent.__make_element_class__(HenselizationValuation)(parent)
 
-Valuation = HenselizationValuationFactory("henselization.valuation.Valuation")
+Valuation = HenselizationValuationFactory("sage.rings.padics.henselization.valuation.Valuation")
 
 
 class HenselizationValuation(DiscreteValuation):
