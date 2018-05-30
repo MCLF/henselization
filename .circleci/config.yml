@@ -35,6 +35,8 @@ jobs:
             cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python2.7/site-packages/sitecustomize.py
             export COVERAGE_PROCESS_START=`pwd`/.coveragerc
             sage -pip install coverage patchy
+            sage -python setup.py install
+            rm -rf /home/sage/sage/local/lib/python2.7/site-packages/henselization*
             ln -s /home/sage/henselization/henselization /home/sage/sage/local/lib/python2.7/site-packages/
             sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
             sage -sh -c 'coverage combine'
