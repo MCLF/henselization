@@ -34,17 +34,17 @@ class DiscreteValuationRings:
             trivial since there are no prime elements::
         
                 sage: from henselization import *
-                sage: K = Henselization(QQ, QQ.valuation(2))
+                sage: K = QQ.henselization(2)
                 sage: x = K(4)
                 sage: x.is_squarefree()
                 True
         
             Over rings, the only prime is the uniformizing element::
         
-                sage: K = Henselization(ZZ, ZZ.valuation(2))
-                sage: K(4).is_squarefree()
+                sage: R = ZZ.henselization(2)
+                sage: R(4).is_squarefree()
                 False
-                sage: K(9).is_squarefree()
+                sage: R(9).is_squarefree()
                 True
         
             """

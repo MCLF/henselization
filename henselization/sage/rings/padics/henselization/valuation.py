@@ -29,7 +29,7 @@ class HenselizationValuationFactory(UniqueFactory):
     Henselization::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(5))
+        sage: K = QQ.henselization(5)
         sage: K.valuation() # indirect doctest
         5-adic valuation
 
@@ -41,7 +41,7 @@ class HenselizationValuationFactory(UniqueFactory):
         TESTS::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: K.valuation() is K.valuation() # indirect doctest
             True
 
@@ -55,7 +55,7 @@ class HenselizationValuationFactory(UniqueFactory):
         TESTS::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: K.valuation() # indirect doctest
             5-adic valuation
 
@@ -78,7 +78,7 @@ class HenselizationValuation(DiscreteValuation):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(5))
+        sage: K = QQ.henselization(5)
         sage: K.valuation()
         5-adic valuation
 
@@ -88,7 +88,7 @@ class HenselizationValuation(DiscreteValuation):
         TESTS::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: v = K.valuation()
             sage: from sage.rings.padics.henselization.valuation import HenselizationValuation
             sage: isinstance(v, HenselizationValuation)
@@ -106,7 +106,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: K.valuation() # indirect doctest
             5-adic valuation
 
@@ -120,7 +120,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: w = K.valuation()
             sage: w(K(25))
             2
@@ -135,7 +135,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: w = K.valuation()
             sage: w.uniformizer()
             5
@@ -150,7 +150,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: w = K.valuation()
             sage: w.residue_ring()
             Finite Field of size 5
@@ -166,7 +166,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: w = K.valuation()
             sage: w.lift(1)
             1
@@ -182,7 +182,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: w = K.valuation()
             sage: w.reduce(6)
             1
@@ -212,7 +212,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: w = K.valuation()
             sage: R.<a> = K[]
             sage: L.<a> = K.extension(a^2 + a + 1)
@@ -241,7 +241,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES:: 
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: K.valuation()._relative_size(1024)
             6
 
@@ -259,7 +259,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: K.valuation().simplify(1025, force=True)
             1
 
@@ -276,7 +276,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: K.valuation().upper_bound(1025)
             0
 
@@ -293,7 +293,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: K.valuation().lower_bound(1025)
             0
 
@@ -307,7 +307,7 @@ class HenselizationValuation(DiscreteValuation):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: K.valuation().restriction(ZZ)
             2-adic valuation
         

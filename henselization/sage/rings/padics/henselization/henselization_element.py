@@ -25,7 +25,7 @@ class HenselizationElement_base(IntegralDomainElement):
 
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(2))
+        sage: K = QQ.henselization(2)
         sage: x = K(0); x
         0
 
@@ -45,7 +45,7 @@ class HenselizationElement_Field(HenselizationElement_base):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(2))
+        sage: K = QQ.henselization(2)
         sage: x = K(0); x
         0
 
@@ -65,7 +65,7 @@ class HenselizationElement_Ring(HenselizationElement_base):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: S = Henselization(ZZ, ZZ.valuation(2))
+        sage: S = ZZ.henselization(2)
         sage: x = S(0); x
         0
 
@@ -84,7 +84,7 @@ class HenselizationElement_Ring(HenselizationElement_base):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: S = Henselization(ZZ, ZZ.valuation(3))
+            sage: S = ZZ.henselization(3)
             sage: R.<x> = S[]
             sage: T.<y> = S.extension(x^2 + 3)
             sage: y.euclidean_degree()

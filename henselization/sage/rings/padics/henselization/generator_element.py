@@ -27,7 +27,7 @@ class GeneratorElement(HenselizationElement_base):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(3))
+        sage: K = QQ.henselization(3)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 - 3)
         sage: R.<y> = L[]
@@ -49,7 +49,7 @@ class GeneratorElement(HenselizationElement_base):
         TESTS::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(3))
+            sage: K = QQ.henselization(3)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -70,7 +70,7 @@ class GeneratorElement(HenselizationElement_base):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(3))
+            sage: K = QQ.henselization(3)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -88,7 +88,7 @@ class GeneratorElement(HenselizationElement_base):
         TESTS::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(3))
+            sage: K = QQ.henselization(3)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -120,7 +120,7 @@ class GeneratorElement(HenselizationElement_base):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(3))
+            sage: K = QQ.henselization(3)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -142,7 +142,7 @@ class GeneratorElement(HenselizationElement_base):
         This is not implemented yet::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(3))
+            sage: K = QQ.henselization(3)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -167,7 +167,7 @@ class GeneratorElement(HenselizationElement_base):
         This is not implemented yet::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(3))
+            sage: K = QQ.henselization(3)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]

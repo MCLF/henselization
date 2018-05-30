@@ -9,6 +9,7 @@
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+# TODO: This should be an actual monkey patch and not be part of the henselization package proper
 class Fields:
     class ElementMethods:
         def is_squarefree(self):

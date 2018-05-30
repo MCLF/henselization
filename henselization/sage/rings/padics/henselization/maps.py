@@ -26,7 +26,7 @@ class ConvertMap_generic(Morphism):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(5))
+        sage: K = QQ.henselization(5)
         sage: QQ.convert_map_from(K)
         Generic morphism:
             From: Henselization of Rational Field with respect to 5-adic valuation
@@ -40,7 +40,7 @@ class ConvertMap_generic(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(5))
+            sage: K = QQ.henselization(5)
             sage: f = QQ.convert_map_from(K)
             sage: f(K(0))
             0
@@ -59,7 +59,7 @@ class ExtensionCoercion_generic(ConvertMap_generic):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(2))
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: L.coerce_map_from(K)
@@ -75,7 +75,7 @@ class ExtensionCoercion_generic(ConvertMap_generic):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: S = Henselization(ZZ, ZZ.valuation(2))
+            sage: S = ZZ.henselization(2)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
             sage: T.coerce_map_from(S).is_injective()
@@ -108,7 +108,7 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]; f # indirect doctest
@@ -126,7 +126,7 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -143,7 +143,7 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -160,7 +160,7 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -178,7 +178,7 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(2))
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[1]; f
@@ -204,7 +204,7 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
         TESTS::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -225,7 +225,7 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: V,f,_ = L.module(base=K)
@@ -243,7 +243,7 @@ class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepr
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(2))
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[2]; f
@@ -269,7 +269,7 @@ class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepr
         TESTS::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[2]
@@ -290,7 +290,7 @@ class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepr
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: _,_,f = L.module(base=K)
@@ -308,7 +308,7 @@ class RelativeExtensionCoercion_generic(Morphism):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: K = Henselization(QQ, QQ.valuation(2))
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
@@ -334,7 +334,7 @@ class RelativeExtensionCoercion_generic(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -353,7 +353,7 @@ class RelativeExtensionCoercion_generic(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -382,7 +382,7 @@ class RelativeExtensionCoercion_generic(Morphism):
         the roots of the defining polynomial consistently.)::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L.<x> = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -411,7 +411,7 @@ class RelativeExtensionCoercion_generic(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -430,7 +430,7 @@ class RelativeExtensionCoercion_generic(Morphism):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: K = Henselization(QQ, QQ.valuation(2))
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
