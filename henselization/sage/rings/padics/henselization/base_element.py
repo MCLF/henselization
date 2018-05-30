@@ -16,7 +16,7 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 from sage.misc.cachefunc import cached_method
-from henselization_element import HenselizationElement_Field, HenselizationElement_Ring, HenselizationElement_base
+from .henselization_element import HenselizationElement_Field, HenselizationElement_Ring, HenselizationElement_base
 from sage.all import ZZ, QQ
 
 class BaseElement_base(HenselizationElement_base):
@@ -26,9 +26,8 @@ class BaseElement_base(HenselizationElement_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: x = K(0); x
         0
 
@@ -37,10 +36,10 @@ class BaseElement_base(HenselizationElement_base):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: x = K(0)
+            sage: from sage.rings.padics.henselization.base_element import BaseElement_base
             sage: isinstance(x, BaseElement_base)
             True
             sage: TestSuite(x).run()
@@ -52,9 +51,31 @@ class BaseElement_base(HenselizationElement_base):
         self._valuation = valuation
 
     def _integer_(self):
+        r"""
+        Return this element as an integer if possible.
+
+        EXAMPLES::
+
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
+            sage: K.zero()._integer_()
+            0
+
+        """
         return ZZ(self._x)
 
     def _rational_(self):
+        r"""
+        Return this element as a rational number if possible.
+
+        EXAMPLES::
+
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
+            sage: K.zero()._rational_()
+            0
+
+        """
         return QQ(self._x)
 
     def __hash__(self):
@@ -63,9 +84,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: hash(K(1)) # indirect doctest
             1
 
@@ -78,9 +98,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1) # indirect doctest
             1
             
@@ -93,9 +112,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1) + K(2) # indirect doctest
             3
 
@@ -111,9 +129,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1) - K(2) # indirect doctest
             -1
 
@@ -129,9 +146,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(3) * K(2) # indirect doctest
             6
 
@@ -147,10 +163,9 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: K = Henselization(ZZ, v)
-            sage: K(2) / K(3) # indirect doctest
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
+            sage: R(2) / R(3) # indirect doctest
             2/3
 
         """
@@ -166,10 +181,9 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
-            sage: K(3) == K(2) # indirect doctest
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
+            sage: R(3) == R(2) # indirect doctest
             False
 
         """
@@ -198,9 +212,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: x = K(1/4)
             sage: x.valuation()
             -2
@@ -215,9 +228,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: x = K(4)
             sage: x.reduction()
             0
@@ -232,9 +244,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1)._vector_()
             (1,)
 
@@ -269,9 +280,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.gen().matrix(base=K)
@@ -289,9 +299,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.gen().approximation(123)
@@ -314,9 +323,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES:: 
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1024)._relative_size()
             6
 
@@ -333,9 +341,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1025).simplify(force=True)
             1
 
@@ -351,9 +358,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1025)._upper_bound()
             0
 
@@ -369,9 +375,8 @@ class BaseElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K(1025)._lower_bound()
             0
 
@@ -386,14 +391,14 @@ class BaseElement_Ring(BaseElement_base, HenselizationElement_Ring):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: R = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: R = ZZ.henselization(2)
         sage: x = R(0); x
         0
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.base_element import BaseElement_Ring
         sage: isinstance(R(0), BaseElement_Ring)
         True
 
@@ -407,9 +412,8 @@ class BaseElement_Ring(BaseElement_base, HenselizationElement_Ring):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: R = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
             sage: R(3) // R(2) # indirect doctest
             1
 
@@ -435,9 +439,8 @@ class BaseElement_Ring(BaseElement_base, HenselizationElement_Ring):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: R = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
             sage: R(3) % R(2) # indirect doctest
             1
 
@@ -452,10 +455,9 @@ class BaseElement_Field(BaseElement_base, HenselizationElement_Field):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: R = Henselization(ZZ, v)
-        sage: R(0)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
+        sage: K(0)
         0
 
     """
@@ -463,9 +465,9 @@ class BaseElement_Field(BaseElement_base, HenselizationElement_Field):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
+            sage: from sage.rings.padics.henselization.base_element import BaseElement_Field
             sage: isinstance(K(0), BaseElement_Field)
             True
 

@@ -36,9 +36,8 @@ class HenselizationFactory(UniqueFactory):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(5)
-        sage: Henselization(QQ, v)
+        sage: from henselization import *
+        sage: QQ.henselization(5) # indirect doctest
         Henselization of Rational Field with respect to 5-adic valuation
 
     """
@@ -48,9 +47,8 @@ class HenselizationFactory(UniqueFactory):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: Henselization(QQ, v) is Henselization(QQ, v) # indirect doctest
+            sage: from henselization import *
+            sage: QQ.henselization(5) is QQ.henselization(5) # indirect doctest
             True
 
         """
@@ -71,9 +69,8 @@ class HenselizationFactory(UniqueFactory):
 
         TESTS::
             
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: Henselization(QQ, v) # indirect doctest
+            sage: from henselization import *
+            sage: Henselization(QQ, QQ.valuation(5)) # indirect doctest
             Henselization of Rational Field with respect to 5-adic valuation
 
         """
@@ -96,9 +93,8 @@ class ExtensionFactory(UniqueFactory):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(5)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(5)
         sage: R.<x> = K[]
         sage: K.extension(x^2 - 5) # indirect doctest
         Extension defined by x^2 - 5 of Henselization of Rational Field with respect to 5-adic valuation
@@ -110,9 +106,8 @@ class ExtensionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
             sage: R.<x> = K[]
             sage: K.extension(x^2 - 5) is K.extension(x^2 - 5) # indirect doctest
             True
@@ -144,9 +139,8 @@ class ExtensionFactory(UniqueFactory):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
             sage: R.<x> = K[]
             sage: K.extension(x^2 - 5) # indirect doctest
             Extension defined by x^2 - 5 of Henselization of Rational Field with respect to 5-adic valuation
@@ -173,14 +167,14 @@ class ExtensionFactory(UniqueFactory):
 
         A trivial case, a factor of degree one::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
             sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
             sage: F = sorted(F, key=str) # remove randomness in the output
             sage: F[0][0], F[1][0]
             (x + 2 + O(5), x + 3 + O(5))
+            sage: from sage.rings.padics.henselization.henselization import Extension
             sage: Extension._get_isomorphic_approximation(F[0][0])._base
             Univariate Quotient Polynomial Ring in xbar over Rational Field with modulus x + 2
 
@@ -201,8 +195,7 @@ class ExtensionFactory(UniqueFactory):
 
         A complex case where the initial approximation is not sufficient::
 
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: f = x^12 - 4*x^11 + 2*x^10 + 13*x^8 - 16*x^7 - 36*x^6 + 168*x^5 - 209*x^4 + 52*x^3 + 26*x^2 + 8*x - 13
             sage: L = K.extension(f.change_variable_name('a'))
@@ -302,12 +295,12 @@ class ExtensionFactory(UniqueFactory):
         number field should back the implementation of the Henselization; if the
         ``model_valuation`` is omitted it is determined automatically::
     
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = QQ[]
             sage: M.<x> = QQ.extension(x^2 + x + 3)
             sage: R.<x> = K[]
+            sage: from sage.rings.padics.henselization.henselization import Extension
             sage: L = Extension._create_extension(K, x^2 + x + 1, model = M)
             sage: L
             Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
@@ -370,8 +363,8 @@ class QuotientFactory(UniqueFactory):
         
         return clazz(base, polynomial, model, model_valuation)
 
-Extension = ExtensionFactory("Extension")
-Quotient = QuotientFactory("Quotient")
+Extension = ExtensionFactory("sage.rings.padics.henselization.henselization.Extension")
+Quotient = QuotientFactory("sage.rings.padics.henselization.henselization.Quotient")
 
 
 class Henselization_base(CommutativeRing):
@@ -381,9 +374,8 @@ class Henselization_base(CommutativeRing):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: Henselization(ZZ, ZZ.valuation(2))
         Henselization of Integer Ring with respect to 2-adic valuation
 
     """
@@ -391,10 +383,10 @@ class Henselization_base(CommutativeRing):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
+            sage: from henselization import *
             sage: K.<x> = FunctionField(QQ)
-            sage: v = K.valuation(x)
-            sage: C = Henselization(K, v)
+            sage: C = K.henselization(x)
+            sage: from sage.rings.padics.henselization.henselization import Henselization_base
             sage: isinstance(C, Henselization_base)
             True
             sage: TestSuite(C).run() # long time
@@ -450,9 +442,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
             sage: R.<x> = K[]
             sage: F = (x^2 + 4).factor()
             sage: F[0][0].is_squarefree() # indirect doctest
@@ -471,9 +462,8 @@ class Henselization_base(CommutativeRing):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: (x^2 - 1).gcd(x - 1) # indirect doctest
             x - 1
@@ -490,9 +480,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: x.xgcd(x) # indirect doctest
             (x, 0, 1)
@@ -524,9 +513,8 @@ class Henselization_base(CommutativeRing):
         For Henselizations that are not algebraical extensions of another
         Henselization, these two concepts coincide::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.base_ring() is K.base() is QQ
             True
 
@@ -539,9 +527,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.characteristic()
             0
 
@@ -554,9 +541,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.is_finite()
             False
 
@@ -571,9 +557,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.uniformizer()
             2
 
@@ -586,9 +571,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.has_coerce_map_from(QQ) # indirect doctest
             True
 
@@ -616,9 +600,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.an_element()
             2
 
@@ -631,9 +614,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: x = K(0) # indirect doctest
             sage: x.parent() is K
             True
@@ -664,9 +646,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: Henselization(QQ, v)
+            sage: from henselization import *
+            sage: Henselization(QQ, QQ.valuation(2))
             Henselization of Rational Field with respect to 2-adic valuation
 
         """
@@ -678,9 +659,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: len(K.some_elements())
             100
 
@@ -696,9 +676,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.valuation()
             2-adic valuation
 
@@ -713,9 +692,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.residue_field()
             Finite Field of size 2
 
@@ -729,9 +707,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: K.extension(x^2 + x + 1)
             Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
@@ -754,9 +731,8 @@ class Henselization_base(CommutativeRing):
 
         This ring is generated by its one element::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.ngens()
             1
             sage: K.gens()
@@ -773,9 +749,8 @@ class Henselization_base(CommutativeRing):
 
         This ring is generated by its one element::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K.gen(0)
             1
             sage: K.gen(1)
@@ -794,9 +769,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: f = x + 1
             sage: f.factor() # indirect doctest
@@ -809,8 +783,7 @@ class Henselization_base(CommutativeRing):
 
             sage: G = GaussianIntegers().fraction_field()
             sage: I = G.gen()
-            sage: v = G.valuation(2)
-            sage: K = Henselization(G, v)
+            sage: K = G.henselization(2)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: F = f.factor(); F # random output
@@ -822,8 +795,7 @@ class Henselization_base(CommutativeRing):
 
         Another non-trivial example::
 
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: K = QQ.henselization(5)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: f.factor()
@@ -883,9 +855,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: R = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
             sage: R.ideal(1, 1)
             Principal ideal (1) of Henselization of Integer Ring with respect to 2-adic valuation
 
@@ -954,9 +925,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = QQ.henselization(2)
             sage: R.<x> = C[]
             sage: C._krasner_bound(x^2 + x + 1)
             [0, 0, +Infinity]
@@ -1014,9 +984,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
             sage: R.<x> = K[]
             sage: F = (x^2 + 4).factor()
             sage: K._is_monic_mac_lane_polynomial(F[0][0])
@@ -1049,9 +1018,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.module(base=L)
@@ -1090,9 +1058,8 @@ class Henselization_base(CommutativeRing):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K._module_basis(K)
             (1,)
 
@@ -1109,9 +1076,8 @@ class Henselization_base(CommutativeRing):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: K._test_module_basis()
 
         """
@@ -1128,9 +1094,8 @@ class Henselization_Ring(Henselization_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: Henselization(ZZ, ZZ.valuation(2))
         Henselization of Integer Ring with respect to 2-adic valuation
 
     """
@@ -1138,9 +1103,9 @@ class Henselization_Ring(Henselization_base):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: C = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: C = ZZ.henselization(2)
+            sage: from sage.rings.padics.henselization.henselization import Henselization_Ring
             sage: isinstance(C, Henselization_Ring)
             True
             sage: TestSuite(C).run() # long time
@@ -1151,7 +1116,7 @@ class Henselization_Ring(Henselization_base):
             raise TypeError("base must not be a field")
 
         if category is None:
-            from henselizations import HenselianDiscreteValuationRings
+            from sage.categories.discrete_valuation import HenselianDiscreteValuationRings
             category = HenselianDiscreteValuationRings()
 
         super(Henselization_Ring, self).__init__(base=base, base_valuation=base_valuation, category=category)
@@ -1164,9 +1129,8 @@ class Henselization_Ring(Henselization_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: R = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
             sage: x = R(0) # indirect doctest
             sage: isinstance(x, R._base_element_class)
             True
@@ -1183,9 +1147,8 @@ class Henselization_Ring(Henselization_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(5)
-            sage: S = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: S = ZZ.henselization(5)
             sage: R.<x> = S[]
             sage: f = x^2 + 1
             sage: F = f.factor() # indirect doctest, known bug https://github.com/MCLF/henselization/issues/14
@@ -1202,9 +1165,8 @@ class Henselization_Ring(Henselization_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: R = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
             sage: R.is_field()
             False
 
@@ -1217,9 +1179,8 @@ class Henselization_Ring(Henselization_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: R = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: R = ZZ.henselization(2)
             sage: R.fraction_field()
             Henselization of Rational Field with respect to 2-adic valuation
 
@@ -1233,9 +1194,8 @@ class Henselization_Field(Henselization_base, Field):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: Henselization(QQ, v)
+        sage: from henselization import *
+        sage: Henselization(QQ, QQ.valuation(2))
         Henselization of Rational Field with respect to 2-adic valuation
 
     """
@@ -1243,16 +1203,16 @@ class Henselization_Field(Henselization_base, Field):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
+            sage: from sage.rings.padics.henselization.henselization import Henselization_Field
             sage: isinstance(K, Henselization_Field)
             True
             sage: TestSuite(K).run() # long time
 
         """
         if category is None:
-            from henselizations import HenselianDiscreteValuationFields
+            from sage.categories.discrete_valuation import HenselianDiscreteValuationFields
             category = HenselianDiscreteValuationFields()
 
         super(Henselization_Field, self).__init__(base=base, base_valuation=base_valuation, category=category)
@@ -1264,9 +1224,8 @@ class Henselization_Field(Henselization_base, Field):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: x = K(0) # indirect doctest
             sage: isinstance(x, K._base_element_class)
             True
@@ -1283,9 +1242,8 @@ class Henselization_Field(Henselization_base, Field):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
             sage: R.<x> = K[]
             sage: f = x^2 + 1
             sage: F = f.factor() # indirect doctest
@@ -1304,9 +1262,8 @@ class HenselizationExtension(Henselization_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L.<a> = K.extension(x^2 + x + 1); L
         Extension defined by a^2 + a + 1 of Henselization of Rational Field with respect to 2-adic valuation
@@ -1320,11 +1277,11 @@ class HenselizationExtension(Henselization_base):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
+            sage: from sage.rings.padics.henselization.henselization import HenselizationExtension
             sage: isinstance(L, HenselizationExtension)
             True
             sage: TestSuite(L).run() # long time
@@ -1367,9 +1324,8 @@ class HenselizationExtension(Henselization_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.degree()
@@ -1389,9 +1345,8 @@ class HenselizationExtension(Henselization_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: L.base_ring() is K
@@ -1407,9 +1362,8 @@ class HenselizationExtension(Henselization_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -1430,9 +1384,8 @@ class HenselizationExtension(Henselization_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -1455,9 +1408,8 @@ class HenselizationExtension(Henselization_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: K.extension(x^2 + x + 1) # indirect doctest
             Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
@@ -1473,9 +1425,8 @@ class HenselizationExtension(Henselization_base):
 
         This extension is generated by a root of its defining polynomial::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
             sage: L.ngens()
@@ -1495,9 +1446,8 @@ class HenselizationExtension(Henselization_base):
 
         A totally ramified extension::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = QQ.henselization(2)
             sage: R.<t> = C[]
             sage: f = t^12 - 4*t^11 + 2*t^10 + 13*t^8 - 16*t^7 - 36*t^6 + 168*t^5 - 209*t^4 + 52*t^3 + 26*t^2 + 8*t - 13
             sage: C12 = C.extension(f)
@@ -1510,6 +1460,7 @@ class HenselizationExtension(Henselization_base):
             sage: C2 = C.extension(u^2 + u + 1)
             sage: R.<t> = C2[]
             sage: f = t^12 - 4*t^11 + 2*t^10 + 13*t^8 - 16*t^7 - 36*t^6 + 168*t^5 - 209*t^4 + 52*t^3 + 26*t^2 + 8*t - 13
+            sage: from sage.rings.padics.henselization.henselization import Extension
             sage: C24 = Extension._create_extension(C2, f)
             sage: C24._eisenstein_model(base=C)
             (Number Field in e12 with defining polynomial e12^24 + 4*e12^20 + 4*e12^17 + 10*e12^16 + 8*e12^13 + 4*e12^12 + 8*e12^9 + 12*e12^8 + 24*e12^7 + 24*e12^5 + 28*e12^4 + 36, 2-adic valuation)
@@ -1554,9 +1505,8 @@ class HenselizationExtension_Field(HenselizationExtension, Henselization_Field):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(3)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(3)
         sage: R.<x> = K[]
         sage: K.extension(x^2 + 3)
         Extension defined by x^2 + 3 of Henselization of Rational Field with respect to 3-adic valuation
@@ -1566,11 +1516,11 @@ class HenselizationExtension_Field(HenselizationExtension, Henselization_Field):
         r"""
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(3)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(3)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + 3)
+            sage: from sage.rings.padics.henselization.henselization import HenselizationExtension_Field
             sage: isinstance(L, HenselizationExtension_Field)
             True
             sage: TestSuite(L).run() # long time
@@ -1586,9 +1536,8 @@ class HenselizationExtension_Field(HenselizationExtension, Henselization_Field):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + 2)
             sage: L._test_extension_module_basis()
@@ -1607,15 +1556,15 @@ class HenselizationExtension_Ring(HenselizationExtension, Henselization_Ring):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(3)
-        sage: S = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: S = ZZ.henselization(3)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + 3); T
         Extension defined by x^2 + 3 of Henselization of Integer Ring with respect to 3-adic valuation
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization import HenselizationExtension_Ring
         sage: isinstance(T, HenselizationExtension_Ring)
         True
         sage: TestSuite(T).run() # long time
@@ -1627,9 +1576,8 @@ class HenselizationExtension_Ring(HenselizationExtension, Henselization_Ring):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(3)
-            sage: S = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: S = ZZ.henselization(3)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + 3)
             sage: T.fraction_field()
@@ -1647,9 +1595,8 @@ class HenselizationExtensionAbsolute(HenselizationExtension):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: L.<x> = K[]
         sage: K.extension(x^2 + x + 1)
         Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
@@ -1659,11 +1606,11 @@ class HenselizationExtensionAbsolute(HenselizationExtension):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: L.<x> = K[]
             sage: M = K.extension(x^2 + x + 1)
+            sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionAbsolute
             sage: isinstance(M, HenselizationExtensionAbsolute)
             True
             sage: TestSuite(M).run() # long time
@@ -1680,9 +1627,8 @@ class HenselizationExtensionAbsolute(HenselizationExtension):
  
         EXAMPLES::
 
-           sage: sys.path.append(os.getcwd()); from henselization import *
-           sage: v = QQ.valuation(2)
-           sage: K = Henselization(QQ, v)
+           sage: from henselization import *
+           sage: K = QQ.henselization(2)
            sage: R.<x> = K[]
            sage: L = K.extension(x^2 + x + 1)
            sage: L._module_basis(base = K)
@@ -1702,15 +1648,15 @@ class HenselizationExtensionAbsolute_Field(HenselizationExtensionAbsolute, Hense
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: L.<x> = K[]
         sage: L = K.extension(x^2 + 2); L
         Extension defined by x^2 + 2 of Henselization of Rational Field with respect to 2-adic valuation
     
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionAbsolute_Field
         sage: isinstance(L, HenselizationExtensionAbsolute_Field)
         True
         sage: TestSuite(L).run() # long time
@@ -1725,9 +1671,8 @@ class HenselizationExtensionSimple(HenselizationExtensionAbsolute):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: S = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: S = ZZ.henselization(2)
         sage: R.<x> = S[]
         sage: S.extension(x^2 + x + 1)
         Extension defined by x^2 + x + 1 of Henselization of Integer Ring with respect to 2-adic valuation
@@ -1737,11 +1682,11 @@ class HenselizationExtensionSimple(HenselizationExtensionAbsolute):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: S = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: S = ZZ.henselization(2)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
+            sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionSimple
             sage: isinstance(T, HenselizationExtensionSimple)
             True
             sage: TestSuite(T).run() # long time
@@ -1757,9 +1702,8 @@ class HenselizationExtensionSimple(HenselizationExtensionAbsolute):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
             sage: L.gen(0)
@@ -1781,15 +1725,15 @@ class HenselizationExtensionSimple_Field(HenselizationExtensionSimple, Henseliza
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1); L
         Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionSimple_Field
         sage: isinstance(L, HenselizationExtensionSimple_Field)
         True
         sage: TestSuite(L).run() # long time
@@ -1803,15 +1747,15 @@ class HenselizationExtensionSimple_Ring(HenselizationExtensionSimple, Henselizat
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: S = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: S = ZZ.henselization(2)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1); T
         Extension defined by x^2 + x + 1 of Henselization of Integer Ring with respect to 2-adic valuation
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionSimple_Ring
         sage: isinstance(T, HenselizationExtensionSimple_Ring)
         True
         sage: TestSuite(T).run() # long time
@@ -1829,12 +1773,11 @@ class HenselizationExtensionIteratedQuotient(HenselizationExtension):
     Instances of this class are not exposed through public methods but only
     exist internally when building iterated extensions::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
+        sage: from sage.rings.padics.henselization.henselization import Extension
         sage: Extension._create_extension(L, y^2 - 2)
         Extension defined by y^2 - 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
@@ -1843,13 +1786,14 @@ class HenselizationExtensionIteratedQuotient(HenselizationExtension):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
+            sage: from sage.rings.padics.henselization.henselization import Extension
             sage: M = Extension._create_extension(L, y^2 - 2)
+            sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionIteratedQuotient
             sage: isinstance(M, HenselizationExtensionIteratedQuotient)
             True
             sage: TestSuite(M).run() # long time
@@ -1872,12 +1816,12 @@ class HenselizationExtensionIteratedQuotient(HenselizationExtension):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
+            sage: from sage.rings.padics.henselization.henselization import Extension
             sage: M = Extension._create_extension(L, y^2 - 2)
             sage: M.gen(0)
             ybar
@@ -1898,12 +1842,12 @@ class HenselizationExtensionIteratedQuotient(HenselizationExtension):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
+            sage: from sage.rings.padics.henselization.henselization import Extension
             sage: M = Extension._create_extension(L, y^4 - 2)
             sage: M._module_basis(L)
             (1, ybar, ybar^2, ybar^3)
@@ -1938,17 +1882,18 @@ class HenselizationExtensionIteratedQuotient_Field(HenselizationExtensionIterate
     Instances of this class are not exposed through public methods but only
     exist internally when building iterated extensions::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
+        sage: from sage.rings.padics.henselization.henselization import Extension
         sage: M = Extension._create_extension(L, y^4 - 2); M
         Extension defined by y^4 - 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionIteratedQuotient_Field
         sage: isinstance(M, HenselizationExtensionIteratedQuotient_Field)
         True
         sage: TestSuite(M).run() # long time
@@ -1968,9 +1913,8 @@ class HenselizationExtensionIteratedQuotient_Ring(HenselizationExtensionIterated
     Instances of this class are not exposed through public methods but only
     exist internally when building iterated extensions::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: S = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: S = ZZ.henselization(2)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1)
         sage: R.<y> = T[]
@@ -1982,13 +1926,13 @@ class HenselizationExtensionIteratedQuotient_Ring(HenselizationExtensionIterated
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: S = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: S = ZZ.henselization(2)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
             sage: R.<y> = T[]
             sage: U = Extension._create_extension(T, y^4 - 2) # known bug https://github.com/MCLF/henselization/issues/15
+            sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionIteratedQuotient_Ring
             sage: isinstance(U, HenselizationExtensionIteratedQuotient_Ring) # known bug https://github.com/MCLF/henselization/issues/15
             True
             sage: TestSuite(U).run() # long time, known bug https://github.com/MCLF/henselization/issues/15
@@ -2002,9 +1946,8 @@ class HenselizationExtensionIteratedQuotient_Ring(HenselizationExtensionIterated
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: S = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: S = ZZ.henselization(2)
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
             sage: R.<y> = T[]
@@ -2024,9 +1967,8 @@ class HenselizationExtensionIteratedAbsolute(HenselizationExtensionAbsolute):
 
     EXAMPLES:
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
@@ -2038,13 +1980,13 @@ class HenselizationExtensionIteratedAbsolute(HenselizationExtensionAbsolute):
         r"""
         TESTS::
     
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
             sage: M = L.extension(y^2 - 2)
+            sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionIteratedAbsolute
             sage: isinstance(M, HenselizationExtensionIteratedAbsolute)
             True
             sage: TestSuite(M).run() # long time
@@ -2061,9 +2003,8 @@ class HenselizationExtensionIteratedAbsolute(HenselizationExtensionAbsolute):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
             sage: R.<a> = K[]
             sage: L = K.extension(a^2 + a + 1)
             sage: L.gen(0)
@@ -2088,9 +2029,8 @@ class HenselizationExtensionIteratedAbsolute_Field(HenselizationExtensionIterate
 
     EXAMPLES:
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
@@ -2099,6 +2039,7 @@ class HenselizationExtensionIteratedAbsolute_Field(HenselizationExtensionIterate
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionIteratedAbsolute_Field
         sage: isinstance(M, HenselizationExtensionIteratedAbsolute_Field)
         True
         sage: TestSuite(M).run() # long time
@@ -2113,9 +2054,8 @@ class HenselizationExtensionIteratedAbsolute_Ring(HenselizationExtensionIterated
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: S = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: S = ZZ.henselization(2)
         sage: R.<x> = S[]
         sage: T = S.extension(x^2 + x + 1)
         sage: R.<y> = T[]
@@ -2124,6 +2064,7 @@ class HenselizationExtensionIteratedAbsolute_Ring(HenselizationExtensionIterated
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization import HenselizationExtensionIteratedAbsolute_Ring
         sage: isinstance(U, HenselizationExtensionIteratedAbsolute_Ring) # known bug https://github.com/MCLF/henselization/issues/15
         True
         sage: TestSuite(U).run() # long time, known bug https://github.com/MCLF/henselization/issues/15

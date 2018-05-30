@@ -35,6 +35,8 @@ jobs:
             cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python2.7/site-packages/sitecustomize.py
             export COVERAGE_PROCESS_START=`pwd`/.coveragerc
             sage -pip install coverage patchy
+            sage -python setup.py install
+            rm -rf /home/sage/sage/local/lib/python2.7/site-packages/henselization*
             ln -s /home/sage/henselization/henselization /home/sage/sage/local/lib/python2.7/site-packages/
             sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
             sage -sh -c 'coverage combine'
@@ -89,9 +91,10 @@ jobs:
           name: run benchmark
           command: |
             # There is an obvious security issue in this script that CircleCI
-            # seems to refuse to fix. The options are to disable pull requests
-            # or leave it in. Worst case somebody who's bored could push crap
-            # to the henselization-asv repository. I guess we can live with that.
+            # seems to refuse to fix. The options are to disable coveralls in
+            # pull requests or leave it in. Worst case somebody who's bored
+            # could push crap to the henselization-asv repository. I guess we
+            # can live with that.
             set -x
             sage -pip install patchy
             sage -python setup.py install
