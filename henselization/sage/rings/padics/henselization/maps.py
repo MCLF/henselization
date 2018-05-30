@@ -8,7 +8,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2016 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2016-2018 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
@@ -25,9 +25,8 @@ class ConvertMap_generic(Morphism):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(5)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(5))
         sage: QQ.convert_map_from(K)
         Generic morphism:
             From: Henselization of Rational Field with respect to 5-adic valuation
@@ -40,9 +39,8 @@ class ConvertMap_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(5))
             sage: f = QQ.convert_map_from(K)
             sage: f(K(0))
             0
@@ -60,9 +58,8 @@ class ExtensionCoercion_generic(ConvertMap_generic):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(2))
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: L.coerce_map_from(K)
@@ -77,9 +74,8 @@ class ExtensionCoercion_generic(ConvertMap_generic):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(2)
-            sage: S = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: S = Henselization(ZZ, ZZ.valuation(2))
             sage: R.<x> = S[]
             sage: T = S.extension(x^2 + x + 1)
             sage: T.coerce_map_from(S).is_injective()
@@ -95,12 +91,12 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
 
     TESTS::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = QQ.henselization(2)
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[1]
+        sage: from sage.rings.padics.henselization.maps import VectorSpaceHenselizationIsomorphism
         sage: isinstance(f, VectorSpaceHenselizationIsomorphism)
         True
 
@@ -111,9 +107,8 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]; f # indirect doctest
@@ -130,9 +125,8 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -148,9 +142,8 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -166,9 +159,8 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
@@ -185,9 +177,8 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(2))
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[1]; f
@@ -212,12 +203,12 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[1]
+            sage: from sage.rings.padics.henselization.maps import VectorSpaceToHenselization
             sage: isinstance(f, VectorSpaceToHenselization)
             True
 
@@ -233,9 +224,8 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: V,f,_ = L.module(base=K)
@@ -252,9 +242,8 @@ class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepr
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(2))
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: f = L.module()[2]; f
@@ -279,12 +268,12 @@ class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepr
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: f = L.module()[2]
+            sage: from sage.rings.padics.henselization.maps import HenselizationToVectorSpace
             sage: isinstance(f, HenselizationToVectorSpace)
             True
 
@@ -300,9 +289,8 @@ class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepr
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: _,_,f = L.module(base=K)
@@ -319,9 +307,8 @@ class RelativeExtensionCoercion_generic(Morphism):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(2))
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 + x + 1)
         sage: R.<y> = L[]
@@ -333,6 +320,7 @@ class RelativeExtensionCoercion_generic(Morphism):
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.maps import RelativeExtensionCoercion_generic
         sage: isinstance(f, RelativeExtensionCoercion_generic)
         True
         sage: TestSuite(f).run()
@@ -345,9 +333,8 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -365,9 +352,8 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -395,9 +381,8 @@ class RelativeExtensionCoercion_generic(Morphism):
         this, we would need to make sure that we are choosing
         the roots of the defining polynomial consistently.)::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L.<x> = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -425,9 +410,8 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]
@@ -445,9 +429,8 @@ class RelativeExtensionCoercion_generic(Morphism):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(2)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(2))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 + x + 1)
             sage: R.<y> = L[]

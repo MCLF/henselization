@@ -26,9 +26,8 @@ class GeneratorElement(HenselizationElement_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(3)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(3))
         sage: R.<x> = K[]
         sage: L = K.extension(x^2 - 3)
         sage: R.<y> = L[]
@@ -49,14 +48,14 @@ class GeneratorElement(HenselizationElement_base):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(3)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(3))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
             sage: M = L.extension(y^3 - 3)
             sage: y = M.gen()
+            sage: from sage.rings.padics.henselization.generator_element import GeneratorElement
             sage: isinstance(y, GeneratorElement)
             True
             sage: TestSuite(y).run()
@@ -70,9 +69,8 @@ class GeneratorElement(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(3)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(3))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -89,9 +87,8 @@ class GeneratorElement(HenselizationElement_base):
 
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(3)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(3))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -122,9 +119,8 @@ class GeneratorElement(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(3)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(3))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -145,9 +141,8 @@ class GeneratorElement(HenselizationElement_base):
 
         This is not implemented yet::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(3)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(3))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]
@@ -171,9 +166,8 @@ class GeneratorElement(HenselizationElement_base):
 
         This is not implemented yet::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(3)
-            sage: K = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: K = Henselization(QQ, QQ.valuation(3))
             sage: R.<x> = K[]
             sage: L = K.extension(x^2 - 3)
             sage: R.<y> = L[]

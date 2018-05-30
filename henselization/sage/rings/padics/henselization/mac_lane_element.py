@@ -8,14 +8,14 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2016 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2016-2018 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
 #  the License, or (at your option) any later version.
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
-from henselization_element import HenselizationElement_base, HenselizationElement_Ring, HenselizationElement_Field
+from .henselization_element import HenselizationElement_base, HenselizationElement_Ring, HenselizationElement_Field
 
 class MacLaneElement_base(HenselizationElement_base):
     r"""
@@ -25,10 +25,9 @@ class MacLaneElement_base(HenselizationElement_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(5)
-        sage: C = Henselization(QQ, v)
-        sage: R.<x> = C[]
+        sage: from henselization import *
+        sage: K = QQ.henselization(5)
+        sage: R.<x> = K[]
         sage: F = (x^2 + 1).factor()
 
     The coefficients of the factors are the limits of the coefficients of the
@@ -42,12 +41,12 @@ class MacLaneElement_base(HenselizationElement_base):
         r"""
         TESTS::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
-            sage: R.<x> = C[]
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
             sage: a = F[0][0][0]
+            sage: from sage.rings.padics.henselization.mac_lane_element import MacLaneElement_base
             sage: isinstance(a, MacLaneElement_base)
             True
             sage: TestSuite(a).run() # long time
@@ -63,9 +62,8 @@ class MacLaneElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = Henselization(QQ, QQ.valuation(5))
             sage: R.<x> = C[]
             sage: (x^2 + 1).factor() # indirect doctest
             (x + 2 + O(5)) * (x + 3 + O(5))
@@ -99,16 +97,15 @@ class MacLaneElement_base(HenselizationElement_base):
         Mac Lane elements are not hashable as it seems too hard to implement a
         hash function that is fast and consistent with equality::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = Henselization(QQ, QQ.valuation(5))
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
             sage: a = F[0][0][0]
             sage: hash(a)
             Traceback (most recent call last):
             ...
-            TypeError: <class 'henselization.mac_lane_element.MacLaneElement_Field_with_category'> is not hashable
+            TypeError: ... is not hashable
 
         Therefore, they implement :meth:`_cache_key`, so that they can be used
         in caches::
@@ -128,9 +125,8 @@ class MacLaneElement_base(HenselizationElement_base):
 
         We can sometimes compare elements that came from the same factorization::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = Henselization(QQ, QQ.valuation(5))
             sage: R.<x> = C[]
             sage: F = (x^2 + 1).factor()
             sage: f = F[0][0] # x + 2 + …
@@ -227,10 +223,9 @@ class MacLaneElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
-            sage: R.<x> = C[]
+            sage: from henselization import *
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a._precision()
             1
@@ -256,9 +251,8 @@ class MacLaneElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = Henselization(QQ, QQ.valuation(5))
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a.valuation()
@@ -278,9 +272,8 @@ class MacLaneElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = Henselization(QQ, QQ.valuation(5))
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a.reduction()
@@ -299,9 +292,8 @@ class MacLaneElement_base(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = QQ.valuation(5)
-            sage: C = Henselization(QQ, v)
+            sage: from henselization import *
+            sage: C = Henselization(QQ, QQ.valuation(5))
             sage: R.<x> = C[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a
@@ -320,9 +312,8 @@ class MacLaneElement_Ring(MacLaneElement_base, HenselizationElement_Ring):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(5)
-        sage: C = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: C = Henselization(ZZ, ZZ.valuation(5))
         sage: R.<x> = C[]
         sage: F = (x^2 + 1).factor() # known bug https://github.com/MCLF/henselization/issues/14
         sage: a = F[0][0][0]; a # known bug https://github.com/MCLF/henselization/issues/14
@@ -342,18 +333,16 @@ class MacLaneElement_Field(MacLaneElement_base, HenselizationElement_Field):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(5)
-        sage: C = Henselization(QQ, v)
-        sage: R.<x> = C[]
-        sage: F = (x^2 + 1).factor()
-        sage: a = F[0][0][0]; a
+        sage: from henselization import *
+        sage: R.<x> = ZZ.henselization(5)[]
+        sage: F = (x^2 + 1).factor() # known bug, https://github.com/MCLF/henselization/issues/14 
+        sage: a = F[0][0][0]; a # known bug, https://github.com/MCLF/henselization/issues/14
         2 + O(5^10)
 
     TESTS::
 
-        sage: isinstance(a, MacLaneElement_Field)
+        sage: isinstance(a, MacLaneElement_Field) # known bug, https://github.com/MCLF/henselization/issues/14
         True
-        sage: TestSuite(a).run() # long time
+        sage: TestSuite(a).run() # long time, known bug, https://github.com/MCLF/henselization/issues/14
 
     """

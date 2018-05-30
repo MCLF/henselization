@@ -23,14 +23,15 @@ class HenselizationElement_base(IntegralDomainElement):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(2))
         sage: x = K(0); x
         0
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization_element import HenselizationElement_base
         sage: isinstance(x, HenselizationElement_base)
         True
         sage: TestSuite(x).run()
@@ -43,14 +44,14 @@ class HenselizationElement_Field(HenselizationElement_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = QQ.valuation(2)
-        sage: K = Henselization(QQ, v)
+        sage: from henselization import *
+        sage: K = Henselization(QQ, QQ.valuation(2))
         sage: x = K(0); x
         0
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization_element import HenselizationElement_Field
         sage: isinstance(x, HenselizationElement_Field)
         True
         sage: TestSuite(x).run()
@@ -63,14 +64,14 @@ class HenselizationElement_Ring(HenselizationElement_base):
 
     EXAMPLES::
 
-        sage: sys.path.append(os.getcwd()); from henselization import *
-        sage: v = ZZ.valuation(2)
-        sage: S = Henselization(ZZ, v)
+        sage: from henselization import *
+        sage: S = Henselization(ZZ, ZZ.valuation(2))
         sage: x = S(0); x
         0
 
     TESTS::
 
+        sage: from sage.rings.padics.henselization.henselization_element import HenselizationElement_Ring
         sage: isinstance(x, HenselizationElement_Ring)
         True
         sage: TestSuite(x).run()
@@ -82,9 +83,8 @@ class HenselizationElement_Ring(HenselizationElement_base):
 
         EXAMPLES::
 
-            sage: sys.path.append(os.getcwd()); from henselization import *
-            sage: v = ZZ.valuation(3)
-            sage: S = Henselization(ZZ, v)
+            sage: from henselization import *
+            sage: S = Henselization(ZZ, ZZ.valuation(3))
             sage: R.<x> = S[]
             sage: T.<y> = S.extension(x^2 + 3)
             sage: y.euclidean_degree()
