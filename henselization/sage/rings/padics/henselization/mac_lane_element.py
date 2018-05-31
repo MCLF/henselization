@@ -314,15 +314,16 @@ class MacLaneElement_Ring(MacLaneElement_base, HenselizationElement_Ring):
         sage: from henselization import *
         sage: S = ZZ.henselization(5)
         sage: R.<x> = S[]
-        sage: F = (x^2 + 1).factor() # known bug https://github.com/MCLF/henselization/issues/14
-        sage: a = F[0][0][0]; a # known bug https://github.com/MCLF/henselization/issues/14
+        sage: F = (x^2 + 1).factor()
+        sage: a = F[0][0][0]; a
         2 + O(5)
 
     TESTS::
 
-        sage: isinstance(a, MacLaneElement_Ring) # known bug https://github.com/MCLF/henselization/issues/14
+        sage: from sage.rings.padics.henselization.mac_lane_element import MacLaneElement_Ring
+        sage: isinstance(a, MacLaneElement_Ring)
         True
-        sage: TestSuite(a).run() # long time, known bug https://github.com/MCLF/henselization/issues/14
+        sage: TestSuite(a).run() # long time
 
     """
 
@@ -333,15 +334,16 @@ class MacLaneElement_Field(MacLaneElement_base, HenselizationElement_Field):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: R.<x> = ZZ.henselization(5)[]
-        sage: F = (x^2 + 1).factor() # known bug, https://github.com/MCLF/henselization/issues/14 
-        sage: a = F[0][0][0]; a # known bug, https://github.com/MCLF/henselization/issues/14
+        sage: R.<x> = QQ.henselization(5)[]
+        sage: F = (x^2 + 1).factor()
+        sage: a = F[0][0][0]; a
         2 + O(5^10)
 
     TESTS::
 
-        sage: isinstance(a, MacLaneElement_Field) # known bug, https://github.com/MCLF/henselization/issues/14
+        sage: from sage.rings.padics.henselization.mac_lane_element import MacLaneElement_Field
+        sage: isinstance(a, MacLaneElement_Field)
         True
-        sage: TestSuite(a).run() # long time, known bug, https://github.com/MCLF/henselization/issues/14
+        sage: TestSuite(a).run() # long time
 
     """
