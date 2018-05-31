@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: sage -tp
-          no_output_timeout: 30
+          no_output_timeout: 30m
           command: |
             sage -pip install patchy
             sage -python setup.py install
