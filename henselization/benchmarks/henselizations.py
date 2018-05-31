@@ -14,7 +14,6 @@ Benchmarks for construction and working with Henselizations.
 
 from __future__ import absolute_import
 from sage.all import QQ
-from ..sage.rings.padics.henselization.henselization import Henselization
 
 class Rational:
     r"""
@@ -28,4 +27,4 @@ class Rational:
 
     """
     def time_create(self):
-        Henselization(QQ, QQ.valuation(2))
+        QQ.henselization(2)
