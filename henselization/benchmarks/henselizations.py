@@ -18,13 +18,18 @@ from sage.all import QQ
 class Rational:
     r"""
     Creation of relatively trivial Henselizations.
-
-    TESTS::
-
-        sage: import henselization
-        sage: from henselization.benchmarks.henselizations import Rational
-        sage: Rational().time_create()
-
     """
+    def setup(self):
+        import henselization
+        henselization; # silence pyflakes warning about an unused import
+
     def time_create(self):
+        r"""
+        TESTS::
+    
+            sage: import henselization
+            sage: from henselization.benchmarks.henselizations import Rational
+            sage: Rational().time_create()
+    
+        """
         QQ.henselization(2)
