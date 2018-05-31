@@ -50,7 +50,7 @@ sage: K = QQ.henselization(2)
 sage: R.<T> = K[]
 sage: f = T^12 - 4*T^11 + 2*T^10 + 13*T^8 - 16*T^7 - 36*T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 13
 sage: splitting_field(f)
-Extension defined by a192^4 + … - 13 of Extension defined by z2^2 + z2 + 1 of Henselization of Rational Field with respect to 2-adic valuation
+Extension defined by a192^4 + … of Extension defined by a48^4 + … of Extension defined by a12^12 - 4*a12^11 + 2*a12^10 + 13*a12^8 - 16*a12^7 - 36*a12^6 + 168*a12^5 - 209*a12^4 + 52*a12^3 + 26*a12^2 + 8*a12 - 13 of Extension defined by z2^2 + z2 + 1 of Henselization of Rational Field with respect to 2-adic valuation
 ```
 
 #### Known bugs and issues
