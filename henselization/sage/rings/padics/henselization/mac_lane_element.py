@@ -63,8 +63,8 @@ class MacLaneElement_base(HenselizationElement_base):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: C = Henselization(QQ, QQ.valuation(5))
-            sage: R.<x> = C[]
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: (x^2 + 1).factor() # indirect doctest
             (x + 2 + O(5)) * (x + 3 + O(5))
 
@@ -98,8 +98,8 @@ class MacLaneElement_base(HenselizationElement_base):
         hash function that is fast and consistent with equality::
 
             sage: from henselization import *
-            sage: C = Henselization(QQ, QQ.valuation(5))
-            sage: R.<x> = C[]
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
             sage: a = F[0][0][0]
             sage: hash(a)
@@ -126,8 +126,8 @@ class MacLaneElement_base(HenselizationElement_base):
         We can sometimes compare elements that came from the same factorization::
 
             sage: from henselization import *
-            sage: C = Henselization(QQ, QQ.valuation(5))
-            sage: R.<x> = C[]
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
             sage: f = F[0][0] # x + 2 + …
             sage: g = F[1][0] # x - 2 - …
@@ -139,8 +139,7 @@ class MacLaneElement_base(HenselizationElement_base):
         In some cases, we can also compare to exact elements::
 
             sage: G = GaussianIntegers().fraction_field()
-            sage: v = G.valuation(2)
-            sage: K = Henselization(G, v)
+            sage: K = G.henselization(2)
             sage: R.<x> = K[]
             sage: F = (x^2 + 1).factor()
             sage: f = F[0][0] # x + I
@@ -252,8 +251,8 @@ class MacLaneElement_base(HenselizationElement_base):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: C = Henselization(QQ, QQ.valuation(5))
-            sage: R.<x> = C[]
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a.valuation()
             0
@@ -273,8 +272,8 @@ class MacLaneElement_base(HenselizationElement_base):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: C = Henselization(QQ, QQ.valuation(5))
-            sage: R.<x> = C[]
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a.reduction()
             2
@@ -293,8 +292,8 @@ class MacLaneElement_base(HenselizationElement_base):
         EXAMPLES::
 
             sage: from henselization import *
-            sage: C = Henselization(QQ, QQ.valuation(5))
-            sage: R.<x> = C[]
+            sage: K = QQ.henselization(5)
+            sage: R.<x> = K[]
             sage: a = (x^2 + 1).factor()[0][0][0]
             sage: a
             2 + O(5)
@@ -313,8 +312,8 @@ class MacLaneElement_Ring(MacLaneElement_base, HenselizationElement_Ring):
     EXAMPLES::
 
         sage: from henselization import *
-        sage: C = Henselization(ZZ, ZZ.valuation(5))
-        sage: R.<x> = C[]
+        sage: S = ZZ.henselization(5)
+        sage: R.<x> = S[]
         sage: F = (x^2 + 1).factor() # known bug https://github.com/MCLF/henselization/issues/14
         sage: a = F[0][0][0]; a # known bug https://github.com/MCLF/henselization/issues/14
         2 + O(5)
