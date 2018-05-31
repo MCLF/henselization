@@ -9,6 +9,7 @@ jobs:
       - checkout
       - run:
           name: sage -tp
+          no_output_timeout: 30
           command: |
             sage -pip install patchy
             sage -python setup.py install
@@ -29,6 +30,7 @@ jobs:
       - checkout
       - run:
           name: test coverage
+          no_output_timeout: 30m
           command: |
             set -x
             # Run coverage test
@@ -88,6 +90,7 @@ jobs:
     steps:
       - checkout
       - run:
+          no_output_timeout: 30m
           name: run benchmark
           command: |
             # There is an obvious security issue in this script that CircleCI

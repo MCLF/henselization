@@ -62,6 +62,8 @@ def splitting_field(polynomial, ramified_variable_name = 'a', unramified_variabl
     return ret
 
 class SplittingField:
+    timeout = 1800
+
     def setup(self):
         import henselization
         henselization; # silence pyflakes warning about an unused import
