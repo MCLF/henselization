@@ -160,8 +160,9 @@ class ExtensionFactory(UniqueFactory):
 
     def _get_isomorphic_approximation(self, polynomial):
         r"""
-        Return a Henselization backed by quotient by a polynomial that has the
-        same splitting field as the approximate ``polynomial`` over ``base``.
+        Return a Henselization backed by a quotient by a polynomial that has
+        the same splitting field as the approximate ``polynomial`` over
+        ``base``.
 
         EXAMPLES:
 
@@ -322,10 +323,10 @@ class QuotientFactory(UniqueFactory):
     def create_key(self, base, polynomial, model = None, model_valuation = None):
         if model is None:
             from base_element import BaseElement_base
-            if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients()]):
+            if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients(sparse=False)]):
                 model_polynomial = polynomial.map_coefficients(base._base, base._base)
             else:
-                raise NotImplementedError("Can not extend %s by adjoining a root of %s"%(base, polynomial))
+                model_polynomial = Extension._get_isomorphic_approximation(polynomial)._base.modulus()
 
             if isinstance(base, HenselizationExtension):
                 model = model_polynomial.parent().quo(model_polynomial)
