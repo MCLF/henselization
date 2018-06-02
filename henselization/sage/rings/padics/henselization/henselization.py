@@ -1403,6 +1403,7 @@ class HenselizationExtension(Henselization_base):
             base = base.base_ring()
         return ret
 
+    @cached_method
     def _repr_(self):
         r"""
         Return a printable representation of this ring.
