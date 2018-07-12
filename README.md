@@ -1,7 +1,7 @@
 <!-- [![Documentation Status](https://readthedocs.org/projects/henselization/badge/)](http://henselization.readthedocs.io/?badge=latest) -->
 [![CircleCI](https://circleci.com/gh/MCLF/henselization/tree/master.svg?style=svg)](https://circleci.com/gh/MCLF/henselization/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/MCLF/henselization/badge.svg?branch=master)](https://coveralls.io/github/MCLF/henselization?branch=master)
-[![asv](http://img.shields.io/badge/benchmarked%20by-asv-green.svg?style=flat)](https://mclf.github.io/henselization-asv)
+[![asv](https://img.shields.io/badge/benchmarked%20by-asv-green.svg?style=flat)](https://mclf.github.io/henselization-asv)
 
 ### Henselizations in Sage
 
