@@ -152,5 +152,5 @@ workflows:
              branches:
                only:
                - master
-       # - docbuild-sage
-       # - docbuild-readthedocs
+       - docbuild-sage
+       - docbuild-readthedocs
