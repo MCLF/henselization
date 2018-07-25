@@ -71,7 +71,7 @@ class SplittingField:
     def time_6_8(self):
         r"""
         TESTS::
-    
+ 
             sage: import henselization
             sage: from henselization.benchmarks.splitting_fields import SplittingField
             sage: SplittingField().time_6_8()
@@ -91,10 +91,33 @@ class SplittingField:
         f = T**6 + 168*T**5 - 209*T**4 + 52*T**3 + 26*T**2 + 8*T - 14
         splitting_field(f)
 
+    def time_10_(self):
+        r"""
+        TESTS::
+ 
+            sage: import henselization
+            sage: from henselization.benchmarks.splitting_fields import SplittingField
+            sage: SplittingField().time_6_8()
+            Factoring T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 14 over a field of degree 1 * 1…
+            …factors with degrees [4, 1, 1]
+            Found totally ramified part of degree 4
+            Factoring T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 14 over a field of degree 1 * 4…
+            …factors with degrees [2, 1, 1, 1, 1]
+            Found totally ramified part of degree 2
+            Factoring T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 14 over a field of degree 1 * 8…
+            …factors with degrees [1, 1, 1, 1, 1, 1]
+
+        """
+        K = QQ.henselization(2)
+        R = PolynomialRing(K, 'T')
+        T = R.gen()
+        f = T**10 + T**6 + 168*T**5 - 209*T**4 + 52*T**3 + 26*T**2 + 8*T - 14
+        splitting_field(f)
+
     def time_12_384(self):
         r"""
         TESTS::
-    
+ 
             sage: import henselization
             sage: from henselization.benchmarks.splitting_fields import SplittingField
             sage: SplittingField().time_12_384() # long time
@@ -115,7 +138,7 @@ class SplittingField:
             Found totally ramified part of degree 4
             Factoring T^12 - 4*T^11 + 2*T^10 + 13*T^8 - 16*T^7 - 36*T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 13 over a field of degree 2 * 192…
             …factors with degrees [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    
+ 
         """
         K = QQ.henselization(2)
         R = PolynomialRing(K, 'T')
