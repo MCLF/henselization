@@ -1255,6 +1255,57 @@ class Henselization_Field(Henselization_base, Field):
         from mac_lane_element import MacLaneElement_Field
         return self.__make_element_class__(MacLaneElement_Field)
 
+    def _splitting_field_univariate_polynomial(self, polynomial, names):
+        r"""
+        Return the splitting field of ``polynomial`` over this field.
+
+        TODO: This does not work if the base field is an extension.
+        TODO: The unramified part does not consider names.
+        TODO: Should we allow both names='ram_var' and names=('unram_var', 'ram_var')?
+        TODO: I don't really trust the computations at the beginning of the while loop…are they correct?
+        """
+        ret = polynomial.base_ring()
+    
+        while True:
+            F = polynomial.change_ring(ret)
+            absolute_degree = ret.base().degree()
+            ramified_degree = ret.valuation().value_group().index(polynomial.base_ring().valuation().value_group())
+            unramified_degree = ZZ(absolute_degree/ramified_degree)
+    
+            print("Factoring %s over a field of degree %s * %s…"%(polynomial, unramified_degree, ramified_degree))
+            F = list(F.factor())
+            F = [f for f,e in F]
+            F = sorted(F, key=lambda f:-f.degree())
+            print("…factors with degrees %s"%([f.degree() for f in F],))
+    
+            for f in F:
+                if f.degree() == 1:
+                    continue
+    
+                from sage.rings.padics.henselization.mac_lane_element import MacLaneElement_base
+                if isinstance(f[0], MacLaneElement_base):
+                    valuation = f[0]._limit_valuation
+                else:
+                    valuation = ret.valuation().mac_lane_approximants(f)[0]
+    
+                ramified_part = valuation.value_group().index(ret.valuation().value_group())
+                unramified_part = ZZ(f.degree()/ ramified_part)
+    
+                if unramified_part != 1:
+                    print("Found unramified part of degree %s"%unramified_part)
+                    ret = polynomial.base_ring().extension(GF(polynomial.base_ring().valuation().residue_field().characteristic() ** (unramified_degree * unramified_part)).polynomial().change_ring(QQ).change_ring(polynomial.base_ring()))
+                    break
+            else:
+                for f in F:
+                    if f.degree() == 1:
+                        continue
+                    print("Found totally ramified part of degree %s"%f.degree())
+                    ret = ret.extension(f, ramified_variable_name + str(ramified_degree * f.degree()))
+                    break
+                else:
+                    break
+        return ret
+
 
 class HenselizationExtension(Henselization_base):
     r"""

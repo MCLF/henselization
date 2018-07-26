@@ -17,14 +17,31 @@ from sage.all import QQ
 
 class Rational:
     r"""
-    Creation of relatively trivial Henselizations.
+    Benchmarks creation of relatively trivial Henselizations.
+
+    TESTS::
+
+        sage: from henselization.benchmarks.henselizations import Rational
+        sage: Rational()
+
     """
     def setup(self):
+        r"""
+        Load the henselization monkey patches before running the benchmarks.
+
+        EXAMPLES::
+
+            sage: from henselization.benchmarks.henselizations import Rational
+            sage: Rational().setup()
+
+        """
         import henselization
         henselization; # silence pyflakes warning about an unused import
 
     def time_create(self):
         r"""
+        Time the creation of trivial henselizations.
+
         TESTS::
     
             sage: import henselization
