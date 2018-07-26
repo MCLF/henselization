@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Henselizations of rings
+=======================
 
 AUTHORS:
 

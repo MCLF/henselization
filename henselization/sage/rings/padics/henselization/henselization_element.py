@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Base class for elements of Henselizations
+=========================================
 
 AUTHORS:
 

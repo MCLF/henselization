@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
-Categories for Henselian discrete valuation rings.
+Categories for Henselian discrete valuation rings
+=================================================
 
 Eventually, there should also be an axiom Henselian on the level of
 DiscreteValuationRings.

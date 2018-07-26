@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
-Benchmarks for the constrtuction of splitting fields.
+Benchmarks for the constrtuction of splitting fields
+====================================================
 """
 #*****************************************************************************
 #       Copyright (C) 2018 Julian Rüth <julian.rueth@fsfe.org>

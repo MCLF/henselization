@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
-Benchmarks for construction and working with Henselizations.
+Benchmarks for construction and working with Henselizations
+===========================================================
 """
 #*****************************************************************************
 #       Copyright (C) 2018 Julian Rüth <julian.rueth@fsfe.org>
