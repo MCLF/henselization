@@ -1088,6 +1088,53 @@ class Henselization_base(CommutativeRing):
         tester.assertTrue(all(c.parent() is self for c in basis))
         tester.assertEqual(len(basis), 1)
 
+    def _absolute_base_ring(self):
+        r"""
+        Return the :class:`Henselization_base` that lies at the bottom of this
+        tower of complete extensions.
+
+        TESTS::
+
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 - 2)
+            sage: M._absolute_base_ring() is K
+            True
+
+        """
+        ret = self.base_ring()
+        while isinstance(ret, HenselizationExtension):
+            ret = ret.base_ring()
+        return ret
+
+    def _absolute_degree(self):
+        r"""
+        Return the degree this extension has over the :class:`Henselization_base`
+        that lies at the bottom of this tower of complete extensions.
+
+        TESTS::
+
+            sage: from henselization import *
+            sage: K = QQ.henselization(2)
+            sage: R.<x> = K[]
+            sage: L = K.extension(x^2 + x + 1)
+            sage: R.<y> = L[]
+            sage: M = L.extension(y^2 - 2)
+            sage: M._absolute_degree()
+            4
+
+        """
+        from sage.all import ZZ
+        ret = ZZ(1)
+        base = self
+        while isinstance(base, HenselizationExtension):
+            ret *= base.degree()
+            base = base.base_ring()
+        return ret
+
 
 class Henselization_Ring(Henselization_base):
     r"""
@@ -1255,30 +1302,55 @@ class Henselization_Field(Henselization_base, Field):
         from mac_lane_element import MacLaneElement_Field
         return self.__make_element_class__(MacLaneElement_Field)
 
-    def _splitting_field_univariate_polynomial(self, polynomial, names):
+    def _splitting_field_univariate_polynomial(self, f, names=None, map=False):
         r"""
-        Return the splitting field of ``polynomial`` over this field.
+        Return the splitting field of ``f`` over this field.
 
-        TODO: This does not work if the base field is an extension.
-        TODO: The unramified part does not consider names.
-        TODO: Should we allow both names='ram_var' and names=('unram_var', 'ram_var')?
-        TODO: I don't really trust the computations at the beginning of the while loop…are they correct?
+        INPUT:
+
+        - ``f`` -- a univariate polynomial over this ring
+
+        - ``names`` -- a string, or a tuple of two strings, the base name of
+          the unramified and totally ramified part of the resulting two step
+          extension.
+
+        - ``map`` -- whether to return an embedding of this field into the
+          resulting field.
+
         """
-        ret = polynomial.base_ring()
+        if names is None:
+            names = ()
+        from sage.structure.category_object import normalize_names
+        names = normalize_names(-1, names)
+        if len(names) == 0:
+            names = 'z'
+        if len(names) == 1:
+            names = ('u', names[0])
+        if len(names) > 2:
+            names = names[:2]
+
+        ret = self
     
         while True:
-            F = polynomial.change_ring(ret)
-            absolute_degree = ret.base().degree()
-            ramified_degree = ret.valuation().value_group().index(polynomial.base_ring().valuation().value_group())
+            F = f.change_ring(ret)
+
+            absolute_degree = ret._absolute_degree()
+            ramified_degree = ret.valuation().value_group().index(self._absolute_base_ring().valuation().value_group())
             unramified_degree = ZZ(absolute_degree/ramified_degree)
     
-            print("Factoring %s over a field of degree %s * %s…"%(polynomial, unramified_degree, ramified_degree))
+            from sage.misc.all import verbose
+            verbose("Factoring %s over a field of absolute degree %s * %s…"%(polynomial, unramified_degree, ramified_degree))
             F = list(F.factor())
             F = [f for f,e in F]
             F = sorted(F, key=lambda f:-f.degree())
-            print("…factors with degrees %s"%([f.degree() for f in F],))
+            verbose("…factors with degrees %s"%([f.degree() for f in F],))
     
             for f in F:
+                # It is very beneficial for performance to put a simple
+                # unramified extension at the bottom of the resulting field and
+                # the entire ramified part on top of it. Therefore, we search
+                # for unramified factors first, replace our base and restart
+                # the factorization.
                 if f.degree() == 1:
                     continue
     
@@ -1289,17 +1361,24 @@ class Henselization_Field(Henselization_base, Field):
                     valuation = ret.valuation().mac_lane_approximants(f)[0]
     
                 ramified_part = valuation.value_group().index(ret.valuation().value_group())
-                unramified_part = ZZ(f.degree()/ ramified_part)
+                unramified_part = ZZ(f.degree()/ramified_part)
     
                 if unramified_part != 1:
-                    print("Found unramified part of degree %s"%unramified_part)
-                    ret = polynomial.base_ring().extension(GF(polynomial.base_ring().valuation().residue_field().characteristic() ** (unramified_degree * unramified_part)).polynomial().change_ring(QQ).change_ring(polynomial.base_ring()))
+                    verbose("Found unramified part of degree %s"%unramified_part)
+                    unramified_part = self._absolute_base_ring().extension(GF(self.valuation().residue_field().characteristic() ** (unramified_degree * unramified_part), names=names[0]).polynomial().change_ring(QQ).change_ring(self._absolute_base_ring()))
+
+                    if self.valuation().value_group().index(self._absolute_base_ring().valuation().value_group()) != 1:
+                        # TODO: move the ramified steps of self to the new
+                        # unramified base (or actually, the ramified steps of
+                        # ret.)
+                        raise NotImplementedError("factorization with unramified factors over a ramified base is not implemented yet")
                     break
             else:
+                # No unramified non-trivial factors, all non-trivial factors must be totally ramified
                 for f in F:
                     if f.degree() == 1:
                         continue
-                    print("Found totally ramified part of degree %s"%f.degree())
+                    verbose("Found totally ramified part of degree %s"%f.degree())
                     ret = ret.extension(f, ramified_variable_name + str(ramified_degree * f.degree()))
                     break
                 else:
@@ -1406,53 +1485,6 @@ class HenselizationExtension(Henselization_base):
 
         """
         return self._base_ring
-
-    def _absolute_base_ring(self):
-        r"""
-        Return the :class:`Henselization_base` that lies at the bottom of this
-        tower of complete extensions.
-
-        TESTS::
-
-            sage: from henselization import *
-            sage: K = QQ.henselization(2)
-            sage: R.<x> = K[]
-            sage: L = K.extension(x^2 + x + 1)
-            sage: R.<y> = L[]
-            sage: M = L.extension(y^2 - 2)
-            sage: M._absolute_base_ring() is K
-            True
-
-        """
-        ret = self.base_ring()
-        while isinstance(ret, HenselizationExtension):
-            ret = ret.base_ring()
-        return ret
-
-    def _absolute_degree(self):
-        r"""
-        Return the degree this extension has over the :class:`Henselization_base`
-        that lies at the bottom of this tower of complete extensions.
-
-        TESTS::
-
-            sage: from henselization import *
-            sage: K = QQ.henselization(2)
-            sage: R.<x> = K[]
-            sage: L = K.extension(x^2 + x + 1)
-            sage: R.<y> = L[]
-            sage: M = L.extension(y^2 - 2)
-            sage: M._absolute_degree()
-            4
-
-        """
-        from sage.all import ZZ
-        ret = ZZ(1)
-        base = self
-        while isinstance(base, HenselizationExtension):
-            ret *= base.degree()
-            base = base.base_ring()
-        return ret
 
     @cached_method
     def _repr_(self):
