@@ -338,8 +338,7 @@ autodoc_default_flags = ["members", "show-inheritance"]
 
 # -- mock things from sage that we won't have on readthedocs --
 try:
-    import sage
-    from sage.all import ZZ
+    import sage.all
 except ImportError:
     from unittest.mock import MagicMock
 
