@@ -13,7 +13,7 @@ Benchmarks for the constrtuction of splitting fields.
 #*****************************************************************************
 
 from __future__ import absolute_import
-from sage.all import QQ, ZZ, PolynomialRing, GF
+from sage.all import QQ, PolynomialRing
 
 class SplittingField:
     timeout = 1800

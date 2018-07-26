@@ -1336,10 +1336,11 @@ class Henselization_Field(Henselization_base, Field):
 
             absolute_degree = ret._absolute_degree()
             ramified_degree = ret.valuation().value_group().index(self._absolute_base_ring().valuation().value_group())
+            from sage.all import ZZ
             unramified_degree = ZZ(absolute_degree/ramified_degree)
     
             from sage.misc.all import verbose
-            verbose("Factoring %s over a field of absolute degree %s * %s…"%(polynomial, unramified_degree, ramified_degree))
+            verbose("Factoring %s over a field of absolute degree %s * %s…"%(f, unramified_degree, ramified_degree))
             F = list(F.factor())
             F = [f for f,e in F]
             F = sorted(F, key=lambda f:-f.degree())
@@ -1365,6 +1366,7 @@ class Henselization_Field(Henselization_base, Field):
     
                 if unramified_part != 1:
                     verbose("Found unramified part of degree %s"%unramified_part)
+                    from sage.rings.all import GF, QQ
                     unramified_part = self._absolute_base_ring().extension(GF(self.valuation().residue_field().characteristic() ** (unramified_degree * unramified_part), names=names[0]).polynomial().change_ring(QQ).change_ring(self._absolute_base_ring()))
 
                     if self.valuation().value_group().index(self._absolute_base_ring().valuation().value_group()) != 1:
@@ -1379,7 +1381,7 @@ class Henselization_Field(Henselization_base, Field):
                     if f.degree() == 1:
                         continue
                     verbose("Found totally ramified part of degree %s"%f.degree())
-                    ret = ret.extension(f, ramified_variable_name + str(ramified_degree * f.degree()))
+                    ret = ret.extension(f, names[1] + str(ramified_degree * f.degree()))
                     break
                 else:
                     break
