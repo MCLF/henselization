@@ -67,6 +67,7 @@ jobs:
           command: |
             sudo apt-get update && sudo apt-get install -y build-essential
             sage -pip install patchy
+            sage -python setup.py install
             cd docs
             mkdir -p _static
             sage -sh -c 'make html SPHINXOPTS="-W"'
