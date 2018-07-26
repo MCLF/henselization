@@ -19,7 +19,7 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
-sys.path.insert(0, os.path.abspath('../henselization'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -395,5 +395,10 @@ except ImportError:
                 return Infinity()
             return ReprMock()
 
-    MOCK_MODULES = [ 'sage.rings.ring', 'sage.misc.lazy_attribute', 'sage.misc.cachefunc', 'sage.structure.element', 'sage.all', 'sage.structure.factory', 'sage.categories.fields', 'sage.categories.morphism', 'sage.rings.valuation.valuation', 'sage.structure.unique_representation', 'sage.misc.inherit_comparison' ]
+    MOCK_MODULES = [ 'sage', 'sage.rings.padics.henselization.henselization', 'sage.rings.number_field.order', 'sage.rings.ring', 'sage.misc.lazy_attribute', 'sage.misc.cachefunc', 'sage.structure.element', 'sage.all', 'sage.structure.factory', 'sage.categories.fields', 'sage.categories.morphism', 'sage.rings.valuation.valuation', 'sage.structure.unique_representation', 'sage.misc.inherit_comparison' ]
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+    # Monkey patching does not work if Sage is not actually present (mostly because sage is not a module)
+    recursive_monkey_patch_mock = Mock()
+    recursive_monkey_patch_mock.monkey_patch = lambda x,y: None
+    sys.modules['recursive_monkey_patch'] = recursive_monkey_patch_mock
