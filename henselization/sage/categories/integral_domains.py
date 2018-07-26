@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
-Adds a ``henselization`` method to many rings in Sage.
+Adds a ``henselization`` method to many rings in Sage
+=====================================================
 
 EXAMPLES::
 

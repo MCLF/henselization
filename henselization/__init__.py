@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
-Monkey patching to enable Henselizations in the Sage library.
+Monkey patching to enable Henselizations in the Sage library
+============================================================
 
 EXAMPLES::
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Valuations on Henselizations of rings
+=====================================
 
 AUTHORS:
 

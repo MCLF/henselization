@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Symbolic elements which generate an extension of a Henselization
+================================================================
 
 AUTHORS:
 
@@ -16,7 +17,7 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 from sage.misc.cachefunc import cached_method
-from henselization_element import HenselizationElement_base
+from .henselization_element import HenselizationElement_base
 
 class GeneratorElement(HenselizationElement_base):
     r"""

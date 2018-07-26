@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Elements of the Henselization that come from the uncompleted ring
+=================================================================
 
 AUTHORS:
 

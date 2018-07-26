@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Maps from and to Henselizations of rings
+========================================
 
 AUTHORS:
 
@@ -348,7 +349,7 @@ class RelativeExtensionCoercion_generic(Morphism):
     def is_surjective(self):
         r"""
         Return whether this coercion is surjective, which is only the case for
-        trivial extensions::
+        trivial extensions.
 
         EXAMPLES::
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Shared monkey patching utilities
+================================
 """
 #*****************************************************************************
 #       Copyright (C) 2018 Julian Rüth <julian.rueth@fsfe.org>

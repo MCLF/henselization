@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 Elements in a Henselization which are described by a limit valuation
+====================================================================
 
 AUTHORS:
 
