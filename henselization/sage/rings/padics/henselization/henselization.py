@@ -1105,7 +1105,7 @@ class Henselization_base(CommutativeRing):
             True
 
         """
-        ret = self.base_ring()
+        ret = self
         while isinstance(ret, HenselizationExtension):
             ret = ret.base_ring()
         return ret
