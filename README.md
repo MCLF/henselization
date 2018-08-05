@@ -5,8 +5,8 @@
 
 ### Henselizations in Sage
 
-This project is in an early alpha stage. It could already be useful but there
-are likely quite some issue (that we'd like to hear about 🙂)
+This project is in an alpha stage. It could already be useful but there are
+likely quite some issue (that we'd like to hear about 🙂)
 
 All p-adic rings currently available in Sage are backed by elements that
 consist of an approximation and a precision. It can sometimes be tedious to
@@ -22,11 +22,12 @@ are slow in Sage, extensions are always rewritten as isomorphic rings defined
 by an absolute number field with defining (Eisenstein) polynomials with small
 coefficients.
 
-You need at least [Sage 8.2](https://www.sagemath.org) for the following examples to work.
+If you have at least [Sage 8.2](https://www.sagemath.org/) you can install this
+package with `sage -pip install --user henselization`.
 
 If you can not install Sage on your local machine, you can also click
 [![Launch on mybinder.org](https://camo.githubusercontent.com/d57df63fab21897847014ebaec3e7f5f48951ad2/68747470733a2f2f626574612e6d7962696e6465722e6f72672f62616467652e737667)](https://mybinder.org/v2/gh/mclf/henselization/master?filepath=example.ipynb)
-to try this in an interactive Jupyter notebook.
+to run an interactive Jupyter notebook with mclf preinstalled.
 
 The package can be loaded with
 ```
