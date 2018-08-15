@@ -83,7 +83,7 @@ jobs:
             mkdir -p docs/_static
             ~/.local/bin/rtd-build 2>&1 | tee /tmp/rdt.log
             # fail on warnings
-            ! grep WARNING /tmp/rdt.log > /dev/null
+            grep WARNING /tmp/rdt.log && false
             # check that readthedocs produced something non-empty
             (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 1000 ))
   benchmark:
