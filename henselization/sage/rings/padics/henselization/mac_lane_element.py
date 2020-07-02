@@ -242,7 +242,7 @@ class MacLaneElement_base(HenselizationElement_base):
             v0 += hi/e0
 
         valuations = w.valuations(self._limit_valuation._G)
-        h_phi = valuations.next() - valuations.next()
+        h_phi = next(valuations) - next(valuations)
         return v0 + h_phi / e0
 
     def valuation(self):
