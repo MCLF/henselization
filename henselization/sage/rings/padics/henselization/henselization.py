@@ -323,7 +323,7 @@ class ExtensionFactory(UniqueFactory):
 class QuotientFactory(UniqueFactory):
     def create_key(self, base, polynomial, model = None, model_valuation = None):
         if model is None:
-            from base_element import BaseElement_base
+            from .base_element import BaseElement_base
             if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients(sparse=False)]):
                 model_polynomial = polynomial.map_coefficients(base._base, base._base)
             else:
@@ -1002,7 +1002,7 @@ class Henselization_base(CommutativeRing):
             return False
         if not polynomial.is_monic():
             return False
-        from mac_lane_element import MacLaneElement_base
+        from .mac_lane_element import MacLaneElement_base
         return polynomial.is_monic() and all([isinstance(c, MacLaneElement_base)
                                               and c._degree == d
                                               and c._limit_valuation == polynomial[0]._limit_valuation
@@ -1138,7 +1138,7 @@ class Henselization_Ring(Henselization_base):
             True
 
         """
-        from base_element import BaseElement_Ring
+        from .base_element import BaseElement_Ring
         return self.__make_element_class__(BaseElement_Ring)
 
     @lazy_attribute
@@ -1158,7 +1158,7 @@ class Henselization_Ring(Henselization_base):
             True
 
         """
-        from mac_lane_element import MacLaneElement_Ring
+        from .mac_lane_element import MacLaneElement_Ring
         return self.__make_element_class__(MacLaneElement_Ring)
 
     def is_field(self, *args, **kwargs):
@@ -1233,7 +1233,7 @@ class Henselization_Field(Henselization_base, Field):
             True
 
         """
-        from base_element import BaseElement_Field
+        from .base_element import BaseElement_Field
         return self.__make_element_class__(BaseElement_Field)
 
     @lazy_attribute
@@ -1253,7 +1253,7 @@ class Henselization_Field(Henselization_base, Field):
             True
 
         """
-        from mac_lane_element import MacLaneElement_Field
+        from .mac_lane_element import MacLaneElement_Field
         return self.__make_element_class__(MacLaneElement_Field)
 
 
@@ -2021,7 +2021,7 @@ class HenselizationExtensionIteratedAbsolute(HenselizationExtensionAbsolute):
         if i != 0:
             raise ValueError("ring has only one generator")
 
-        from generator_element import GeneratorElement
+        from .generator_element import GeneratorElement
         return self.__make_element_class__(GeneratorElement)(self)
 
 

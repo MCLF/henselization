@@ -154,7 +154,7 @@ class MacLaneElement_base(HenselizationElement_base):
 
         """
         if op == 2:
-            from base_element import BaseElement_base
+            from .base_element import BaseElement_base
             if isinstance(other, BaseElement_base):
                 if other == 0 and self._degree == 0:
                     # if the constant coefficient were zero, the polynomial would be reducible

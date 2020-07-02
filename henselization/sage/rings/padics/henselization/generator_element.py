@@ -103,7 +103,7 @@ class GeneratorElement(HenselizationElement_base):
 
         """
         if op == 2:
-            from base_element import BaseElement_base
+            from .base_element import BaseElement_base
             if isinstance(other, BaseElement_base):
                 return False
             if isinstance(other, GeneratorElement) and other.parent() == self.parent():

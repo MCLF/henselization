@@ -48,7 +48,7 @@ class ConvertMap_generic(Morphism):
             0
 
         """
-        from base_element import BaseElement_base
+        from .base_element import BaseElement_base
         if isinstance(x, BaseElement_base):
             return self.codomain()(x._x)
         raise NotImplementedError("Conversion of %s into %s"%(x, self.codomain()))
@@ -389,7 +389,7 @@ class RelativeExtensionCoercion_generic(Morphism):
             NotImplementedError: Selection of approximate root of x^2 + x + 1 in Extension defined by y^2 + 2 of Extension defined by x^2 + x + 1 of Henselization of Rational Field with respect to 2-adic valuation
 
         """
-        from base_element import BaseElement_base
+        from .base_element import BaseElement_base
         if isinstance(x, BaseElement_base):
             if self.domain()._base.is_subring(self.codomain()._base):
                 return self.codomain()(x._x)

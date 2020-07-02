@@ -189,7 +189,7 @@ class BaseElement_base(HenselizationElement_base):
 
         """
         if op == 2: # ==
-            from mac_lane_element import MacLaneElement_base
+            from .mac_lane_element import MacLaneElement_base
             if isinstance(other, MacLaneElement_base):
                 return other._richcmp_(self, op)
             elif isinstance(other, BaseElement_base):
