@@ -1491,7 +1491,7 @@ class HenselizationExtension(Henselization_base):
             charpoly = charpoly.change_ring(base)
             charpoly = charpoly.change_variable_name(name)
             if not charpoly.is_squarefree():
-                if self.domain().characteristic() != 0:
+                if self.characteristic() != 0:
                     raise NotImplementedError("iteration over the elements of domains of positive characteristic")
                 perturbation += 1
                 continue
