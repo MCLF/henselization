@@ -18,6 +18,7 @@ AUTHORS:
 #*****************************************************************************
 from sage.categories.morphism import Morphism
 from sage.structure.unique_representation import UniqueRepresentation
+from sage.misc.inherit_comparison import InheritComparisonClasscallMetaclass
 
 class ConvertMap_generic(Morphism):
     r"""
@@ -172,7 +173,7 @@ class VectorSpaceHenselizationIsomorphism(Morphism):
         return True
 
 
-class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepresentation):
+class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepresentation, metaclass=InheritComparisonClasscallMetaclass):
     r"""
     An isomorphism from a vector space to a complete field.
 
@@ -197,9 +198,6 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
         sage: TestSuite(f).run(skip=("_test_nonzero_equal", "_test_pickling"))
 
     """
-    from sage.misc.inherit_comparison import InheritComparisonClasscallMetaclass
-    __metaclass__ = InheritComparisonClasscallMetaclass
-
     def __init__(self, parent, basis):
         r"""
         TESTS::
@@ -237,7 +235,7 @@ class VectorSpaceToHenselization(VectorSpaceHenselizationIsomorphism, UniqueRepr
         return sum(self.codomain()(x)*b for x,b in zip(v,self._basis) if x != 0)
 
 
-class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepresentation):
+class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepresentation, metaclass=InheritComparisonClasscallMetaclass):
     r"""
     An isomorphism from a complete field to a vector space.
 
@@ -262,9 +260,6 @@ class HenselizationToVectorSpace(VectorSpaceHenselizationIsomorphism, UniqueRepr
         sage: TestSuite(f).run(skip=("_test_nonzero_equal", "_test_pickling"))
 
     """
-    from sage.misc.inherit_comparison import InheritComparisonClasscallMetaclass
-    __metaclass__ = InheritComparisonClasscallMetaclass
-
     def __init__(self, parent, base):
         r"""
         TESTS::

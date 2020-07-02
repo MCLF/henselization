@@ -429,7 +429,7 @@ class Henselization_base(CommutativeRing):
             self._gcd_univariate_polynomial = lambda f, g: f.parent()(self._gcd_univariate_polynomial_original(f,g))
 
         # provide conversions from the Henselization back to its base and its field of fractions
-        from maps import ConvertMap_generic
+        from .maps import ConvertMap_generic
         from sage.categories.all import SetsWithPartialMaps
         # TODO: use weak references
         homspace = self.Hom(self._base, category=SetsWithPartialMaps())
@@ -582,7 +582,7 @@ class Henselization_base(CommutativeRing):
         if self.base().has_coerce_map_from(other):
             return True
         
-        from maps import ExtensionCoercion_generic
+        from .maps import ExtensionCoercion_generic
         if self.base_ring().has_coerce_map_from(other):
             if isinstance(other, HenselizationExtension):
                 if self.base().has_coerce_map_from(other.base()):
@@ -1048,7 +1048,7 @@ class Henselization_base(CommutativeRing):
         V = base**len(basis)
         from sage.all import Hom
         to_self_parent = Hom(V, self)
-        from maps import VectorSpaceToHenselization, HenselizationToVectorSpace
+        from .maps import VectorSpaceToHenselization, HenselizationToVectorSpace
         to_self = to_self_parent.__make_element_class__(VectorSpaceToHenselization)(to_self_parent, basis)
         from_self_parent = Hom(self, V)
         from_self = from_self_parent.__make_element_class__(HenselizationToVectorSpace)(from_self_parent, base)
@@ -1317,7 +1317,7 @@ class HenselizationExtension(Henselization_base):
 
         from sage.categories.all import SetsWithPartialMaps
         homspace = base_ring.Hom(self, category=SetsWithPartialMaps())
-        from maps import RelativeExtensionCoercion_generic
+        from .maps import RelativeExtensionCoercion_generic
         self.register_coercion(homspace.__make_element_class__(RelativeExtensionCoercion_generic)(homspace))
 
     def degree(self):
@@ -1869,7 +1869,7 @@ class HenselizationExtensionIteratedQuotient(HenselizationExtension):
             if self.base_ring().has_coerce_map_from(other.base_ring()):
                 if other._polynomial.change_ring(self.base_ring()) == self._polynomial:
                     homspace = other.Hom(self)
-                    from maps import QuotientConversion_generic
+                    from .maps import QuotientConversion_generic
                     return homspace.__make_element_class__(QuotientConversion_generic)(homspace)
                     
         return super(HenselizationExtensionIteratedQuotient, self)._coerce_map_from_(other)

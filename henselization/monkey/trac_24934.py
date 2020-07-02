@@ -59,7 +59,7 @@ class AbsoluteOrderFactory(UniqueFactory):
         if check_integral and not each_is_integral(gens):
             raise ValueError("each generator must be integral")
 
-        K = iter(gens).next().parent()
+        K = next(iter(gens)).parent()
         V, from_V, to_V = K.vector_space()
         mod_gens = [to_V(x) for x in gens]
 
@@ -107,7 +107,7 @@ class RelativeOrderFactory(UniqueFactory):
             raise ValueError("each generator must be integral")
 
         # The top number field that contains the order.
-        K = iter(gens).next().parent()
+        K = next(iter(gens)).parent()
     
         # The absolute version of that field.
         Kabs = K.absolute_field('z')
