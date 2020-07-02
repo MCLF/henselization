@@ -299,7 +299,7 @@ class MacLaneElement_base(HenselizationElement_base):
             sage: a
             2 + O(5)
             sage: a.approximation(precision=10)
-            6139557
+            -3116/237
 
         """
         while self._precision() < precision:

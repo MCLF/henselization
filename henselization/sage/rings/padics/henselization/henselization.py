@@ -206,10 +206,11 @@ class ExtensionFactory(UniqueFactory):
             sage: g = F[3][0] # a factor of degree 8
 
         Here, the initial approximation of the factor is not sufficient to
-        single out the right splitting field::
+        single out the right splitting field; the constant coefficient of ``g``
+        is not the constant coefficient of the resulting minpoly::
 
             sage: F[3][0][0]
-            57/2*a^11 + 30*a^10 - 3/2*a^9 + 35/2*a^8 + 17*a^7 + 13*a^6 + a^5 + 19*a^4 + 33/2*a^3 + 9*a^2 + 37/2*a - 5/6 + O(...)
+            a^9 + 4*a^6 + 2*a^5 + 3*a^4 + 2*a^2 + a - 2 + O(...)
             sage: Extension._get_isomorphic_approximation(F[3][0])._base
             Univariate Quotient Polynomial Ring in xbar over Number Field in a with defining polynomial a^12 - 4*a^11 + 2*a^10 + 13*a^8 - 16*a^7 - 36*a^6 + 168*a^5 - 209*a^4 + 52*a^3 + 26*a^2 + 8*a - 13 with modulus x^8 + (5/6*a^11 + 9/2*a^10 + 3/2*a^9 + 1/10*a^8 + 5*a^7 + 5*a^6 + 9*a^5 + 7*a^4 + 19/2*a^3 + 17/2*a^2 + 15/2*a + 1/2)*x^7 + (53/2*a^11 - 1/6*a^10 + 19/2*a^9 + 15*a^7 + 8*a^6 + 17*a^5 + 5*a^4 + 9/2*a^3 + 35/2*a^2 + 47/2*a + 9)*x^6 + (15*a^11 + 29*a^10 + 26*a^9 + 11*a^8 + 28*a^7 + 22*a^6 + 10*a^5 + 28*a^4 + 9*a^3 + 21*a^2 + 12*a + 21)*x^5 + (31/2*a^11 + 5*a^10 + 55/2*a^9 + 15/2*a^8 + 13*a^7 + a^6 + 29*a^5 + 31*a^4 - 1/10*a^3 + 26*a^2 - 1/10*a - 1/2)*x^4 + (29/2*a^11 + 7/2*a^10 + 49/2*a^9 + 7/2*a^8 + 17*a^7 + 25*a^6 + 17*a^5 + 31*a^4 + 37/2*a^3 + 11/2*a^2 + 17/2*a + 7/2)*x^3 + (27/2*a^11 + 3/2*a^10 - 3/10*a^9 + 23*a^8 + 25*a^7 + 22*a^6 + 11*a^5 + 13*a^4 + 55/2*a^3 - 5/6*a^2 - 3/2*a + 22)*x^2 + (12*a^11 + 11*a^9 + 16*a^8 + 4*a^7 + 10*a^6 + 14*a^5 + 8*a^4 + 20*a^3 + 22*a^2 + 15*a + 12)*x + 33/2*a^11 + 28*a^10 + 57/2*a^9 + 11/2*a^8 + 3*a^7 + 23*a^6 + 23*a^5 + 9*a^4 - 3/2*a^3 + 29*a^2 + 37/2*a + 45/2
 
@@ -1297,7 +1298,7 @@ class HenselizationExtension(Henselization_base):
             sage: F = f.change_ring(L).factor()
             sage: g = [g for (g,e) in F if g.degree() == 2][0]
             sage: M.<a24> = L.extension(g); M
-            Extension defined by a24^2 + (5*a12^11 + 15/2*a12^10 + 7*a12^9 + 27/4*a12^8 + 6*a12^7 + 7/2*a12^4 + 5*a12^3 + 13/2*a12^2 + 3*a12 + 19/4 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)))*a24 + 15/2*a12^11 + 1/2*a12^10 + 11/4*a12^9 + 2*a12^8 + 6*a12^7 + 2*a12^6 + 15/2*a12^5 + 2*a12^4 + 1/2*a12^3 + 1/2*a12^2 + 19/4*a12 + 2 + O((1/4*a12^7 + 3/4*a12^6 + 5/4*a12^5 + 7/4*a12^4 + 9/4*a12^3 + 11/4*a12^2 + 9/4*a12 + 3/4)^(5/6)) of Extension defined by a12^12 - 4*a12^11 + 2*a12^10 + 13*a12^8 - 16*a12^7 - 36*a12^6 + 168*a12^5 - 209*a12^4 + 52*a12^3 + 26*a12^2 + 8*a12 - 13 of Henselization of Rational Field with respect to 2-adic valuation
+            Extension defined by a24^2 + (1/4*a12^8 + 1/2*a12^4 + 1/4 + O((1/4*a12^7 + 3/4*a12^6 + 3/4*a12^5 + 1/4*a12^4 + 1/4*a12^3 + 3/4*a12^2 + 3/4*a12 + 1/4)^(5/6)))*a24 + 1/4*a12^9 + 1/2*a12^5 + a12^4 + a12^2 + 1/4*a12 + 3 + O((1/4*a12^7 + 3/4*a12^6 + 3/4*a12^5 + 1/4*a12^4 + 1/4*a12^3 + 3/4*a12^2 + 3/4*a12 + 1/4)^(5/6)) of Extension defined by a12^12 - 4*a12^11 + 2*a12^10 + 13*a12^8 - 16*a12^7 - 36*a12^6 + 168*a12^5 - 209*a12^4 + 52*a12^3 + 26*a12^2 + 8*a12 - 13 of Henselization of Rational Field with respect to 2-adic valuation
     
         """
         if not isinstance(base_ring, Henselization_base):
@@ -1455,7 +1456,7 @@ class HenselizationExtension(Henselization_base):
             sage: f = t^12 - 4*t^11 + 2*t^10 + 13*t^8 - 16*t^7 - 36*t^6 + 168*t^5 - 209*t^4 + 52*t^3 + 26*t^2 + 8*t - 13
             sage: C12 = C.extension(f)
             sage: C12._eisenstein_model(base=C)
-            (Number Field in e12 with defining polynomial e12^12 + 4*e12^9 + 12*e12^8 + 12*e12^5 + 6*e12^4 + 4*e12^3 + 6, 2-adic valuation)
+            (Number Field in e12 with defining polynomial e12^12 + 4*e12^9 - 2*e12^8 + 4*e12^7 - 2*e12^4 + 4*e12^3 - 2, 2-adic valuation)
 
         A totally ramified extension over an unramified extension::
 
@@ -1466,7 +1467,7 @@ class HenselizationExtension(Henselization_base):
             sage: from sage.rings.padics.henselization.henselization import Extension
             sage: C24 = Extension._create_extension(C2, f)
             sage: C24._eisenstein_model(base=C)
-            (Number Field in e12 with defining polynomial e12^24 + 4*e12^20 + 4*e12^17 + 10*e12^16 + 8*e12^13 + 4*e12^12 + 8*e12^9 + 12*e12^8 + 24*e12^7 + 24*e12^5 + 28*e12^4 + 36, 2-adic valuation)
+            (Number Field in e12 with defining polynomial e12^24 + 2*e12^20 + 4*e12^19 - 2*e12^16 + 8*e12^12 + 8*e12^11 + 12*e12^4 + 16*e12 + 4, 2-adic valuation)
 
         """
         if base is self.base_ring() and self.gen().valuation() == self.valuation().value_group().gen():
