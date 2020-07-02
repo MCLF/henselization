@@ -222,7 +222,7 @@ class HenselizationValuation(DiscreteValuation):
 
         """
         if self.domain().is_subring(ring):
-            from henselization import Henselization_base
+            from .henselization import Henselization_base
             if isinstance(ring, Henselization_base):
                 return [ring.valuation()]
         return super(HenselizationValuation, self).extensions(ring)
