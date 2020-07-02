@@ -664,7 +664,7 @@ class Henselization_base(CommutativeRing):
 
             sage: from henselization import *
             sage: K = QQ.henselization(2)
-            sage: len(K.some_elements())
+            sage: len(list(K.some_elements()))
             100
 
         """

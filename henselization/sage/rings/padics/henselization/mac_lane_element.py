@@ -106,7 +106,7 @@ class MacLaneElement_base(HenselizationElement_base):
             sage: hash(a)
             Traceback (most recent call last):
             ...
-            TypeError: ... is not hashable
+            TypeError: unhashable ...
 
         Therefore, they implement :meth:`_cache_key`, so that they can be used
         in caches::
