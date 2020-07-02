@@ -13,6 +13,8 @@ Since any Henselization is backed by an absolute number field internally, the
 elemnts of that absolute number field can be understood as elements of the
 Henselization::
 
+    sage: from henselization import *
+
     sage: H = QQ.henselization(2)
     sage: p = H(2); p
     2
