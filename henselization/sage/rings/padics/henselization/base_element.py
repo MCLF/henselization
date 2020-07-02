@@ -261,7 +261,7 @@ class BaseElement_base(HenselizationElement_base):
             sage: y._vector_(K)
             (0, 1, 0, 0)
             sage: (y^4)._vector_(K)
-            (-62, 0, 0, 0)
+            (2, 0, 0, 0)
 
         """
         if base is None:
