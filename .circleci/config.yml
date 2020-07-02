@@ -14,18 +14,18 @@ jobs:
             sage -pip install patchy
             sage -python setup.py install
             sage -tp --long --initial henselization
-  "test-sage-8.2":
+  "test-sage-9.1":
     <<: *test
     docker:
-      - image: sagemath/sagemath:8.2
-  "test-sage-8.3.beta3":
+      - image: sagemath/sagemath:9.1
+  "test-sage-beta":
     <<: *test
     docker:
-      - image: sagemath/sagemath:8.3.beta3
+      - image: sagemath/sagemath:develop
   coverage:
     working_directory: /home/sage/henselization
     docker:
-      - image: sagemath/sagemath:8.2
+      - image: sagemath/sagemath:latest
     steps:
       - checkout
       - run:
@@ -34,12 +34,12 @@ jobs:
           command: |
             set -x
             # Run coverage test
-            cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python2.7/site-packages/sitecustomize.py
+            cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python3.7/site-packages/sitecustomize.py
             export COVERAGE_PROCESS_START=`pwd`/.coveragerc
             sage -pip install coverage patchy
             sage -python setup.py install
-            rm -rf /home/sage/sage/local/lib/python2.7/site-packages/henselization*
-            ln -s /home/sage/henselization/henselization /home/sage/sage/local/lib/python2.7/site-packages/
+            rm -rf /home/sage/sage/local/lib/python3.7/site-packages/henselization*
+            ln -s /home/sage/henselization/henselization /home/sage/sage/local/lib/python3.7/site-packages/
             sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
             sage -sh -c 'coverage combine'
             sage -sh -c 'coverage report'
@@ -88,7 +88,7 @@ jobs:
             (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 1000 ))
   benchmark:
     docker:
-      - image: sagemath/sagemath:8.2
+      - image: sagemath/sagemath:latest
     steps:
       - checkout
       - run:
@@ -145,8 +145,8 @@ workflows:
   test:
     jobs:
        # When adding a new stable release of Sage here, make sure to also upgrade the Dockerfile
-       - test-sage-8.2
-       - test-sage-8.3.beta3
+       - test-sage-9.1
+       - test-sage-beta
        - pyflakes
        - coverage
        - benchmark:

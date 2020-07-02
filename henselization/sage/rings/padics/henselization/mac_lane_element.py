@@ -106,7 +106,7 @@ class MacLaneElement_base(HenselizationElement_base):
             sage: hash(a)
             Traceback (most recent call last):
             ...
-            TypeError: ... is not hashable
+            TypeError: unhashable ...
 
         Therefore, they implement :meth:`_cache_key`, so that they can be used
         in caches::
@@ -242,7 +242,7 @@ class MacLaneElement_base(HenselizationElement_base):
             v0 += hi/e0
 
         valuations = w.valuations(self._limit_valuation._G)
-        h_phi = valuations.next() - valuations.next()
+        h_phi = next(valuations) - next(valuations)
         return v0 + h_phi / e0
 
     def valuation(self):
@@ -299,7 +299,7 @@ class MacLaneElement_base(HenselizationElement_base):
             sage: a
             2 + O(5)
             sage: a.approximation(precision=10)
-            6139557
+            -3116/237
 
         """
         while self._precision() < precision:
@@ -338,7 +338,7 @@ class MacLaneElement_Field(MacLaneElement_base, HenselizationElement_Field):
         sage: R.<x> = QQ.henselization(5)[]
         sage: F = (x^2 + 1).factor()
         sage: a = F[0][0][0]; a
-        2 + O(5^10)
+        2 + O(5)
 
     TESTS::
 
