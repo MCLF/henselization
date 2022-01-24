@@ -11,7 +11,7 @@ EXAMPLES::
 
 """
 #*****************************************************************************
-#       Copyright (C) 2018 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2018-2022 Julian Rüth <julian.rueth@fsfe.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,5 +29,10 @@ from .monkey import *
 from recursive_monkey_patch import monkey_patch
 monkey_patch(monkey_sage, sage)
 
-from sage.rings.padics.henselization.henselization import Henselization
+# Make "import sage.rings.padics.henselization" work with SageMath 9.4.
+# We are not sure why recursive_monkey_patch does not take care of this (anymore.)
+import sys
+sys.modules['sage.rings.padics.henselization'] = sage.rings.padics.henselization
+
+from sage.rings.padics.henselization import Henselization
 sage.all.Henselization = Henselization
