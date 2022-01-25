@@ -14,14 +14,6 @@ jobs:
             sage -pip install patchy
             sage -python setup.py install
             sage -tp --long --initial henselization
-  "test-sage-9.1":
-    <<: *test
-    docker:
-      - image: sagemath/sagemath:9.1
-  "test-sage-9.2":
-    <<: *test
-    docker:
-      - image: sagemath/sagemath:9.2
   "test-sage-9.3":
     <<: *test
     docker:
@@ -153,8 +145,6 @@ workflows:
   test:
     jobs:
        # When adding a new stable release of Sage here, make sure to also upgrade the Dockerfile
-       - test-sage-9.1
-       - test-sage-9.2
        - test-sage-9.3
        - test-sage-9.4
        - pyflakes
