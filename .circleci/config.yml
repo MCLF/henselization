@@ -22,33 +22,6 @@ jobs:
     <<: *test
     docker:
       - image: sagemath/sagemath:9.4
-  coverage:
-    working_directory: /home/sage/henselization
-    docker:
-      - image: sagemath/sagemath:latest
-    steps:
-      - checkout
-      - run:
-          name: test coverage
-          no_output_timeout: 30m
-          command: |
-            set -x
-            # Run coverage test
-            SITE_PACKAGES=`sage -python -c 'import site; print(site.getsitepackages()[0])'`
-            cp .circleci/coverage.sitecustomize.py $SITE_PACKAGES/sitecustomize.py
-            export COVERAGE_PROCESS_START=`pwd`/.coveragerc
-            sage -pip install coverage patchy
-            sage -python setup.py install
-            rm -rf $SITE_PACKAGES/henselization*
-            ln -s /home/sage/henselization/henselization $SITE_PACKAGES/
-            sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
-            sage -sh -c 'coverage combine'
-            sage -sh -c 'coverage report'
-            # Report to coveralls.io
-            sudo apt update
-            sudo apt install -y git
-            sage -pip install coveralls
-            sage -sh -c 'coveralls'
   pyflakes:
     docker:
       - image: python:latest
@@ -149,7 +122,6 @@ workflows:
        - test-sage-9.3
        - test-sage-9.4
        - pyflakes
-       - coverage
        - benchmark:
            filters:
              branches:
