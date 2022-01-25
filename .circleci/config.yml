@@ -85,7 +85,7 @@ jobs:
             # fail on warnings
             grep WARNING /tmp/rtd.log && false
             # check that readthedocs produced something non-empty
-            (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 1000 ))
+            (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 500 ))
   benchmark:
     docker:
       - image: sagemath/sagemath:latest
