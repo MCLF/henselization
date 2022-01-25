@@ -60,59 +60,6 @@ jobs:
             grep WARNING /tmp/rtd.log && false
             # check that readthedocs produced something non-empty
             (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 500 ))
-  benchmark:
-    docker:
-      - image: sagemath/sagemath:latest
-    steps:
-      - checkout
-      - run:
-          no_output_timeout: 30m
-          name: run benchmark
-          command: |
-            # There is an obvious security issue in this script that CircleCI
-            # seems to refuse to fix. The options are to disable coveralls in
-            # pull requests or leave it in. Worst case somebody who's bored
-            # could push crap to the henselization-asv repository. I guess we
-            # can live with that.
-            set -x
-            sage -pip install patchy
-            sage -python setup.py install
-
-            sage -pip install asv
-
-            sudo apt update
-            sudo apt install -y git
-            git config --global user.name 'CircleCI Benchmark'
-            git config --global user.email 'benchmark@circleci.invalid'
-            git config --global push.default simple
-
-            mkdir -p ~/.ssh
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-            set +x
-            echo $MCLF_ASV_SECRET_KEY | base64 -d > ~/.ssh/id_rsa
-            chmod 400 ~/.ssh/id_rsa
-            set -x
-
-            # Clone henselization-asv with performance data of previous runs
-            git clone git@github.com:MCLF/henselization-asv.git .asv/results
-            # Install sage-asv plugin
-            # TODO: move the python module into Sage
-            pushd .circleci/sage-asv
-            sage -python setup.py install
-            popd
-            # Run benchmarks
-            cp .circleci/asv-machine.json ~/.asv-machine.json
-            sage -sh -c 'asv run --machine=circleci --python='"`sage -sh -c 'which python3'`"
-            # Commit and store benchmark results in the henselization-asv repository
-            pushd .asv/results
-            git add .
-            git commit -m 'Added benchmark run'
-            unset SSH_AUTH_SOCK
-            git push origin
-            popd
-            # Publish benchmark results to github pages
-            sage -sh -c 'asv gh-pages --no-push'
-            git push git@github.com:MCLF/henselization-asv.git gh-pages:gh-pages -f
 
 workflows:
   version: 2
@@ -122,10 +69,5 @@ workflows:
        - test-sage-9.3
        - test-sage-9.4
        - pyflakes
-       - benchmark:
-           filters:
-             branches:
-               only:
-               - master
        - docbuild-sage
        - docbuild-readthedocs
