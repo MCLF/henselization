@@ -34,7 +34,7 @@ jobs:
           command: |
             set -x
             # Run coverage test
-            cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python*/site-packages/sitecustomize.py
+            cp .circleci/coverage.sitecustomize.py `python -c 'import site; print(site.getsitepackages()[0])'`/sitecustomize.py
             export COVERAGE_PROCESS_START=`pwd`/.coveragerc
             sage -pip install coverage patchy
             sage -python setup.py install
