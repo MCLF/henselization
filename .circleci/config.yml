@@ -14,40 +14,14 @@ jobs:
             sage -pip install patchy
             sage -python setup.py install
             sage -tp --long --initial henselization
-  "test-sage-9.1":
+  "test-sage-9.3":
     <<: *test
     docker:
-      - image: sagemath/sagemath:9.1
-  "test-sage-beta":
+      - image: sagemath/sagemath:9.3
+  "test-sage-9.4":
     <<: *test
     docker:
-      - image: sagemath/sagemath:develop
-  coverage:
-    working_directory: /home/sage/henselization
-    docker:
-      - image: sagemath/sagemath:latest
-    steps:
-      - checkout
-      - run:
-          name: test coverage
-          no_output_timeout: 30m
-          command: |
-            set -x
-            # Run coverage test
-            cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python3.7/site-packages/sitecustomize.py
-            export COVERAGE_PROCESS_START=`pwd`/.coveragerc
-            sage -pip install coverage patchy
-            sage -python setup.py install
-            rm -rf /home/sage/sage/local/lib/python3.7/site-packages/henselization*
-            ln -s /home/sage/henselization/henselization /home/sage/sage/local/lib/python3.7/site-packages/
-            sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
-            sage -sh -c 'coverage combine'
-            sage -sh -c 'coverage report'
-            # Report to coveralls.io
-            sudo apt update
-            sudo apt install -y git
-            sage -pip install coveralls
-            sage -sh -c 'coveralls'
+      - image: sagemath/sagemath:9.4
   pyflakes:
     docker:
       - image: python:latest
@@ -85,7 +59,7 @@ jobs:
             # fail on warnings
             grep WARNING /tmp/rtd.log && false
             # check that readthedocs produced something non-empty
-            (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 1000 ))
+            (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 500 ))
   benchmark:
     docker:
       - image: sagemath/sagemath:latest
@@ -145,10 +119,9 @@ workflows:
   test:
     jobs:
        # When adding a new stable release of Sage here, make sure to also upgrade the Dockerfile
-       - test-sage-9.1
-       - test-sage-beta
+       - test-sage-9.3
+       - test-sage-9.4
        - pyflakes
-       - coverage
        - benchmark:
            filters:
              branches:
