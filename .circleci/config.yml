@@ -102,7 +102,7 @@ jobs:
             popd
             # Run benchmarks
             cp .circleci/asv-machine.json ~/.asv-machine.json
-            sage -sh -c 'asv run --machine=circleci --python=python'
+            sage -sh -c 'asv run --machine=circleci --python='"`which python`"
             # Commit and store benchmark results in the henselization-asv repository
             pushd .asv/results
             git add .
