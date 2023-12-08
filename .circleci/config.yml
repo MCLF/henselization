@@ -72,6 +72,7 @@ workflows:
        # When adding a new stable release of Sage here, make sure to also upgrade the Dockerfile
        - test-sage-9.3
        - test-sage-9.4
+       - test-sage-10.1
        - pyflakes
        - docbuild-sage
        - docbuild-readthedocs
