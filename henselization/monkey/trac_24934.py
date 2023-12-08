@@ -19,8 +19,14 @@ class Monkey(AbstractMonkey):
         from sage.all import QuadraticField, loads, dumps
         K = QuadraticField(-1, 'i')
         if loads(dumps(K.maximal_order())) is not K.maximal_order():
+            # Computing the maximal order has side effects. Namely, the maximal
+            # order is cached in the field.
+            # We drop this cache and hope that the user did not create too many
+            # orders before importing this module since these do not pickle
+            # correctly anymore now.
+            K._maximal_order.clear_cache()
             raise Exception("#24934 has not been fixed")
-    
+
     def _patch(self):
         import sage.rings.number_field.order
         sage.rings.number_field.order.AbsoluteOrderFactory = AbsoluteOrderFactory
