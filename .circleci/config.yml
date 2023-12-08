@@ -11,6 +11,7 @@ jobs:
           name: sage -tp
           no_output_timeout: 30m
           command: |
+            sudo apt-get update && sudo apt-get install -y ca-certificates
             sage -pip install patchy
             sage -python setup.py install
             sage -tp --long --initial henselization
@@ -22,6 +23,10 @@ jobs:
     <<: *test
     docker:
       - image: sagemath/sagemath:9.4
+  "test-sage-10.1":
+    <<: *test
+    docker:
+      - image: sagemath/sagemath:10.1
   pyflakes:
     docker:
       - image: python:latest
@@ -39,7 +44,7 @@ jobs:
       - checkout
       - run:
           command: |
-            sudo apt-get update && sudo apt-get install -y build-essential
+            sudo apt-get update && sudo apt-get install -y build-essential ca-certificates
             sage -pip install patchy
             sage -python setup.py install
             cd docs
@@ -68,6 +73,7 @@ workflows:
        # When adding a new stable release of Sage here, make sure to also upgrade the Dockerfile
        - test-sage-9.3
        - test-sage-9.4
+       - test-sage-10.1
        - pyflakes
        - docbuild-sage
        - docbuild-readthedocs
