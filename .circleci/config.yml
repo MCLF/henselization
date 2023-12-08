@@ -11,6 +11,7 @@ jobs:
           name: sage -tp
           no_output_timeout: 30m
           command: |
+            sudo apt-get update && sudo apt-get install -y ca-certificates
             sage -pip install patchy
             sage -python setup.py install
             sage -tp --long --initial henselization
