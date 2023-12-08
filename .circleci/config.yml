@@ -22,6 +22,10 @@ jobs:
     <<: *test
     docker:
       - image: sagemath/sagemath:9.4
+  "test-sage-10.1":
+    <<: *test
+    docker:
+      - image: sagemath/sagemath:10.1
   pyflakes:
     docker:
       - image: python:latest
