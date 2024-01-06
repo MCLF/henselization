@@ -35,7 +35,7 @@ Mac Lane Elements
 A polynomial that is irreducible over a certain number field might factor over
 its Henselization. The coefficients of that factorization are not elements of
 the underlying absolute number field. Internally, they are described by a
-limit valuation, see :module:`sage.rings.valuations.limit_valuation`.
+limit valuation, see :mod:`sage.rings.valuations.limit_valuation`.
 
     sage: H = QQ.henselization(5)
 
@@ -77,7 +77,7 @@ digits::
     sage: _ + 1
     -2879/237
 
-See :module:`sage.rings.padics.henselization.mac_lane_element` for details
+See :mod:`sage.rings.padics.henselization.mac_lane_element` for details
 about this type of element.
 
 
@@ -124,7 +124,7 @@ Now ``a`` and ``b`` are proper base elements in the field ``M``:
     sage: _.valuation()
     1/4
 
-See :module:`sage.rings.padics.henselization.generator_element` for details
+See :mod:`sage.rings.padics.henselization.generator_element` for details
 about generator elements.
 
 
