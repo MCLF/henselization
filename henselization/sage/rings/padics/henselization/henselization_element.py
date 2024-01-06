@@ -25,7 +25,7 @@ also keep track of other properties such as their valuation::
     sage: p.valuation()
     1
 
-See :module:`sage.rings.padics.henselization.base_element` for details about
+See :mod:`sage.rings.padics.henselization.base_element` for details about
 this type of element.
 
 
