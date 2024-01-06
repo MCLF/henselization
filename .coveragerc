@@ -1,5 +1,0 @@
-[run]
-concurrency = multiprocessing
-source = .
-parallel = True
-branch = True

@@ -78,6 +78,9 @@ class AbstractMonkey:
         r"""
         Run ``_patch()`` with a more pretty error handling.
         """
+        if self.is_fixed():
+            return
+
         try:
             import patchy
             patchy; # silence pyflakes "imported but not used"

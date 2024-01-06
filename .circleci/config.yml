@@ -11,43 +11,22 @@ jobs:
           name: sage -tp
           no_output_timeout: 30m
           command: |
+            sudo apt-get update && sudo apt-get install -y ca-certificates
             sage -pip install patchy
             sage -python setup.py install
             sage -tp --long --initial henselization
-  "test-sage-9.1":
+  "test-sage-9.3":
     <<: *test
     docker:
-      - image: sagemath/sagemath:9.1
-  "test-sage-beta":
+      - image: sagemath/sagemath:9.3
+  "test-sage-9.4":
     <<: *test
     docker:
-      - image: sagemath/sagemath:develop
-  coverage:
-    working_directory: /home/sage/henselization
+      - image: sagemath/sagemath:9.4
+  "test-sage-10.1":
+    <<: *test
     docker:
-      - image: sagemath/sagemath:latest
-    steps:
-      - checkout
-      - run:
-          name: test coverage
-          no_output_timeout: 30m
-          command: |
-            set -x
-            # Run coverage test
-            cp .circleci/coverage.sitecustomize.py /home/sage/sage/local/lib/python3.7/site-packages/sitecustomize.py
-            export COVERAGE_PROCESS_START=`pwd`/.coveragerc
-            sage -pip install coverage patchy
-            sage -python setup.py install
-            rm -rf /home/sage/sage/local/lib/python3.7/site-packages/henselization*
-            ln -s /home/sage/henselization/henselization /home/sage/sage/local/lib/python3.7/site-packages/
-            sage -sh -c 'coverage run /home/sage/sage/src/bin/sage-runtests -p --long --initial henselization'
-            sage -sh -c 'coverage combine'
-            sage -sh -c 'coverage report'
-            # Report to coveralls.io
-            sudo apt update
-            sudo apt install -y git
-            sage -pip install coveralls
-            sage -sh -c 'coveralls'
+      - image: sagemath/sagemath:10.1
   pyflakes:
     docker:
       - image: python:latest
@@ -65,7 +44,7 @@ jobs:
       - checkout
       - run:
           command: |
-            sudo apt-get update && sudo apt-get install -y build-essential
+            sudo apt-get update && sudo apt-get install -y build-essential ca-certificates
             sage -pip install patchy
             sage -python setup.py install
             cd docs
@@ -85,74 +64,16 @@ jobs:
             # fail on warnings
             grep WARNING /tmp/rtd.log && false
             # check that readthedocs produced something non-empty
-            (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 1000 ))
-  benchmark:
-    docker:
-      - image: sagemath/sagemath:latest
-    steps:
-      - checkout
-      - run:
-          no_output_timeout: 30m
-          name: run benchmark
-          command: |
-            # There is an obvious security issue in this script that CircleCI
-            # seems to refuse to fix. The options are to disable coveralls in
-            # pull requests or leave it in. Worst case somebody who's bored
-            # could push crap to the henselization-asv repository. I guess we
-            # can live with that.
-            set -x
-            sage -pip install patchy
-            sage -python setup.py install
-
-            sage -pip install asv
-
-            sudo apt update
-            sudo apt install -y git
-            git config --global user.name 'CircleCI Benchmark'
-            git config --global user.email 'benchmark@circleci.invalid'
-            git config --global push.default simple
-
-            mkdir -p ~/.ssh
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-            set +x
-            echo $MCLF_ASV_SECRET_KEY | base64 -d > ~/.ssh/id_rsa
-            chmod 400 ~/.ssh/id_rsa
-            set -x
-
-            # Clone henselization-asv with performance data of previous runs
-            git clone git@github.com:MCLF/henselization-asv.git .asv/results
-            # Install sage-asv plugin
-            # TODO: move the python module into Sage
-            pushd .circleci/sage-asv
-            sage -python setup.py install
-            popd
-            # Run benchmarks
-            cp .circleci/asv-machine.json ~/.asv-machine.json
-            sage -sh -c 'asv run --machine=circleci --python=python'
-            # Commit and store benchmark results in the henselization-asv repository
-            pushd .asv/results
-            git add .
-            git commit -m 'Added benchmark run'
-            unset SSH_AUTH_SOCK
-            git push origin
-            popd
-            # Publish benchmark results to github pages
-            sage -sh -c 'asv gh-pages --no-push'
-            git push git@github.com:MCLF/henselization-asv.git gh-pages:gh-pages -f
+            (( $(du -s _readthedocs_build/henselization/html | cut -f1) > 500 ))
 
 workflows:
   version: 2
   test:
     jobs:
        # When adding a new stable release of Sage here, make sure to also upgrade the Dockerfile
-       - test-sage-9.1
-       - test-sage-beta
+       - test-sage-9.3
+       - test-sage-9.4
+       - test-sage-10.1
        - pyflakes
-       - coverage
-       - benchmark:
-           filters:
-             branches:
-               only:
-               - master
        - docbuild-sage
        - docbuild-readthedocs

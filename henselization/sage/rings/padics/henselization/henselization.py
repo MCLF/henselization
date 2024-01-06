@@ -114,8 +114,8 @@ class ExtensionFactory(UniqueFactory):
             True
 
         """
-        from sage.rings.polynomial.polynomial_element import is_Polynomial
-        if not is_Polynomial(polynomial):
+        from sage.rings.polynomial.polynomial_element import Polynomial
+        if not isinstance(polynomial, Polynomial):
             raise TypeError("polynomial must be a polynomial")
         if len(polynomial.parent().gens()) != 1 or polynomial.parent().base() is not base:
             raise ValueError("polynomial must be an element of a univariate polynomial ring over %r but %r is not"%(base, polynomial.parent()))

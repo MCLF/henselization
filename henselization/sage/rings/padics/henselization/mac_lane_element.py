@@ -338,7 +338,7 @@ class MacLaneElement_Field(MacLaneElement_base, HenselizationElement_Field):
         sage: R.<x> = QQ.henselization(5)[]
         sage: F = (x^2 + 1).factor()
         sage: a = F[0][0][0]; a
-        2 + O(5)
+        2 + O(5^10)
 
     TESTS::
 
