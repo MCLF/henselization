@@ -114,7 +114,7 @@ an explicit choice of roots of the defining polynomials::
 
     sage: f = x^2 - a
     sage: f.factor()
-    (x - e4) * (x + e4)
+    (x + 2*e4 + O(e4^(5/4))) * (x + e4)
     sage: b = M(-_[0][0][0])
 
 Now ``a`` and ``b`` are proper base elements in the field ``M``:
@@ -134,7 +134,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2017 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2017-2024 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
