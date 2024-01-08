@@ -9,7 +9,7 @@ AUTHORS:
 
 """
 #*****************************************************************************
-#       Copyright (C) 2016-2018 Julian Rüth <julian.rueth@fsfe.org>
+#       Copyright (C) 2016-2020 Julian Rüth <julian.rueth@fsfe.org>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  as published by the Free Software Foundation; either version 2 of
