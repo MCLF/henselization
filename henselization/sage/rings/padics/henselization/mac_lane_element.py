@@ -73,7 +73,7 @@ class MacLaneElement_base(HenselizationElement_base):
         approximation = self._limit_valuation._initial_approximation.phi()[self._degree]
         if approximation:
             approximation = repr(approximation)
-        precision = self._precision()
+        precision = self._precision(approximation=self._limit_valuation._initial_approximation)
         uniformizer = self._limit_valuation.uniformizer()
         error = repr(uniformizer)
         if precision != 1:
@@ -196,7 +196,7 @@ class MacLaneElement_base(HenselizationElement_base):
             return not (self == other)
         raise NotImplementedError
 
-    def _precision(self):
+    def _precision(self, approximation=None):
         r"""
         Return the precision (in terms of valuation) to which the element is
         known.
@@ -231,7 +231,7 @@ class MacLaneElement_base(HenselizationElement_base):
             1
 
         """
-        w = self._limit_valuation._approximation
+        w = approximation or self._limit_valuation._approximation
         e = reversed([v.E()/v._base_valuation.E() for v in w.augmentation_chain()[:-1]])
         h = reversed([v.mu() - v._base_valuation(v.phi()) for v in w.augmentation_chain()[:-1]])
 
@@ -338,7 +338,7 @@ class MacLaneElement_Field(MacLaneElement_base, HenselizationElement_Field):
         sage: R.<x> = QQ.henselization(5)[]
         sage: F = (x^2 + 1).factor()
         sage: a = F[0][0][0]; a
-        2 + O(5^10)
+        2 + O(5)
 
     TESTS::
 
