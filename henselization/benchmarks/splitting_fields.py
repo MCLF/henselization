@@ -121,7 +121,7 @@ class SplittingField:
  
             sage: import henselization
             sage: from henselization.benchmarks.splitting_fields import SplittingField
-            sage: SplittingField().time_12_384() # long time
+            sage: SplittingField().time_12_384() # long time, 400s in 2026
             Factoring T^12 - 4*T^11 + 2*T^10 + 13*T^8 - 16*T^7 - 36*T^6 + 168*T^5 - 209*T^4 + 52*T^3 + 26*T^2 + 8*T - 13 over a field of degree 1 * 1…
             …factors with degrees [12]
             Found totally ramified part of degree 12

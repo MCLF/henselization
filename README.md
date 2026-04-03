@@ -1,11 +1,7 @@
-[![Documentation Status](https://readthedocs.org/projects/henselization/badge/)](http://henselization.readthedocs.io/?badge=latest)
-[![CircleCI](https://circleci.com/gh/MCLF/henselization/tree/master.svg?style=svg)](https://circleci.com/gh/MCLF/henselization/tree/master)
-[![asv](https://img.shields.io/badge/benchmarked%20by-asv-green.svg?style=flat)](https://mclf.github.io/henselization-asv)
-
 ### Henselizations in Sage
 
 This project is in an early alpha stage. It could already be useful but there
-are likely quite some issue (that we'd like to hear about 🙂)
+are likely quite some issues (that we'd like to hear about 🙂)
 
 All p-adic rings currently available in Sage are backed by elements that
 consist of an approximation and a precision. It can sometimes be tedious to
@@ -21,11 +17,7 @@ are slow in Sage, extensions are always rewritten as isomorphic rings defined
 by an absolute number field with defining (Eisenstein) polynomials with small
 coefficients.
 
-You need at least [Sage 8.2](https://www.sagemath.org) for the following examples to work.
-
-If you can not install Sage on your local machine, you can also click
-[![Launch on mybinder.org](https://camo.githubusercontent.com/d57df63fab21897847014ebaec3e7f5f48951ad2/68747470733a2f2f626574612e6d7962696e6465722e6f72672f62616467652e737667)](https://mybinder.org/v2/gh/mclf/henselization/master?filepath=example.ipynb)
-to try this in an interactive Jupyter notebook.
+You need at least [Sage 10.7](https://www.sagemath.org) for the following examples to work.
 
 The package can be loaded with
 ```
