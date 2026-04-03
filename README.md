@@ -1,11 +1,7 @@
-[![Documentation Status](https://readthedocs.org/projects/henselization/badge/)](http://henselization.readthedocs.io/?badge=latest)
-[![CircleCI](https://circleci.com/gh/MCLF/henselization/tree/master.svg?style=svg)](https://circleci.com/gh/MCLF/henselization/tree/master)
-[![asv](https://img.shields.io/badge/benchmarked%20by-asv-green.svg?style=flat)](https://mclf.github.io/henselization-asv)
-
 ### Henselizations in Sage
 
 This project is in an early alpha stage. It could already be useful but there
-are likely quite some issue (that we'd like to hear about 🙂)
+are likely quite some issues (that we'd like to hear about 🙂)
 
 All p-adic rings currently available in Sage are backed by elements that
 consist of an approximation and a precision. It can sometimes be tedious to
