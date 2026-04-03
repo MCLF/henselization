@@ -101,7 +101,7 @@ class ExtensionFactory(UniqueFactory):
         Extension defined by x^2 - 5 of Henselization of Rational Field with respect to 5-adic valuation
 
     """
-    def create_key(self, base, polynomial, name, check=True):
+    def create_key_and_extra_args(self, base, polynomial, name, check=True):
         r"""
         Return a key that uniquely defines this extension.
 
@@ -132,9 +132,9 @@ class ExtensionFactory(UniqueFactory):
             # complain.)
             raise ValueError("polynomial must be irreducible but %r is not"%(polynomial,))
 
-        return base, polynomial
+        return (base, tuple(polynomial.coefficients(sparse=False)), name), {"polynomial": polynomial}
 
-    def create_object(self, version, key):
+    def create_object(self, version, key, polynomial):
         r"""
         Return the extension defined by ``key``.
 
@@ -147,7 +147,7 @@ class ExtensionFactory(UniqueFactory):
             Extension defined by x^2 - 5 of Henselization of Rational Field with respect to 5-adic valuation
 
         """
-        base, polynomial = key
+        base, _, _ = key
 
         if isinstance(base, HenselizationExtension):
             if polynomial.base_ring()._is_monic_mac_lane_polynomial(polynomial) and polynomial.base_ring() is base:
@@ -322,7 +322,7 @@ class ExtensionFactory(UniqueFactory):
         return Quotient(base, polynomial, model, model_valuation)
 
 class QuotientFactory(UniqueFactory):
-    def create_key(self, base, polynomial, model = None, model_valuation = None):
+    def create_key_and_extra_args(self, base, polynomial, model = None, model_valuation = None):
         if model is None:
             from .base_element import BaseElement_base
             if all([isinstance(c, BaseElement_base) for c in polynomial.coefficients(sparse=False)]):
@@ -337,23 +337,23 @@ class QuotientFactory(UniqueFactory):
         if model_valuation is None:
             model_valuation = base._base_valuation.extension(model)
 
-        return base, polynomial, model, model_valuation
+        return (base, tuple(polynomial.coefficients(sparse=False)), model, model_valuation), {"polynomial": polynomial}
 
-    def create_object(self, version, key):
-        base, polynomial, model, model_valuation = key
+    def create_object(self, version, key, polynomial):
+        base, _, model, model_valuation = key
 
         from sage.categories.all import Fields
         if model in Fields():
             # triggers refinement of category of model
             pass
     
-        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
+        from sage.rings.polynomial.polynomial_quotient_ring import PolynomialQuotientRing_generic
         if not isinstance(base, HenselizationExtension):
             if base in Fields():
                 clazz = HenselizationExtensionSimple_Field
             else:
                 clazz = HenselizationExtensionSimple_Ring
-        elif is_PolynomialQuotientRing(model):
+        elif isinstance(model, PolynomialQuotientRing_generic):
             if base in Fields():
                 clazz = HenselizationExtensionIteratedQuotient_Field
             else:
@@ -404,16 +404,16 @@ class Henselization_base(CommutativeRing):
         # valuation zero. We therefore, extend base_valuation to that field of
         # fractions.
         self._base_fraction_field = self.base().fraction_field()
-        from sage.rings.polynomial.polynomial_ring import is_PolynomialRing
-        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
-        if is_PolynomialRing(base) and base.ngens() == 1:
+        from sage.rings.polynomial.polynomial_ring import PolynomialRing_generic
+        from sage.rings.polynomial.polynomial_quotient_ring import PolynomialQuotientRing_generic
+        if isinstance(base, PolynomialRing_generic) and base.ngens() == 1:
             # For polynomial rings, the support for valuations on function
             # fields is better than the support for naive fraction fields of
             # polynomial rings; the two are virtually identical, so we use
             # function fields.
             from sage.rings.all import FunctionField
             self._base_fraction_field = FunctionField(base.base().fraction_field(), names=(base.variable_name(),))
-        elif is_PolynomialQuotientRing(base) and base.ngens() == 1:
+        elif isinstance(base, PolynomialQuotientRing_generic) and base.ngens() == 1:
             # We could rewrite quotient rings to field extensions here.
             # However, they often have sever performance penalties (e.g. in the
             # case of number fields where the construction of a relative number
@@ -1805,8 +1805,8 @@ class HenselizationExtensionIteratedQuotient(HenselizationExtension):
         """
         if not isinstance(base_ring, HenselizationExtension):
             raise TypeError("base_ring must be an extension")
-        from sage.rings.polynomial.polynomial_quotient_ring import is_PolynomialQuotientRing
-        if not is_PolynomialQuotientRing(model):
+        from sage.rings.polynomial.polynomial_quotient_ring import PolynomialQuotientRing_generic
+        if not isinstance(model, PolynomialQuotientRing_generic):
             raise TypeError("model must be a quotient")
 
         super(HenselizationExtensionIteratedQuotient, self).__init__(base_ring=base_ring, polynomial=polynomial, model=model, model_valuation=model_valuation, category=category)

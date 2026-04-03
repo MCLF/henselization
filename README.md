@@ -21,7 +21,7 @@ are slow in Sage, extensions are always rewritten as isomorphic rings defined
 by an absolute number field with defining (Eisenstein) polynomials with small
 coefficients.
 
-You need at least [Sage 8.2](https://www.sagemath.org) for the following examples to work.
+You need at least [Sage 10.7](https://www.sagemath.org) for the following examples to work.
 
 The package can be loaded with
 ```
